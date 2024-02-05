@@ -12,13 +12,7 @@ git clone https://github.com/hyunjekim2000/Brave-Souls.git
 cd Brave-Souls
 ```
 
-3. Install project dependencies.
-
-```bash
-npm install
-```
-
-4. Set up environment variables.
+3. Set up environment variables.
 
    - Create a `.env` file in the root directory of your project.
    - Add the following environment variables:
@@ -32,9 +26,15 @@ npm install
 
    Replace the placeholders with your actual MySQL configuration.
 
-5. Initialize the database (if applicable).
+4. Run the application
 
-   Copy paste the contents of init-db.sql into your MySQL CLI.
+```bash
+docker-compose -up --build
+```
+
+6. Initialize the database (if applicable).
+
+Copy paste the contents of init-db.sql into your MySQL CLI.
    
 ## Usage
 
