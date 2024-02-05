@@ -27,13 +27,21 @@ export async function getProject(id) {
 // const [rows] = await getProject(1)
 // console.log(rows)
 
-export async function createProject(title, contents) {
+export async function createProject(title, contents, stack, team_name, team_members) {
     const [result] = await pool.query(`
-    INSERT INTO projects (title, contents)
-    VALUES (?, ?)
-    `, [title, contents])
-    const id =  result.insertId
-    return getProject(id)
+    INSERT INTO projects (title, contents, stack, team_name, team_members)
+    VALUES (?, ?, ?, ?, ?)
+    `, [title, contents, stack, team_name, team_members]);
+    const id = result.insertId;
+    return getProject(id);
+}
+
+export async function deleteProject(id) {
+    const [result] = await pool.query(`
+    DELETE FROM projects
+    WHERE id = ?
+    `, [id]);
+    return result;
 }
 
 // const result = await createProject('test', 'test')
