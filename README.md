@@ -1,55 +1,69 @@
-### Installation
-
-1. Clone the repository to your local machine.
+### Clone the Repository
 
 ```bash
 git clone https://github.com/hyunjekim2000/Brave-Souls.git
 ```
 
-2. Navigate to the project directory.
-
 ```bash
 cd Brave-Souls
 ```
 
-3. Set up environment variables.
+### Environment Setup
 
-   - Create a `.env` file in the root directory of your project.
-   - Add the following environment variables:
+You need to set up environment variables for the project to run correctly. This is done by creating `.env` files in the root and server directories.
 
-   ```env
-   MYSQL_HOST=your-mysql-host
-   MYSQL_USER=your-mysql-username
-   MYSQL_PASSWORD=your-mysql-password
-   MYSQL_DATABASE=your-mysql-database
-   ```
+#### Root Directory `.env`
 
-   Replace the placeholders with your actual MySQL configuration.
+Create a `.env` file in the root directory of the project:
 
-4. Run the application
-
-```bash
-docker-compose -up --build
+```plaintext
+MYSQL_HOST='db'
+MYSQL_USER='root'
+MYSQL_PASSWORD='your-password'
+MYSQL_DATABASE='projects_app'
 ```
 
-6. Initialize the database (if applicable).
+Replace `your-password` with your MySQL password
 
-Copy paste the contents of init-db.sql into your MySQL CLI.
-   
-## Usage
+#### Server Directory `.env`
 
-Provide instructions on how to run and use your application. Include any additional configuration or steps users need to follow.
+Create a `.env` file in the `server` directory:
 
-On client, (running on port:3000)
-```bash
-npm start
-```
-On server, (listening on port:8080)
-```bash
-node app.js
+```plaintext
+MYSQL_HOST='127.0.0.1'
+MYSQL_USER='root'
+MYSQL_PASSWORD='your-password'
+MYSQL_DATABASE='projects_app'
 ```
 
-Alternatively using Docker,
+Replace `your-password` with your MySQL password
+
+### Docker Compose
+
+Use Docker Compose to build and start the containers:
+
 ```bash
-docker-compose -up --build
+docker compose up --build
+```
+
+This command builds the images for your application and starts the services defined in your `docker-compose.yaml` file. 
+
+### Accessing the Application
+
+Once the containers are up and running, you can access:
+- The web application at `http://localhost:3000`
+- The backend API at `http://localhost:8080`
+
+## Stopping the Application
+
+To stop the application, run:
+
+```bash
+docker compose down
+```
+
+Optional: To remove the volumes along with the containers, use:
+
+```bash
+docker compose down -v
 ```
