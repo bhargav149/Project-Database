@@ -4,7 +4,8 @@ import {
     getProjects,
     getProject,
     createProject,
-    deleteProject
+    deleteProject,
+    updateProject
 } from './database.js'
 
 const app = express()
@@ -40,6 +41,24 @@ app.delete("/projects/:id", async (req, res) => {
         }
     } catch (err) {
         console.error(err);
+        res.status(500).send('Something went wrong');
+    }
+});
+
+app.put("/projects/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, contents, stack, team_name, team_members } = req.body;
+
+        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members);
+
+        if (updatedProject) {
+            res.json(updatedProject);
+        } else {
+            res.status(404).send("Project not found.");
+        }
+    } catch (error) {
+        console.error(error);
         res.status(500).send('Something went wrong');
     }
 });

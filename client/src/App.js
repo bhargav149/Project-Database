@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import './App.css';
 import AddProjectForm from './components/AddProjectForm';
+import EditProjectModal from './components/EditProjectModal';
 
 function App() {
 
   const [data, setData] = useState([])
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
 
   useEffect(() => {
     fetchProjects();
@@ -13,7 +16,7 @@ function App() {
   const fetchProjects = () => {
     fetch("http://localhost:8080/projects")
       .then(res => res.json())
-      .then(data => setData(data))
+      .then(data => setData(data.map(project => ({ ...project, isEditing: false }))))
       .catch(err => console.error(err));
   };
 
@@ -55,23 +58,60 @@ function App() {
     .catch(err => console.error('Error:', err));
   };  
 
+  const updateProject = (id, updatedProject) => {
+    fetch(`http://localhost:8080/projects/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedProject),
+    })
+    .then(response => response.json())
+    .then(() => fetchProjects())
+    .catch(err => console.error(err));
+  };
+
+  const toggleEdit = (project) => {
+    setEditingProject(project);
+    setIsModalOpen(true);
+  };
+
+  const saveEdit = (updatedProject) => {
+    updateProject(updatedProject.id, updatedProject);
+    setIsModalOpen(false);
+  };
+
+  const cancelEdit = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="container">
-      {data.map((d, i) => (
+      {data.map((project, i) => (
         <div key={i} className="card">
-          {/* <p><strong>ID:</strong> {d.id}</p> */}
-          <p><strong>Title:</strong> {d.title}</p>
-          <p><strong>Description:</strong> {d.contents}</p>
-          <p><strong>Stack:</strong> {d.stack}</p>
-          <p><strong>Team Name:</strong> {d.team_name}</p>
-          <p><strong>Team Members:</strong> {d.team_members}</p>
-          <p><strong>Created:</strong> {d.created}</p>
-          <button className="button-delete" onClick={() => deleteProject(d.id)}>Delete</button>
+          <p><strong>Title:</strong> {project.title}</p>
+          <p><strong>Description:</strong> {project.contents}</p>
+          <p><strong>Stack:</strong> {project.stack}</p>
+          <p><strong>Team Name:</strong> {project.team_name}</p>
+          <p><strong>Team Members:</strong> {project.team_members}</p>
+          <p><strong>Created:</strong> {project.created}</p>
+          <button className="button-delete" onClick={() => deleteProject(project.id)}>Delete</button>
+          <button className="button-edit" onClick={() => toggleEdit(project)}>Edit</button>
         </div>
       ))}
+  
+      {isModalOpen && editingProject && (
+        <EditProjectModal
+          project={editingProject}
+          isOpen={isModalOpen}
+          onSave={saveEdit}
+          onCancel={cancelEdit}
+        />
+      )}
+  
       <AddProjectForm onAdd={addProject} />
     </div>
-  )
+  );
 }
 
 export default App
