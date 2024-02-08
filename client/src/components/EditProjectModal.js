@@ -8,6 +8,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
     stack: '',
     team_name: '',
     team_members: '',
+    status: '',
   });
 
   useEffect(() => {
@@ -19,6 +20,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
         stack: project.stack || '',
         team_name: project.team_name || '',
         team_members: project.team_members || '',
+        status: project.status || '',
       });
     }
   }, [project, isOpen]);
@@ -26,6 +28,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedProject(prev => ({ ...prev, [name]: value }));
+    // console.log(`Updating status to: ${value}`);
   };
 
   if (!isOpen) return null;
@@ -81,7 +84,19 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           value={editedProject.team_members}
           onChange={handleChange}
         />
-
+        <label htmlFor="status" className="modal-label">Status</label>
+          <select
+            id="status"
+            name="status"
+            className="modal-input"
+            value={editedProject.status || 'Unassigned'}
+            onChange={handleChange}
+          >
+            <option value="Completed">Completed</option>
+            <option value="In-Progress">In-Progress</option>
+            <option value="Suspended">Suspended</option>
+            <option value="Unassigned">Unassigned</option>
+          </select>
         <div className="modal-actions">
           <button onClick={() => onSave(editedProject)}>Save</button>
           <button onClick={onCancel}>Cancel</button>

@@ -77,12 +77,39 @@ function App() {
   };
 
   const saveEdit = (updatedProject) => {
-    updateProject(updatedProject.id, updatedProject);
-    setIsModalOpen(false);
+    // console.log(`Saving project with updated status: `, updatedProject);
+    fetch(`http://localhost:8080/projects/${updatedProject.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedProject),
+    })
+    .then(response => response.json())
+    .then(() => {
+      setIsModalOpen(false);
+      fetchProjects();
+    })
+    .catch(err => console.error(err));
   };
 
   const cancelEdit = () => {
     setIsModalOpen(false);
+  };
+
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'Completed':
+        return 'status-button completed';
+      case 'In-Progress':
+        return 'status-button in-progress';
+      case 'Suspended':
+        return 'status-button suspended';
+      case 'Unassigned':
+        return 'status-button unassigned';
+      default:
+        return 'status-button';
+    }
   };
 
   return (
@@ -97,6 +124,7 @@ function App() {
           <p><strong>Created:</strong> {project.created}</p>
           <button className="button-delete" onClick={() => deleteProject(project.id)}>Delete</button>
           <button className="button-edit" onClick={() => toggleEdit(project)}>Edit</button>
+          <button className={getStatusStyle(project.status)}>{project.status}</button>
         </div>
       ))}
   

@@ -46,26 +46,33 @@ app.delete("/projects/:id", async (req, res) => {
 });
 
 app.put("/projects/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, contents, stack, team_name, team_members } = req.body;
+    const { id } = req.params;
+    const { title, contents, stack, team_name, team_members, status } = req.body;
 
-        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members);
+    try {
+
+        // console.log('Received update request for project ID:', id);
+        // console.log('Request body:', req.body);
+
+        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members, status);
 
         if (updatedProject) {
+            console.log('Project updated successfully:', updatedProject);
             res.json(updatedProject);
         } else {
+            console.log('Project not found.');
             res.status(404).send("Project not found.");
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error updating project:', error);
         res.status(500).send('Something went wrong');
     }
 });
 
 
+
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    // console.error(err.stack);
     res.status(500).send('Something went wrong')
 })
 
