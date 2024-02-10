@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './App.css';
 import AddProjectForm from './components/AddProjectForm';
 import EditProjectModal from './components/EditProjectModal';
+import { FilePenLine } from 'lucide-react';
 
 function App() {
 
@@ -123,11 +124,17 @@ function App() {
           <p><strong>Team Members:</strong> {project.team_members}</p>
           <p><strong>Created:</strong> {project.created}</p>
           <button className="button-delete" onClick={() => deleteProject(project.id)}>Delete</button>
-          <button className="button-edit" onClick={() => toggleEdit(project)}>Edit</button>
+          <span className="button-edit" onClick={() => toggleEdit(project)} style={{ cursor: 'pointer' }}>
+            <FilePenLine />
+          </span>
           <button className={getStatusStyle(project.status)}>{project.status}</button>
         </div>
       ))}
   
+      <div className="card add-project-card">
+        <AddProjectForm onAdd={addProject} />
+      </div>
+
       {isModalOpen && editingProject && (
         <EditProjectModal
           project={editingProject}
@@ -136,8 +143,6 @@ function App() {
           onCancel={cancelEdit}
         />
       )}
-  
-      <AddProjectForm onAdd={addProject} />
     </div>
   );
 }
