@@ -26,7 +26,9 @@ app.get("/projects/:id", async (req, res, next) => {
 
 app.post("/projects", async (req, res, next) => {
     const {title, contents, stack, team_name, team_members } = req.body
+    console.log("start post")
     const note = await createProject(title, contents, stack, team_name, team_members)
+    console.log("got data")
     res.status(201).json(note)
 })
 
