@@ -8,6 +8,9 @@ import { Plus, X } from 'lucide-react';
 function App() {
 
   const [data, setData] = useState([])
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('title');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [showAddProjectForm, setShowAddProjectForm] = useState(false);
@@ -15,6 +18,14 @@ function App() {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    // Filter data based on search term and selected category
+    const filteredProjects = data.filter(project =>
+      project[selectedCategory].toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filteredProjects);
+  }, [data, searchTerm, selectedCategory]);
 
   const fetchProjects = () => {
     fetch("http://localhost:8080/projects")
@@ -119,6 +130,15 @@ function App() {
     setShowAddProjectForm(!showAddProjectForm);
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    console.log('Search term:', e.target.value);
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
   return (
     <div className="container">
       <header class="site-header">
@@ -130,12 +150,28 @@ function App() {
           <button className="login-button">Login</button>
         </div>
       </header>
+
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search projects..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="search-bar"
+        />
+        <select value={selectedCategory} onChange={handleCategoryChange} className="search-category">
+          <option value="title">Title</option>
+          <option value="contents">Description</option>
+          <option value="stack">Stack</option>
+        </select>
+      </div>
+
       <div className="content">
       <button onClick={toggleAddProjectForm} className="add-project-button">
         {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
       </button>
       <div className="cards-container">
-        {data.map((project, i) => (
+      {(searchTerm ? filteredData : data).map((project, i) => (
           <div key={i} className="card">
             <p><strong>Title:</strong> {project.title}</p>
             <p><strong>Description:</strong> {project.contents}</p>
