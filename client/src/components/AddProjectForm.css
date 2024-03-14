@@ -28,9 +28,9 @@
 
 button[type="submit"] {
     background-color: transparent;
-    border: 2px solid #76daff;
+    border: 2px solid #F6E8EA;
     border-radius: 5px;
-    color: #76daff;
+    color: #F6E8EA;
     padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
@@ -40,7 +40,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #76daff;
-    color: #fff;
-    border-color: #76daff;
+    background-color: #F6E8EA;
+    color: #000;
+    border-color: #F6E8EA;
 }
