@@ -142,10 +142,10 @@ function App() {
   return (
     <div className="container">
       <header class="site-header">
-        <div className="header-left">
+        <div className="logo">
           <img src={`${process.env.PUBLIC_URL}/vt-logo2.png`} alt="VT Logo" />
-          Brave Souls Project Management System
         </div>
+        <div className="title">Brave Souls Project Management System</div>
         <div className="login">
           <button className="login-button">Login</button>
         </div>

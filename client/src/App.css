@@ -141,13 +141,30 @@
     background-color: rgb(34,32,31);
     color: #fff;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: nowrap;
     text-align: center;
     height: 70px;
     margin-bottom: 20px;
     flex-shrink: 0;
+}
+
+.site-header > div {
+    flex: 1;
+    display: flex;
+    justify-content: center; /* Center content for title */
+}
+
+.site-header > .logo, img {
+    justify-content: flex-start;
+    width: 50px;
+    margin-left: 10px;
+}
+
+.site-header > .login {
+    justify-content: flex-end;
+    margin-right: 10px;
 }
 
 .content {
@@ -187,22 +204,6 @@
 
 .add-project-button:hover {
     transform: scale(1.1); /* Slightly enlarges button on hover for interaction feedback */
-}
-
-.header-left img {
-    position: absolute;
-    left: 10px; /* Position your logo on the left */
-    width: 50px; /* Adjust the logo size if needed */
-}
-
-.login {
-    position: absolute;
-    right: 10px; /* Position your logo on the left */
-}
-
-.header-left {
-    display: flex;
-    align-items: center; /* Center items vertically */
 }
 
 .login-button {

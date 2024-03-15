@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './EditProjectModal.css';
+import { X } from 'lucide-react';
 
 function EditProjectModal({ project, isOpen, onSave, onCancel }) {
   const [editedProject, setEditedProject] = useState({
@@ -31,12 +32,21 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
     // console.log(`Updating status to: ${value}`);
   };
 
+  const handleStatusChange = (newStatus) => {
+    setEditedProject(prev => ({ ...prev, status: newStatus }));
+  };
+  
   if (!isOpen) return null;
+
+  const statuses = ['Completed', 'In-Progress', 'Suspended', 'Unassigned'];
 
   return (
     <div className="modal-overlay">
       <div className="modal-card">
-        <h2 className="modal-title"> Modify Project Contents</h2>
+        <div className="modal-header">
+          <h2 className="modal-title">Quick Edit</h2>
+          <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
+        </div>
         <label htmlFor="title" className="modal-label">Title</label>
         <input
           id="title"
@@ -85,7 +95,18 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           onChange={handleChange}
         />
         <label htmlFor="status" className="modal-label">Status</label>
-          <select
+        <div className="modal-status-buttons">
+          {statuses.map((status) => (
+            <button
+              key={status}
+              className={`status-button-edit ${status.toLowerCase().replace(/\s+/g, '-')}${editedProject.status === status ? ' selected' : ''}`}
+              onClick={() => handleStatusChange(status)}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
+          {/* <select
             id="status"
             name="status"
             className="modal-input"
@@ -96,7 +117,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
             <option value="In-Progress">In-Progress</option>
             <option value="Suspended">Suspended</option>
             <option value="Unassigned">Unassigned</option>
-          </select>
+          </select> */}
         <div className="modal-actions">
           <button onClick={() => onSave(editedProject)}>Save</button>
           <button onClick={onCancel}>Cancel</button>
