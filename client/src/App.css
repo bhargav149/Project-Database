@@ -75,7 +75,8 @@
     transition: all 0.3s ease;
     bottom: 10px;
     right: 10px;
-    font-weight: 550;
+    font-weight: 400;
+    font-size: 12px;
 }
 
 .button-delete:hover {
@@ -92,10 +93,9 @@
     text-decoration: none;
     display: inline-block;
     margin: 4px 2px;
-    cursor: pointer;
     border-radius: 8px;
-    font-size: 14px;
-    font-weight: 550;
+    font-size: 12px;
+    font-weight: 500;
     bottom: 10px;
     left: 10px;
 }
