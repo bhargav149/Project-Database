@@ -3,6 +3,7 @@ import './App.css';
 import AddProjectForm from './components/AddProjectForm';
 import EditProjectModal from './components/EditProjectModal';
 import SideNavigation from './components/SideNavigation';
+import Toast from './components/Toast';
 import { FilePenLine } from 'lucide-react';
 import { Plus, X } from 'lucide-react';
 
@@ -15,6 +16,8 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [showAddProjectForm, setShowAddProjectForm] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     fetchProjects();
@@ -50,10 +53,22 @@ function App() {
       }),
     })
     .then(response => response.json())
-    .then(() => fetchProjects())
+    .then(() => {
+      fetchProjects();
+      showToastWithFadeOut("Successfully added project.");
+    })
     .catch(err => console.error(err));
   };
   
+  const showToastWithFadeOut = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => {
+      document.querySelector('.toast').classList.add('toast-fade-out');
+      setTimeout(() => setShowToast(false), 700); // Match the fadeOut animation duration
+    }, 10000); // Time the toast is visible before starting to fade out
+  };
+
   const deleteProject = (id) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this project?");
     if (!isConfirmed) {
@@ -161,7 +176,6 @@ function App() {
   
     setData(sortedData);
   };
-  
 
   return (
     <div className="container">
@@ -228,6 +242,8 @@ function App() {
           onCancel={cancelEdit}
         />
       )}
+
+      <Toast show={showToast} message={toastMessage} />
     </div>
   );
 }

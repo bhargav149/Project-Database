@@ -17,13 +17,13 @@ const SideNavigation = ({ onSort }) => {
         className={selectedSort === 'datedesc' ? 'selected' : ''}
         onClick={() => handleSort('date', 'desc')}
       >
-        Date (Newest)
+        Newest
       </button>
       <button
         className={selectedSort === 'dateasc' ? 'selected' : ''}
         onClick={() => handleSort('date', 'asc')}
       >
-        Date (Oldest)
+        Oldest
       </button>
       <button
         className={selectedSort === 'status' ? 'selected' : ''}
