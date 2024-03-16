@@ -75,6 +75,7 @@
     transition: all 0.3s ease;
     bottom: 10px;
     right: 10px;
+    font-weight: 550;
 }
 
 .button-delete:hover {
@@ -94,6 +95,7 @@
     cursor: pointer;
     border-radius: 8px;
     font-size: 14px;
+    font-weight: 550;
     bottom: 10px;
     left: 10px;
 }

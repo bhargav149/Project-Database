@@ -12,6 +12,7 @@ const SideNavigation = ({ onSort }) => {
   return (
     <div className="side-navigation">
       <h3>Sort By</h3>
+      <hr></hr>
       <button
         className={selectedSort === 'datedesc' ? 'selected' : ''}
         onClick={() => handleSort('date', 'desc')}
