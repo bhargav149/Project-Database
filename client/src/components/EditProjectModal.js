@@ -35,8 +35,6 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
   const handleStatusChange = (newStatus) => {
     setEditedProject(prev => ({ ...prev, status: newStatus }));
   };
-  
-  if (!isOpen) return null;
 
   const statuses = ['Completed', 'In-Progress', 'Suspended', 'Unassigned'];
 

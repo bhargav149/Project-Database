@@ -18,7 +18,8 @@ function App() {
   const [showAddProjectForm, setShowAddProjectForm] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-
+  const [toastFadeOut, setToastFadeOut] = useState(false);
+  
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -63,9 +64,14 @@ function App() {
   const showToastWithFadeOut = (message) => {
     setToastMessage(message);
     setShowToast(true);
+    setToastFadeOut(false); // Reset fade-out animation
+  
     setTimeout(() => {
-      document.querySelector('.toast').classList.add('toast-fade-out');
-      setTimeout(() => setShowToast(false), 700); // Match the fadeOut animation duration
+      setToastFadeOut(true); // Start fade-out animation
+      setTimeout(() => {
+        setShowToast(false);
+        setToastFadeOut(false); // Ensure the fade-out state is reset for the next toast
+      }, 700); // This duration should match the CSS animation duration for fading out
     }, 10000); // Time the toast is visible before starting to fade out
   };
 
@@ -248,7 +254,8 @@ function App() {
         />
       )}
 
-      <Toast show={showToast} message={toastMessage} />
+<Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} />
+
     </div>
   );
 }
