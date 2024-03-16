@@ -124,7 +124,10 @@ function App() {
   };
 
   const cancelEdit = () => {
-    setIsModalOpen(false);
+    const isConfirmed = window.confirm("Are you sure you want to discard all changes made?");
+    if (isConfirmed) {
+      setIsModalOpen(false);
+    }
   };
 
   const getStatusStyle = (status) => {

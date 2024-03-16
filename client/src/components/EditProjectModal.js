@@ -47,6 +47,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           <h2 className="modal-title">Quick Edit</h2>
           <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
         </div>
+        <hr></hr>
         <label htmlFor="title" className="modal-label">Title</label>
         <input
           id="title"
