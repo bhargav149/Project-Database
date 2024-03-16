@@ -1,0 +1,161 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal-card {
+    background-color: #312F2F;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 20px;
+    width: 30%;
+    max-width: 500px;
+    max-height: 80vh;
+    z-index: 1000;
+    overflow: auto;
+}
+
+.modal-card p, .modal-card label, .modal-card input, .modal-card textarea {
+    color: #F6E8EA;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.modal-card input, .modal-card textarea {
+    background: #312F2F;
+    border: 1px solid #F6E8EA;
+    border-radius: 4px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    margin-top: 0;
+}
+
+.modal-card label {
+    color: #F6E8EA;
+    display: block;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.modal-actions button {
+    background-color: transparent;
+    color: #F6E8EA;
+    border: 2px solid #F6E8EA;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.modal-actions button:hover {
+    background-color: #F6E8EA;
+    color: #000;
+}
+
+.modal-label {
+    color: #64b5f6;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.modal-input, .modal-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #333;
+    border: 1px solid #64b5f6;
+    border-radius: 4px;
+    color: white;
+    box-sizing: border-box;
+}
+
+.modal-textarea {
+    height: 100px;
+}
+
+.modal-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #333;
+    border: 1px solid #64b5f6;
+    border-radius: 4px;
+    color: white;
+    box-sizing: border-box;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between; /* Aligns children (title and button) on opposite ends */
+    align-items: center; /* Vertically centers the items in the container */
+}
+
+.modal-title {
+    flex: 1; /* This makes the title take up the available space, pushing the button to the right */
+    margin: 0; /* Adjust as needed */
+    font-size: medium;
+}
+
+.modal-close-btn {
+    margin-left: auto; /* This ensures it stays to the right; might not be needed depending on your flex setup */
+    cursor: pointer;
+}
+
+.modal-status-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Center children horizontally */
+    gap: 20px; /* Provide some space between buttons */
+}
+
+.status-button-edit {
+    position: relative;
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.status-button-edit {
+
+    opacity: 0.6; /* Default unselected state */
+    flex: 0 1 auto; /* Flex item can grow and shrink but starts based on the auto size */
+    min-width: 100px;
+}
+
+.status-button-edit.selected {
+    opacity: 1; /* Full opacity for selected button */
+}
+
+.completed {
+    background-color: #8bc34a;
+}
+
+.in-progress {
+    background-color: #64b5f6;
+}
+
+.suspended {
+    background-color: #e57373;
+}
+
+.unassigned {
+    background-color: #ffb74d;
+}

@@ -3,9 +3,12 @@ import './App.css';
 import AddProjectForm from './components/AddProjectForm';
 import EditProjectModal from './components/EditProjectModal';
 import SideNavigation from './components/SideNavigation';
+import ViewProjectModal from './components/ViewProjectModal';
+
 import Toast from './components/Toast';
 import { FilePenLine } from 'lucide-react';
 import { Plus, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 function App() {
 
@@ -16,6 +19,9 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [showAddProjectForm, setShowAddProjectForm] = useState(false);
+
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastFadeOut, setToastFadeOut] = useState(false);
@@ -188,13 +194,25 @@ function App() {
     setData(sortedData);
   };
 
+  const viewProjectDetails = (project) => {
+    setEditingProject(project); // Reuse this state to avoid creating a new one
+    setIsViewModalOpen(true);
+  };
+  
   return (
     <div className="container">
       <header class="site-header">
         <div className="logo">
           <img src={`${process.env.PUBLIC_URL}/vt-logo2.png`} alt="VT Logo" />
         </div>
-        <div className="title">Brave Souls Project Management System</div>
+        <div className="title">
+          {/* <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            Brave Souls Project Management System
+          </Link> */}
+          <a href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            Brave Souls Project Management System
+          </a>
+        </div>
         <div className="login">
           <button className="login-button">Login</button>
         </div>
@@ -222,16 +240,23 @@ function App() {
         {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
       </button>
       <div className="cards-container">
+        
       {(searchTerm ? filteredData : data).map((project, i) => (
-          <div key={i} className="card">
+          <div key={i} className="card" onClick={() => viewProjectDetails(project)}>
             <p><strong>Title:</strong> {project.title}</p>
             <p><strong>Description:</strong> {project.contents}</p>
             <p><strong>Stack:</strong> {project.stack}</p>
             <p><strong>Team Name:</strong> {project.team_name}</p>
             <p><strong>Team Members:</strong> {project.team_members}</p>
-            <p><strong>Created:</strong> {project.created}</p>
-            <button className="button-delete" onClick={() => deleteProject(project.id)}>Delete</button>
-            <span className="button-edit" onClick={() => toggleEdit(project)} style={{ cursor: 'pointer' }}>
+            {/* <p><strong>Created:</strong> {project.created}</p> */}
+            <button className="button-delete" onClick={(event) => {
+              event.stopPropagation();
+              deleteProject(project.id);
+            }}>Delete</button>
+            <span className="button-edit" onClick={(event) => {
+              event.stopPropagation();
+              toggleEdit(project);
+            }} style={{ cursor: 'pointer' }}>
               <FilePenLine />
             </span>
             <button className={getStatusStyle(project.status)}>{project.status}</button>
@@ -253,8 +278,15 @@ function App() {
           onCancel={cancelEdit}
         />
       )}
+      {isViewModalOpen && editingProject && (
+        <ViewProjectModal
+          project={editingProject}
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
+        />
+      )}
 
-<Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} />
+    <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} />
 
     </div>
   );

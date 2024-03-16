@@ -25,11 +25,15 @@
 }
 
 .card p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: #fff;
     font-weight: 150;
     margin: 10px 0;
     line-height: 1.5;
 }
+
 
 .card strong {
     color: #F6E8EA;
