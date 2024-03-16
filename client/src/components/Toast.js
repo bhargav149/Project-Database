@@ -11,7 +11,7 @@ function Toast({ show, message }) {
       <div className="toast">
         <Check className="toast-icon" size={24} color="#4CAF50" /> {/* Checkmark icon */}
         <span className="toast-message">{message}</span>
-        <button className="toast-view-button">View</button> {/* View as a button */}
+        {/* <button className="toast-view-button">View</button> View as a button */}
       </div>
     );
   }

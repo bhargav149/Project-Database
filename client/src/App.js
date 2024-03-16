@@ -81,6 +81,7 @@ function App() {
     .then(response => {
       if (response.ok) {
         setData(data.filter(project => project.id !== id));
+        showToastWithFadeOut("Project successfully deleted.");
       } else {
         alert('Failed to delete the project');
       }
@@ -119,6 +120,7 @@ function App() {
     .then(() => {
       setIsModalOpen(false);
       fetchProjects();
+      showToastWithFadeOut("Project successfully updated.");
     })
     .catch(err => console.error(err));
   };
