@@ -1,0 +1,37 @@
+.side-navigation {
+    position: fixed;
+    top: 100px;
+    left: 50px; 
+    width: 100px;
+    background-color: #312F2F;
+    padding: 10px;
+    z-index: 1000;
+    border-radius: 15px;
+}
+
+.side-navigation h3 {
+    margin-top: 0;
+    text-align: center;
+    font-weight: 300;
+    font-size: 1em;
+}
+
+.side-navigation button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+.side-navigation button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.side-navigation button.selected {
+    background-color: rgba(255, 255, 255, 0.5);
+}

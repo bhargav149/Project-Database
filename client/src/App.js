@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './App.css';
 import AddProjectForm from './components/AddProjectForm';
 import EditProjectModal from './components/EditProjectModal';
+import SideNavigation from './components/SideNavigation';
 import { FilePenLine } from 'lucide-react';
 import { Plus, X } from 'lucide-react';
 
@@ -139,6 +140,29 @@ function App() {
     setSelectedCategory(e.target.value);
   };
 
+  const handleSort = (criteria, order) => {
+    let sortedData = [...data]; // Clone the current data array
+  
+    if (criteria === 'date') {
+      sortedData.sort((a, b) => {
+        let dateA = new Date(a.created), dateB = new Date(b.created);
+        return order === 'asc' ? dateA - dateB : dateB - dateA;
+      });
+    } else if (criteria === 'status') {
+      // Define a custom order for the statuses
+      const statusOrder = ['In-Progress', 'Unassigned', 'Suspended', 'Completed'];
+      sortedData.sort((a, b) => {
+        // Get the index of the statuses in the predefined order
+        let indexA = statusOrder.indexOf(a.status);
+        let indexB = statusOrder.indexOf(b.status);
+        return indexA - indexB;
+      });
+    }
+  
+    setData(sortedData);
+  };
+  
+
   return (
     <div className="container">
       <header class="site-header">
@@ -150,6 +174,8 @@ function App() {
           <button className="login-button">Login</button>
         </div>
       </header>
+
+      <SideNavigation onSort={handleSort} />
 
       <div className="search-container">
         <input
