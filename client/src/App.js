@@ -4,11 +4,11 @@ import AddProjectForm from './components/AddProjectForm';
 import EditProjectModal from './components/EditProjectModal';
 import SideNavigation from './components/SideNavigation';
 import ViewProjectModal from './components/ViewProjectModal';
-
 import Toast from './components/Toast';
-import { FilePenLine } from 'lucide-react';
-import { Plus, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import SemesterDropdown from './components/SemesterDropdown';
+import SearchCategory from './components/SearchCategory';
+
+import { FilePenLine, Plus, X, Sun, Moon } from 'lucide-react';
 
 function App() {
 
@@ -16,19 +16,25 @@ function App() {
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('title');
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [showAddProjectForm, setShowAddProjectForm] = useState(false);
-
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastFadeOut, setToastFadeOut] = useState(false);
   
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    document.body.className = isDarkMode ? 'dark-theme' : 'light-theme';
+  }, [isDarkMode]);
 
   useEffect(() => {
     // Filter data based on search term and selected category
@@ -101,18 +107,18 @@ function App() {
     .catch(err => console.error('Error:', err));
   };  
 
-  const updateProject = (id, updatedProject) => {
-    fetch(`http://localhost:8080/projects/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedProject),
-    })
-    .then(response => response.json())
-    .then(() => fetchProjects())
-    .catch(err => console.error(err));
-  };
+  // const updateProject = (id, updatedProject) => {
+  //   fetch(`http://localhost:8080/projects/${id}`, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(updatedProject),
+  //   })
+  //   .then(response => response.json())
+  //   .then(() => fetchProjects())
+  //   .catch(err => console.error(err));
+  // };
 
   const toggleEdit = (project) => {
     setEditingProject(project);
@@ -168,10 +174,13 @@ function App() {
     console.log('Search term:', e.target.value);
   };
 
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-  };
+  // const handleCategoryChange = (e) => {
+  //   setSelectedCategory(e.target.value);
+  // };
 
+  const handleCategoryChange = (newCategory) => {
+    setSelectedCategory(newCategory);
+  };
   const handleSort = (criteria, order) => {
     let sortedData = [...data]; // Clone the current data array
   
@@ -199,8 +208,23 @@ function App() {
     setIsViewModalOpen(true);
   };
   
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    // Here you would also update the CSS classes or variables to apply the theme
+  };
+  
+
+  // const options = [
+  //   { value: 'spring_2024', label: 'Spring 2024' },
+  //   { value: 'fall_2024', label: 'Fall 2024' },
+  // ];
+
+  // const handleSelectionChange = (selectedOptions) => {
+  //   console.log('Selected Options:', selectedOptions);
+  // };
+
   return (
-    <div className="container">
+    <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
       <header class="site-header">
         <div className="logo">
           <img src={`${process.env.PUBLIC_URL}/vt-logo2.png`} alt="VT Logo" />
@@ -213,8 +237,13 @@ function App() {
             Brave Souls Project Management System
           </a>
         </div>
-        <div className="login">
-          <button className="login-button">Login</button>
+        <div className="right-section">
+          <div className="color-theme" onClick={toggleDarkMode}>
+              {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+          </div>
+          <div className="login">
+              <button className="login-button">Login</button>
+          </div>
         </div>
       </header>
 
@@ -228,11 +257,15 @@ function App() {
           onChange={handleSearch}
           className="search-bar"
         />
-        <select value={selectedCategory} onChange={handleCategoryChange} className="search-category">
+        {/* <select value={selectedCategory} onChange={handleCategoryChange} className="search-category">
           <option value="title">Title</option>
           <option value="contents">Description</option>
           <option value="stack">Stack</option>
-        </select>
+        </select> */}
+        <SearchCategory onCategoryChange={handleCategoryChange} themeMode={isDarkMode ? 'dark' : 'light'}/>
+
+
+        <SemesterDropdown themeMode={isDarkMode ? 'dark' : 'light'}/>
       </div>
 
       <div className="content">
