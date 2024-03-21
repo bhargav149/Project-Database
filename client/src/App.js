@@ -7,8 +7,9 @@ import ViewProjectModal from './components/ViewProjectModal';
 import Toast from './components/Toast';
 import SemesterDropdown from './components/SemesterDropdown';
 import SearchCategory from './components/SearchCategory';
+import DataTable from './components/DataTable';
 
-import { FilePenLine, Plus, X, Sun, Moon } from 'lucide-react';
+import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Square } from 'lucide-react';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
   const [toastFadeOut, setToastFadeOut] = useState(false);
   
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [tableView, setTableView] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -213,6 +215,9 @@ function App() {
     // Here you would also update the CSS classes or variables to apply the theme
   };
   
+  const toggleView = () => {
+    setTableView(!tableView);
+  };
 
   // const options = [
   //   { value: 'spring_2024', label: 'Spring 2024' },
@@ -225,84 +230,84 @@ function App() {
 
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
-      <header class="site-header">
+      <header className="site-header">
         <div className="logo">
           <img src={`${process.env.PUBLIC_URL}/vt-logo2.png`} alt="VT Logo" />
         </div>
         <div className="title">
-          {/* <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            Brave Souls Project Management System
-          </Link> */}
           <a href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             Brave Souls Project Management System
           </a>
         </div>
         <div className="right-section">
           <div className="color-theme" onClick={toggleDarkMode}>
-              {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+            {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
           </div>
           <div className="login">
-              <button className="login-button">Login</button>
+            <button className="login-button">Login</button>
           </div>
         </div>
       </header>
-
-      <SideNavigation onSort={handleSort} />
-
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search projects..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className="search-bar"
-        />
-        {/* <select value={selectedCategory} onChange={handleCategoryChange} className="search-category">
-          <option value="title">Title</option>
-          <option value="contents">Description</option>
-          <option value="stack">Stack</option>
-        </select> */}
-        <SearchCategory onCategoryChange={handleCategoryChange} themeMode={isDarkMode ? 'dark' : 'light'}/>
-
-
-        <SemesterDropdown themeMode={isDarkMode ? 'dark' : 'light'}/>
-      </div>
-
-      <div className="content">
-      <button onClick={toggleAddProjectForm} className="add-project-button">
-        {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
-      </button>
-      <div className="cards-container">
-        
-      {(searchTerm ? filteredData : data).map((project, i) => (
-          <div key={i} className="card" onClick={() => viewProjectDetails(project)}>
-            <p><strong>Title:</strong> {project.title}</p>
-            <p><strong>Description:</strong> {project.contents}</p>
-            <p><strong>Stack:</strong> {project.stack}</p>
-            <p><strong>Team Name:</strong> {project.team_name}</p>
-            <p><strong>Team Members:</strong> {project.team_members}</p>
-            {/* <p><strong>Created:</strong> {project.created}</p> */}
-            <button className="button-delete" onClick={(event) => {
-              event.stopPropagation();
-              deleteProject(project.id);
-            }}>Delete</button>
-            <span className="button-edit" onClick={(event) => {
-              event.stopPropagation();
-              toggleEdit(project);
-            }} style={{ cursor: 'pointer' }}>
-              <FilePenLine />
-            </span>
-            <button className={getStatusStyle(project.status)}>{project.status}</button>
+  
+      {!tableView && (
+        <>
+          <SideNavigation onSort={handleSort} />
+  
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="search-bar"
+            />
+            <SearchCategory onCategoryChange={handleCategoryChange} themeMode={isDarkMode ? 'dark' : 'light'} />
+            <SemesterDropdown themeMode={isDarkMode ? 'dark' : 'light'} />
           </div>
-        ))}
-        </div>
+        </>
+      )}
+  
+      <div className="content">
+        <button onClick={toggleAddProjectForm} className="add-project-button">
+          {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
+        </button>
+        <button onClick={toggleView} className="view-toggle-button">
+          {tableView ? <Square size={24} /> : <LayoutGrid size={24} /> }
+        </button>
+        {tableView ? (
+          <DataTable themeMode={isDarkMode ? 'dark' : 'light'}/>
+        ) : (
+          <div className="cards-container">
+            {(searchTerm ? filteredData : data).map((project, i) => (
+              <div key={i} className="card" onClick={() => viewProjectDetails(project)}>
+                <p><strong>Title:</strong> {project.title}</p>
+                <p><strong>Description:</strong> {project.contents}</p>
+                <p><strong>Stack:</strong> {project.stack}</p>
+                <p><strong>Team Name:</strong> {project.team_name}</p>
+                <p><strong>Team Members:</strong> {project.team_members}</p>
+                <button className="button-delete" onClick={(event) => {
+                  event.stopPropagation();
+                  deleteProject(project.id);
+                }}>Delete</button>
+                <span className="button-edit" onClick={(event) => {
+                  event.stopPropagation();
+                  toggleEdit(project);
+                }} style={{ cursor: 'pointer' }}>
+                  <FilePenLine />
+                </span>
+                <button className={getStatusStyle(project.status)}>{project.status}</button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+  
       {showAddProjectForm && (
-        <div className="card add-project-card">
+        <div className="add-project-card">
           <AddProjectForm onAdd={addProject} />
         </div>
       )}
-
+  
       {isModalOpen && editingProject && (
         <EditProjectModal
           project={editingProject}
@@ -318,11 +323,10 @@ function App() {
           onClose={() => setIsViewModalOpen(false)}
         />
       )}
-
-    <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} />
-
+  
+      <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} />
     </div>
-  );
+  );  
 }
 
 export default App

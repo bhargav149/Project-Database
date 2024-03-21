@@ -151,7 +151,7 @@
     align-items: center;
     background-color: rgb(34,32,31);
     color: #fff;
-    height: 70px;
+    height: 50px;
     margin-bottom: 20px;
 }
 
@@ -199,11 +199,9 @@
     width: 70%;
 }
 
-.add-project-button {
+.add-project-button, .view-toggle-button {
     position: absolute;
     right: 50px;
-    top: 135px;
-    z-index: 10;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -219,8 +217,16 @@
     transition: transform 0.3s ease;
 }
 
-.add-project-button:hover {
-    transform: scale(1.1); /* Slightly enlarges button on hover for interaction feedback */
+.add-project-button:hover, .view-toggle-button:hover {
+    transform: scale(1.1);
+}
+
+.add-project-button {
+    top: 135px;
+}
+
+.view-toggle-button {
+    top: 200px;
 }
 
 .login-button {
@@ -277,9 +283,9 @@
     color: #fff;
 }
 
-.light-theme .add-project-button {
+.light-theme .add-project-button, .view-toggle-button {
     background-color: #373938;
-    color: #373938;
+    color: #fff;
     border: 1px solid #373938;
 }
 
