@@ -2,11 +2,13 @@ import React from 'react';
 import './ViewProjectModal.css';
 import { X } from 'lucide-react';
 
-function ViewProjectModal({ project, isOpen, onClose }) {
+function ViewProjectModal({ project, isOpen, onClose, theme }) {
   if (!isOpen) return null;
 
+  const themeClass = theme === 'dark' ? 'dark-theme' : 'light-theme';
+
   return (
-    <div className="modal-overlay">
+    <div className={`modal-overlay ${themeClass}`}>
       <div className="modal-card">
         <div className="modal-header">
           <h2 className="modal-title">{project.title}</h2>

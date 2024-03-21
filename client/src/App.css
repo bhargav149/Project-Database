@@ -141,6 +141,10 @@
     max-width: 300px;
 }
 
+.add-project-card strong {
+    color: #F6E8EA;
+}
+
 .site-header {
     font-size: medium;
     font-weight: 200;
@@ -253,6 +257,7 @@
     border-radius: 50px;
     outline: none;
     margin: 5px;
+    height: 25px;
 }
 
 .search-category {
@@ -280,16 +285,24 @@
 }
 
 .light-theme .container p, h3 {
-    color: #fff;
+    color: #000;
 }
 
-.light-theme .add-project-button, .view-toggle-button {
-    background-color: #373938;
+.light-theme .add-project-button{
+    background-color: rgb(123,40,65);
+}
+
+.light-theme .view-toggle-button {
+    background-color: rgb(123,40,65);
     color: #fff;
-    border: 1px solid #373938;
+    border: 1px solid #fff;
 }
 
 .light-theme .card {
     /* background-color: rgb(106, 108, 111); */
-    background-color: #373938;
+    background-color: #fff;
+}
+
+.light-theme .card strong {
+    color: #000;
 }

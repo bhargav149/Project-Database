@@ -9,7 +9,7 @@ import SemesterDropdown from './components/SemesterDropdown';
 import SearchCategory from './components/SearchCategory';
 import DataTable from './components/DataTable';
 
-import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Square } from 'lucide-react';
+import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2 } from 'lucide-react';
 
 function App() {
 
@@ -251,8 +251,7 @@ function App() {
   
       {!tableView && (
         <>
-          <SideNavigation onSort={handleSort} />
-  
+          <SideNavigation onSort={handleSort} theme={isDarkMode ? 'dark' : 'light'} />
           <div className="search-container">
             <input
               type="text"
@@ -266,14 +265,15 @@ function App() {
           </div>
         </>
       )}
-  
+
       <div className="content">
         <button onClick={toggleAddProjectForm} className="add-project-button">
           {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
         </button>
         <button onClick={toggleView} className="view-toggle-button">
-          {tableView ? <Square size={24} /> : <LayoutGrid size={24} /> }
+          {tableView ? <LayoutGrid size={24}/> : <Table2 size={24}/>}
         </button>
+
         {tableView ? (
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'}/>
         ) : (
@@ -321,6 +321,7 @@ function App() {
           project={editingProject}
           isOpen={isViewModalOpen}
           onClose={() => setIsViewModalOpen(false)}
+          theme={isDarkMode ? 'dark' : 'light'}
         />
       )}
   

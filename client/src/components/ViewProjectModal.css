@@ -159,3 +159,7 @@
 .unassigned {
     background-color: #ffb74d;
 }
+
+.light-theme .modal-card {
+    background-color: #fff;
+}

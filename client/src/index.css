@@ -2,7 +2,7 @@
   --background-color-dark: #373938; /* Original dark theme background */
   --text-color-dark: #fff; /* Original dark theme text color */
 
-  --background-color-light: #fff; /* New light theme background */
+  --background-color-light: rgb(250, 249, 250); /* New light theme background */
   --text-color-light: #000; /* New light theme text color */
 }
 
