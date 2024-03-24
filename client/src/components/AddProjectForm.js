@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './AddProjectForm.css';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import Chip from '@mui/material/Chip';
 
 function AddProjectForm({ onAdd }) {
     const [title, setTitle] = useState('');
     const [contents, setContents] = useState('');
-    const [stack, setStack] = useState('');
+    const [stack, setStack] = useState([]);
     const [team_name, setTeamName] = useState('');
     const [team_members, setTeamMembers] = useState('');
     const [semester, setSemester] = useState('Spring');
@@ -15,6 +21,36 @@ function AddProjectForm({ onAdd }) {
 
     const currentYear = new Date().getFullYear();
     const years = Array.from(new Array(121), (val, index) => currentYear - 20 + index);
+
+    const stackOptions = [
+        { title: 'React.js' },
+        { title: 'Vue.js' },
+        { title: 'Angular' },
+        { title: 'Node.js' },
+        { title: 'Express.js' },
+        { title: 'Django' },
+        { title: 'Flask' },
+        { title: 'Ruby on Rails' },
+        { title: 'ASP.NET Core' },
+        { title: 'Spring Boot' },
+        { title: 'MySQL' },
+        { title: 'PostgreSQL' },
+        { title: 'MongoDB' },
+        { title: 'Redis' },
+        { title: 'Docker' },
+        { title: 'Kubernetes' },
+        { title: 'AWS' },
+        { title: 'Google Cloud Platform' },
+        { title: 'Azure' },
+        { title: 'Git' },
+        { title: 'GitHub Actions' },
+        { title: 'Jest' },
+        { title: 'TypeScript' },
+        { title: 'Bootstrap' },
+        { title: 'Tailwind CSS' },
+        { title: 'VT CAS' },
+        { title: 'CS CAS' },
+    ];
 
     useEffect(() => {
         if(yearSelectorRef.current) {
@@ -30,12 +66,13 @@ function AddProjectForm({ onAdd }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        const stackString = stack.map(option => option.title).join(', ');
         const newSemester = `${selectedSemester} ${year}`;
-        onAdd({ title, contents, stack, team_name, team_members, semesters: [newSemester] });
+        onAdd({ title, contents, stack: stackString, team_name, team_members, semesters: [newSemester] });
         
         setTitle('');
         setContents('');
-        setStack('');
+        setStack([]);
         setTeamName('');
         setTeamMembers('');
         setSemester('');
@@ -49,6 +86,16 @@ function AddProjectForm({ onAdd }) {
     const handleSemesterClick = (semester) => {
         setSelectedSemester(semester);
     };
+    
+    const renderCustomTags = (value, getTagProps) =>
+        value.map((option, index) => (
+            <Chip
+                variant="outlined"
+                label={option.title}
+                {...getTagProps({ index })}
+                style={{ fontSize: '0.65rem' }}
+            />
+        ));
 
     return (
         <form onSubmit={handleSubmit} className="form-container">
@@ -59,7 +106,7 @@ function AddProjectForm({ onAdd }) {
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Project Title"
+                    placeholder="e.g. Project Database"
                     required
                 />
             </div>
@@ -70,20 +117,54 @@ function AddProjectForm({ onAdd }) {
                     type="text"
                     value={contents}
                     onChange={(e) => setContents(e.target.value)}
-                    placeholder="Project Description"
+                    placeholder="e.g. Create and manage list of projects"
                     required
                 />
             </div>
             <div className="form-group">
                 <label htmlFor="stack"><strong>Stack:</strong></label>
-                <input
-                    id="stack"
-                    type="text"
-                    value={stack}
-                    onChange={(e) => setStack(e.target.value)}
-                    placeholder="Project Stack"
-                    required
+                <Autocomplete
+                multiple
+                id="stack"
+                freeSolo
+                options={stackOptions}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.title || option}
+                value={stack || []}
+                onChange={(event, newValue) => {
+                    const valueWithObjects = newValue.map(item => 
+                        typeof item === 'string' ? { title: item } : item
+                    );
+                    setStack(valueWithObjects);
+                }}
+                isOptionEqualToValue={(option, value) => option.title === value.title}
+                renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                        <Checkbox
+                            icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                            checkedIcon={<CheckBoxIcon fontSize="small" />}
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                        />
+                        {option.title}
+                    </li>
+                )}
+                renderTags={renderCustomTags}
+                renderInput={(params) => (
+                    <TextField {...params}
+                    placeholder="Select or Enter Stack..."
+                    sx={{ 
+                        "& .MuiOutlinedInput-root": {
+                            bgcolor: '#fff',
+                            fontSize: '0.7rem',
+                            fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif", // Use the system font here
+                            fontWeight: '300'
+                        }
+                    }}
                 />
+                )}
+                popupIcon={null}
+            />
             </div>
             <div className="form-group">
                 <label htmlFor="team_name"><strong>Team Name:</strong></label>
@@ -92,7 +173,7 @@ function AddProjectForm({ onAdd }) {
                     type="text"
                     value={team_name}
                     onChange={(e) => setTeamName(e.target.value)}
-                    placeholder="Team Name"
+                    placeholder="e.g. Brave Souls"
                     required
                 />
             </div>
