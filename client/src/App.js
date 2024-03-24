@@ -9,7 +9,7 @@ import SemesterDropdown from './components/SemesterDropdown';
 import SearchCategory from './components/SearchCategory';
 import DataTable from './components/DataTable';
 
-import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2 } from 'lucide-react';
+import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw } from 'lucide-react';
 
 function App() {
 
@@ -32,6 +32,14 @@ function App() {
 
   const [availableSemesters, setAvailableSemesters] = useState([]);
 
+  const [selectedStatuses, setSelectedStatuses] = useState({
+    'Completed': true,
+    'In-Progress': true,
+    'Suspended': true,
+    'Unassigned': true,
+  });
+  const [selectedSemesters, setSelectedSemesters] = useState([]);
+
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -46,12 +54,15 @@ function App() {
   }, [isDarkMode]);
 
   useEffect(() => {
-    // Filter data based on search term and selected category
-    const filteredProjects = data.filter(project =>
-      project[selectedCategory].toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredProjects = data.filter(project => {
+      const matchesSearchTerm = searchTerm === '' || project[selectedCategory]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
+      const statusIsSelected = selectedStatuses[project.status];
+      const semesterIsSelected = selectedSemesters.length === 0 || selectedSemesters.includes(project.semesters);
+      return matchesSearchTerm && statusIsSelected && semesterIsSelected;
+    });
+  
     setFilteredData(filteredProjects);
-  }, [data, searchTerm, selectedCategory]);
+  }, [data, searchTerm, selectedCategory, selectedStatuses, selectedSemesters]);
   
   const fetchProjects = () => {
     fetch("http://localhost:8080/projects")
@@ -243,6 +254,18 @@ function App() {
   //   console.log('Selected Options:', selectedOptions);
   // };
 
+  const resetFilters = () => {
+    setSearchTerm('');
+    setSelectedCategory('');
+    setSelectedStatuses({
+      'Completed': true,
+      'In-Progress': true,
+      'Suspended': true,
+      'Unassigned': true,
+    });
+    setSelectedSemesters([]);
+  };
+
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
       <header className="site-header">
@@ -276,7 +299,26 @@ function App() {
               className="search-bar"
             />
             <SearchCategory onCategoryChange={handleCategoryChange} themeMode={isDarkMode ? 'dark' : 'light'} />
-            <SemesterDropdown availableSemesters={availableSemesters} themeMode={isDarkMode ? 'dark' : 'light'} />
+            <SemesterDropdown
+              availableSemesters={availableSemesters}
+              selectedSemesters={selectedSemesters}
+              setSelectedSemesters={setSelectedSemesters}
+              themeMode={isDarkMode ? 'dark' : 'light'}
+            />
+          </div>
+          <div className="status-filter-container">
+            {Object.keys(selectedStatuses).map((status) => (
+              <div
+                key={status}
+                className={`status-filter-btn ${status.toLowerCase().replace(' ', '-')} ${selectedStatuses[status] ? '' : 'dimmed'}`}
+                onClick={() => setSelectedStatuses(prev => ({ ...prev, [status]: !prev[status] }))}
+                >
+                {status}
+              </div>
+            ))}
+              <button onClick={resetFilters} className="reset-button">
+                <RotateCcw color={isDarkMode ? "white" : "black"} size={24} />
+              </button>
           </div>
         </>
       )}
@@ -293,7 +335,7 @@ function App() {
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'}/>
         ) : (
           <div className="cards-container">
-            {(searchTerm ? filteredData : data).map((project, i) => (
+            {filteredData.map((project, i) => (
               <div key={i} className="card" onClick={() => viewProjectDetails(project)}>
                 <p><strong>Title:</strong> {project.title}</p>
                 <p><strong>Description:</strong> {project.contents}</p>

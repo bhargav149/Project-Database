@@ -270,6 +270,70 @@
     margin: 5px;
 }
 
+.status-filter-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.status-filter-btn {
+    cursor: pointer;
+    padding: 8px 12px;
+    margin: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    transition: background-color 0.3s, color 0.3s, opacity 0.3s;
+    user-select: none;
+    font-size: 0.875rem;
+    background-color: #e0e0e0;
+    color: #333;
+    opacity: 1; /* Full opacity by default */
+}
+
+/* Dimmed class for unselected statuses */
+.dimmed {
+    opacity: 0.5; /* Lower opacity for a dimmed look */
+}
+
+/* Specific colors for each status type, ensuring they also respond to being dimmed */
+.status-filter-btn.completed {
+    background-color: #8bc34a;
+    color: white;
+}
+
+.status-filter-btn.in-progress {
+    background-color: #64b5f6;
+    color: white;
+}
+
+.status-filter-btn.suspended {
+    background-color: #e57373;
+    color: white;
+}
+
+.status-filter-btn.unassigned {
+    background-color: #ffb74d;
+    color: white;
+}
+
+.status-filter-btn:hover {
+    opacity: 0.8; /* Slightly increase opacity on hover */
+}
+
+.reset-button {
+    background-color: transparent;
+    border: none;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.reset-button:hover {
+    transform: scale(1.25);
+}
+
 .color-theme {
     cursor: pointer;
     display: flex;

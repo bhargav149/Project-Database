@@ -19,21 +19,12 @@ const MenuProps = {
   },
 };
 
-const semesters = [
-  'Spring 2022',
-  'Fall 2022',
-  'Spring 2023',
-];
-
-export default function SemesterDropdown({ themeMode, availableSemesters }) {
-  const [selectedSemesters, setSelectedSemesters] = React.useState([]);
-
+export default function SemesterDropdown({ themeMode, availableSemesters, selectedSemesters, setSelectedSemesters }) {
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
     setSelectedSemesters(
-      // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
   };
