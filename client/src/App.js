@@ -30,9 +30,16 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [tableView, setTableView] = useState(false);
 
+  const [availableSemesters, setAvailableSemesters] = useState([]);
+
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    const semestersFromProjects = new Set(data.map(project => project.semesters));
+    setAvailableSemesters([...semestersFromProjects]);
+  }, [data]);
 
   useEffect(() => {
     document.body.className = isDarkMode ? 'dark-theme' : 'light-theme';
@@ -45,7 +52,7 @@ function App() {
     );
     setFilteredData(filteredProjects);
   }, [data, searchTerm, selectedCategory]);
-
+  
   const fetchProjects = () => {
     fetch("http://localhost:8080/projects")
       .then(res => res.json())
@@ -263,7 +270,7 @@ function App() {
               className="search-bar"
             />
             <SearchCategory onCategoryChange={handleCategoryChange} themeMode={isDarkMode ? 'dark' : 'light'} />
-            <SemesterDropdown themeMode={isDarkMode ? 'dark' : 'light'} />
+            <SemesterDropdown availableSemesters={availableSemesters} themeMode={isDarkMode ? 'dark' : 'light'} />
           </div>
         </>
       )}

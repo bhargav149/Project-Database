@@ -25,7 +25,7 @@ const semesters = [
   'Spring 2023',
 ];
 
-export default function MultipleSelectCheckmarks({ themeMode }) {
+export default function SemesterDropdown({ themeMode, availableSemesters }) {
   const [selectedSemesters, setSelectedSemesters] = React.useState([]);
 
   const handleChange = (event) => {
@@ -59,10 +59,10 @@ export default function MultipleSelectCheckmarks({ themeMode }) {
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >
-          {semesters.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={selectedSemesters.indexOf(name) > -1} />
-              <ListItemText primary={name} />
+          {availableSemesters.map((semester) => (
+            <MenuItem key={semester} value={semester}>
+              <Checkbox checked={selectedSemesters.indexOf(semester) > -1} />
+              <ListItemText primary={semester} />
             </MenuItem>
           ))}
         </Select>
