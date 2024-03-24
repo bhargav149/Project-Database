@@ -64,13 +64,15 @@ function App() {
         contents: project.contents,
         stack: project.stack,
         team_name: project.team_name,
-        team_members: project.team_members
+        team_members: project.team_members,
+        semesters: project.semesters 
       }),
     })
     .then(response => response.json())
     .then(() => {
       fetchProjects();
       showToastWithFadeOut("Successfully added project.");
+      setShowAddProjectForm(false);
     })
     .catch(err => console.error(err));
   };
@@ -285,6 +287,7 @@ function App() {
                 <p><strong>Stack:</strong> {project.stack}</p>
                 <p><strong>Team Name:</strong> {project.team_name}</p>
                 <p><strong>Team Members:</strong> {project.team_members}</p>
+                <p><strong>Semester:</strong> {project.semesters}</p>
                 <button className="button-delete" onClick={(event) => {
                   event.stopPropagation();
                   deleteProject(project.id);

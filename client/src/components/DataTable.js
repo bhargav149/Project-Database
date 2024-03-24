@@ -5,17 +5,17 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 // Define columns based on project data structure
 const columns = [
   { field: 'title', headerName: 'Title', width: 200 },
-  { field: 'contents', headerName: 'Description', width: 250 },
+  { field: 'contents', headerName: 'Description', width: 350 },
   { field: 'stack', headerName: 'Stack', width: 150 },
   { field: 'team_name', headerName: 'Team Name', width: 150 },
-  { field: 'team_members', headerName: 'Team Members', width: 200 },
-  {
-    field: 'created',
-    headerName: 'Created',
-    type: 'date',
-    width: 150,
-    valueGetter: ({ value }) => (value ? new Date(value) : null), // Convert value to Date object
-  },
+//   { field: 'team_members', headerName: 'Team Members', width: 200 },
+//   {
+//     field: 'created',
+//     headerName: 'Created',
+//     type: 'date',
+//     width: 150,
+//     valueGetter: ({ value }) => (value ? new Date(value) : null), // Convert value to Date object
+//   },
   { field: 'status', headerName: 'Status', width: 120 },
 ];
 
@@ -49,7 +49,7 @@ export default function DataTable({ themeMode }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ height: 600, width: '80%', margin: '0 auto' }}>
+      <div style={{ height: 600, width: '60%', marginTop: '50px' }}>
         <DataGrid
           rows={projects.map((project) => ({
             ...project,
