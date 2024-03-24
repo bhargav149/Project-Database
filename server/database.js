@@ -38,7 +38,8 @@ async function initializeDatabase() {
         team_name TEXT NOT NULL,
         team_members TEXT NOT NULL,
         created TIMESTAMP NOT NULL DEFAULT NOW(),
-        status ENUM('Completed', 'In-Progress', 'Suspended', 'Unassigned') NOT NULL DEFAULT 'Unassigned'
+        status ENUM('Completed', 'In-Progress', 'Suspended', 'Unassigned') NOT NULL DEFAULT 'Unassigned',
+        continuation_of_project_id INT DEFAULT -1
     );
     `;
 
@@ -75,26 +76,56 @@ async function initializeDatabase() {
     if (rows[0]['count'] === 0) {
         console.log("Inserting seed data into projects table...");
         const seedDataSql = `
-            INSERT INTO projects (title, contents, stack, team_name, team_members, status)
+            INSERT INTO projects (title, contents, stack, team_name, team_members, status, continuation_of_project_id)
             VALUES
-            ('Project Database', 'Create and manage list of projects', 'MySQL, Express.js, React, Node.js', 'Brave Souls', 'Hyunje Kim, Atin Kolli, Prahaara, Bhargav Panchal', 'In-Progress'),
-            ('Completed Project', 'Description of completed project...', 'Stack of completed project...', 'Completed Team', 'Completed Team Members', 'Completed'),
-            ('Suspended Project', 'Description of suspended project...', 'Stack of suspended project...', 'Suspended Team', 'Suspended Team Members', 'Suspended'),
-            ('Unassigned Project', 'Description of unassigned project...', 'Stack of unassigned project...', 'Unassigned Team', 'Unassigned Team Members', 'Unassigned');
-        `;
+            ('Project Database', 'Create and manage list of projects', 'MySQL, Express.js, React, Node.js', 'Brave Souls', 'Hyunje Kim, Atin Kolli, Prahaara, Bhargav Panchal', 'In-Progress', -1),
+            ('Completed Project', 'Description of completed project...', 'Stack of completed project...', 'Completed Team', 'Completed Team Members', 'Completed', -1),
+            ('Suspended Project', 'Description of suspended project...', 'Stack of suspended project...', 'Suspended Team', 'Suspended Team Members', 'Suspended', -1),
+            ('Unassigned Project', 'Description of unassigned project...', 'Stack of unassigned project...', 'Unassigned Team', 'Unassigned Team Members', 'Unassigned', -1),
+            ('Continuation of Project Database 1', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
+            ('Continuation of Project Database 2', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
+            ('Continuation of Project Database 3', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
+            ('Continuation of Suspended Project 1', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
+            ('Continuation of Suspended Project 2', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
+            ('Continuation of Suspended Project 3', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
+            ('Continuation of Suspended Project 4', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
+            ('Continuation of Suspended Project 5', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3);
+            `;
         await pool.query(seedDataSql);
 
         // Insert 'Spring 2024' semester for all projects
         const spring2024Semester = 'Spring 2024';
+
         const [projects] = await pool.query('SELECT id FROM projects');
         const projectIds = projects.map(project => project.id);
-        await Promise.all(projectIds.map(projectId =>
+        // await Promise.all(projectIds.map(projectId =>
+        //     pool.query(`
+        //         INSERT INTO project_semesters (project_id, semester)
+        //         VALUES (?, ?)
+        //     `, [projectId, spring2024Semester])
+        // ));
+    
+        const semesterData = [
+            { projectId: 1, semester: 'Spring 2024' },
+            { projectId: 2, semester: 'Spring 2024' },
+            { projectId: 3, semester: 'Spring 2024' },
+            { projectId: 4, semester: 'Spring 2024' },
+            { projectId: 5, semester: 'Fall 2024' },
+            { projectId: 6, semester: 'Spring 2025' },
+            { projectId: 7, semester: 'Fall 2025' },
+            { projectId: 8, semester: 'Fall 2024' },
+            { projectId: 9, semester: 'Spring 2025' },
+            { projectId: 10, semester: 'Fall 2025' },
+            { projectId: 11, semester: 'Spring 2026' },
+            { projectId: 12, semester: 'Fall 2026' },
+        ];
+
+        await Promise.all(semesterData.map(data =>
             pool.query(`
                 INSERT INTO project_semesters (project_id, semester)
                 VALUES (?, ?)
-            `, [projectId, spring2024Semester])
+            `, [data.projectId, data.semester])
         ));
-
         console.log("Seed data inserted successfully.");
     } else {
         console.log("Seed data already exists in projects table.");
@@ -126,12 +157,12 @@ export async function getProject(id) {
     return rows;
 }
 
-export async function createProject(title, contents, stack, team_name, team_members, status = 'Unassigned', semesters = []) {
+export async function createProject(title, contents, stack, team_name, team_members, status = 'Unassigned', semesters = [], continuation_of_project_id = null) {
     console.log(`Creating project with semesters: ${semesters}`);
     const [projectResult] = await pool.query(`
-        INSERT INTO projects (title, contents, stack, team_name, team_members, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-    `, [title, contents, stack, team_name, team_members, status]);
+        INSERT INTO projects (title, contents, stack, team_name, team_members, status, continuation_of_project_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, [title, contents, stack, team_name, team_members, status, continuation_of_project_id]);
     const projectId = projectResult.insertId;
 
     await Promise.all(semesters.map(semester => 
@@ -178,14 +209,14 @@ export async function deleteProject(id) {
     return result;
 }
 
-export async function updateProject(id, title, contents, stack, team_name, team_members, status, semesters) {
+export async function updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id = null) {
     const query = `
         UPDATE projects 
-        SET title = ?, contents = ?, stack = ?, team_name = ?, team_members = ?, status = ?
+        SET title = ?, contents = ?, stack = ?, team_name = ?, team_members = ?, status = ?, continuation_of_project_id = ?
         WHERE id = ?
     `;
 
-    await pool.query(query, [title, contents, stack, team_name, team_members, status, id]);
+    await pool.query(query, [title, contents, stack, team_name, team_members, status, continuation_of_project_id, id]);
     await updateProjectSemesters(id, semesters);
     return getProjectWithSemesters(id);
 }

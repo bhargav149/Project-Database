@@ -25,9 +25,9 @@ app.get("/projects/:id", async (req, res, next) => {
 })
 
 app.post("/projects", async (req, res, next) => {
-    const {title, contents, stack, team_name, team_members, status, semesters} = req.body;
+    const {title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id} = req.body;
     try {
-        const project = await createProject(title, contents, stack, team_name, team_members, status, semesters);
+        const project = await createProject(title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id);
         res.status(201).json(project);
     } catch (err) {
         console.error("Error creating project:", err);
@@ -52,10 +52,10 @@ app.delete("/projects/:id", async (req, res) => {
 
 app.put("/projects/:id", async (req, res) => {
     const { id } = req.params;
-    const { title, contents, stack, team_name, team_members, status, semesters } = req.body; // Assume `semesters` is provided as an array
+    const { title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id } = req.body; // Assume `semesters` is provided as an array
 
     try {
-        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members, status, semesters); // Pass `semesters` to your function
+        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id); // Pass `semesters` to your function
         res.json(updatedProject);
     } catch (error) {
         console.error('Error updating project:', error);

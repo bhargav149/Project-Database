@@ -39,7 +39,8 @@ function App() {
     'Unassigned': true,
   });
   const [selectedSemesters, setSelectedSemesters] = useState([]);
-
+  const [showContinuedProjects, setShowContinuedProjects] = useState(true);
+  
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -54,16 +55,24 @@ function App() {
   }, [isDarkMode]);
 
   useEffect(() => {
-    const filteredProjects = data.filter(project => {
-      const matchesSearchTerm = searchTerm === '' || project[selectedCategory]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-      const statusIsSelected = selectedStatuses[project.status];
-      const semesterIsSelected = selectedSemesters.length === 0 || selectedSemesters.includes(project.semesters);
-      return matchesSearchTerm && statusIsSelected && semesterIsSelected;
+    const rootProjects = data.filter(project => project.continuation_of_project_id === -1);
+
+    const filteredProjects = rootProjects.filter(project => {
+        const matchesSearchTerm = searchTerm === '' || project[selectedCategory]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
+        const statusIsSelected = selectedStatuses[project.status];
+        const semesterIsSelected = selectedSemesters.length === 0 || selectedSemesters.includes(project.semesters);
+        const isContinuedProject = data.some(p => p.continuation_of_project_id === project.id);
+        return (
+            matchesSearchTerm && 
+            statusIsSelected && 
+            semesterIsSelected && 
+            (showContinuedProjects || !isContinuedProject)
+        );
     });
-  
+
     setFilteredData(filteredProjects);
-  }, [data, searchTerm, selectedCategory, selectedStatuses, selectedSemesters]);
-  
+}, [data, searchTerm, selectedCategory, selectedStatuses, selectedSemesters, showContinuedProjects]);
+
   const fetchProjects = () => {
     fetch("http://localhost:8080/projects")
       .then(res => res.json())
@@ -264,6 +273,7 @@ function App() {
       'Unassigned': true,
     });
     setSelectedSemesters([]);
+    setShowContinuedProjects(true);
   };
 
   return (
@@ -307,6 +317,7 @@ function App() {
             />
           </div>
           <div className="status-filter-container">
+            <div className="button-description">Show / Hide:</div>
             {Object.keys(selectedStatuses).map((status) => (
               <div
                 key={status}
@@ -316,6 +327,12 @@ function App() {
                 {status}
               </div>
             ))}
+              <button
+                className={`continued-filter-btn ${showContinuedProjects ? '' : 'dimmed'}`}
+                onClick={() => setShowContinuedProjects(prev => !prev)}
+                >
+                Continued
+              </button>
               <button onClick={resetFilters} className="reset-button">
                 <RotateCcw color={isDarkMode ? "white" : "black"} size={24} />
               </button>
@@ -343,6 +360,14 @@ function App() {
                 <p><strong>Team Name:</strong> {project.team_name}</p>
                 <p><strong>Team Members:</strong> {project.team_members}</p>
                 <p><strong>Semester:</strong> {project.semesters}</p>
+                <button className="status-button completed">Completed</button>
+                <div className="indicator-container">
+                  {data.some(p => p.continuation_of_project_id === project.id) && (
+                      <button className="continued-indicator" onClick={(e) => e.stopPropagation()}>
+                          Continued
+                      </button>
+                  )}
+                </div>
                 <button className="button-delete" onClick={(event) => {
                   event.stopPropagation();
                   deleteProject(project.id);
