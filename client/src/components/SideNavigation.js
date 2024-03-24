@@ -16,16 +16,16 @@ const SideNavigation = ({ onSort, theme }) => {
       <h3>Sort By</h3>
       <hr></hr>
       <button
-        className={selectedSort === 'datedesc' ? 'selected' : ''}
-        onClick={() => handleSort('date', 'desc')}
+        className={selectedSort === 'semesterasc' ? 'selected' : ''}
+        onClick={() => handleSort('semester', 'asc')}
       >
-        Newest
+        Semester ↑
       </button>
       <button
-        className={selectedSort === 'dateasc' ? 'selected' : ''}
-        onClick={() => handleSort('date', 'asc')}
+        className={selectedSort === 'semesterdesc' ? 'selected' : ''}
+        onClick={() => handleSort('semester', 'desc')}
       >
-        Oldest
+        Semester ↓
       </button>
       <button
         className={selectedSort === 'status' ? 'selected' : ''}

@@ -192,22 +192,28 @@ function App() {
   const handleCategoryChange = (newCategory) => {
     setSelectedCategory(newCategory);
   };
+
   const handleSort = (criteria, order) => {
     let sortedData = [...data]; // Clone the current data array
   
-    if (criteria === 'date') {
+    if (criteria === 'semester') {
+      const termOrder = ['Spring', 'Summer', 'Fall', 'Winter']; // Adjust based on your terms
       sortedData.sort((a, b) => {
-        let dateA = new Date(a.created), dateB = new Date(b.created);
-        return order === 'asc' ? dateA - dateB : dateB - dateA;
+        const [termA, yearA] = a.semesters.split(' ');
+        const [termB, yearB] = b.semesters.split(' ');
+        if (yearA !== yearB) {
+          return order === 'asc' ? yearA - yearB : yearB - yearA;
+        }
+        return order === 'asc' ? termOrder.indexOf(termA) - termOrder.indexOf(termB) : termOrder.indexOf(termB) - termOrder.indexOf(termA);
       });
-    } else if (criteria === 'status') {
-      // Define a custom order for the statuses
+    }
+    else if (criteria === 'status') {
+      // Status sorting logic
       const statusOrder = ['In-Progress', 'Unassigned', 'Suspended', 'Completed'];
       sortedData.sort((a, b) => {
-        // Get the index of the statuses in the predefined order
         let indexA = statusOrder.indexOf(a.status);
         let indexB = statusOrder.indexOf(b.status);
-        return indexA - indexB;
+          return indexA - indexB;
       });
     }
   
@@ -253,7 +259,7 @@ function App() {
             {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
           </div>
           <div className="login">
-            <button className="login-button">Login</button>
+            <button className="login-button">Logout</button>
           </div>
         </div>
       </header>
