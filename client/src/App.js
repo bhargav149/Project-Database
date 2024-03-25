@@ -19,7 +19,6 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('title');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState(null);
   const [showAddProjectForm, setShowAddProjectForm] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
@@ -41,14 +40,21 @@ function App() {
   const [selectedSemesters, setSelectedSemesters] = useState([]);
   const [showContinuedProjects, setShowContinuedProjects] = useState(true);
   
+  const [editingProject, setEditingProject] = useState(null);
+  const [relatedProjects, setRelatedProjects] = useState([]);
+
+
   useEffect(() => {
     fetchProjects();
   }, []);
 
   useEffect(() => {
-    const semestersFromProjects = new Set(data.map(project => project.semesters));
-    setAvailableSemesters([...semestersFromProjects]);
+    const semestersFromProjects = new Set(data.flatMap(project => project.semesters));
+    const newAvailableSemesters = [...semestersFromProjects];
+    console.log("Available Semesters:", newAvailableSemesters); // Debug log
+    setAvailableSemesters(newAvailableSemesters);
   }, [data]);
+  
 
   useEffect(() => {
     document.body.className = isDarkMode ? 'dark-theme' : 'light-theme';
@@ -56,23 +62,49 @@ function App() {
 
   useEffect(() => {
     const rootProjects = data.filter(project => project.continuation_of_project_id === -1);
-
+  
+    const semesterMatchesForProject = (project) => {
+      console.log(`Checking project: ${project.title} with semester ${project.semesters}`); // Debug log
+    
+      // Direct match on the project itself
+      if (selectedSemesters.includes(project.semesters)) {
+        console.log(`Direct match found for project: ${project.title}`); // Debug log
+        return true;
+      }
+    
+      // Recursively check continued projects
+      let currentProject = project;
+      while (currentProject) {
+        const continuedProject = data.find(p => p.continuation_of_project_id === currentProject.id);
+        if (continuedProject) {
+          console.log(`Found continued project: ${continuedProject.title} with semester ${continuedProject.semesters}`); // Debug log
+          if (selectedSemesters.includes(continuedProject.semesters)) {
+            console.log(`Match found in continued project: ${continuedProject.title}`); // Debug log
+            return true;
+          }
+        }
+        currentProject = continuedProject;
+      }
+    
+      return false;
+    };
+    
     const filteredProjects = rootProjects.filter(project => {
-        const matchesSearchTerm = searchTerm === '' || project[selectedCategory]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-        const statusIsSelected = selectedStatuses[project.status];
-        const semesterIsSelected = selectedSemesters.length === 0 || selectedSemesters.includes(project.semesters);
-        const isContinuedProject = data.some(p => p.continuation_of_project_id === project.id);
-        return (
-            matchesSearchTerm && 
-            statusIsSelected && 
-            semesterIsSelected && 
-            (showContinuedProjects || !isContinuedProject)
-        );
+      const matchesSearchTerm = searchTerm === '' || project[selectedCategory]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
+      const statusIsSelected = selectedStatuses[project.status];
+      const semesterIsSelected = selectedSemesters.length === 0 || semesterMatchesForProject(project);
+      const isContinuedProject = data.some(p => p.continuation_of_project_id === project.id);
+      return (
+          matchesSearchTerm && 
+          statusIsSelected && 
+          semesterIsSelected && 
+          (showContinuedProjects || !isContinuedProject)
+      );
     });
-
+  
     setFilteredData(filteredProjects);
-}, [data, searchTerm, selectedCategory, selectedStatuses, selectedSemesters, showContinuedProjects]);
-
+  }, [data, searchTerm, selectedCategory, selectedStatuses, selectedSemesters, showContinuedProjects]);
+  
   const fetchProjects = () => {
     fetch("http://localhost:8080/projects")
       .then(res => res.json())
@@ -152,9 +184,21 @@ function App() {
   // };
 
   const toggleEdit = (project) => {
-    setEditingProject(project);
     setIsModalOpen(true);
+  
+    // Determine if the selected project is a root project or a continuation
+    const isRootProject = project.continuation_of_project_id === -1;
+    const rootProjectId = isRootProject ? project.id : project.continuation_of_project_id;
+  
+    // Filter for the root project and its continuations
+    const projectAndContinuations = data.filter(p => 
+      p.id === rootProjectId || p.continuation_of_project_id === rootProjectId
+    );
+    
+    setEditingProject(project); // Keep the selected project as the editing project
+    setRelatedProjects(projectAndContinuations); // Update related projects to include continuations
   };
+  
 
   const saveEdit = (updatedProject) => {
     // console.log(`Saving project with updated status: `, updatedProject);
@@ -397,6 +441,7 @@ function App() {
           isOpen={isModalOpen}
           onSave={saveEdit}
           onCancel={cancelEdit}
+          relatedProjects={relatedProjects}
         />
       )}
       {isViewModalOpen && editingProject && (

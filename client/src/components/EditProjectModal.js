@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './EditProjectModal.css';
 import { X } from 'lucide-react';
 
-function EditProjectModal({ project, isOpen, onSave, onCancel }) {
+function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }) {
   const [editedProject, setEditedProject] = useState({
     title: '',
     contents: '',
@@ -12,6 +12,22 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
     status: '',
   });
 
+  const [currentProject, setCurrentProject] = useState(project);
+  const [selectedProject, setSelectedProject] = useState(project);
+
+  useEffect(() => {
+    setCurrentProject(project);
+  }, [project]);
+  
+  useEffect(() => {
+    setSelectedProject(project);
+  }, [project]);
+
+  const selectProject = (selectedProject) => {
+    setCurrentProject(selectedProject);
+  };
+
+  
   useEffect(() => {
     if (project && isOpen) {
       setEditedProject({
@@ -46,13 +62,24 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
         </div>
         <hr></hr>
+        <div className="project-selection-tabs">
+          {relatedProjects.map((proj, index) => (
+            <button
+              key={index}
+              onClick={() => setSelectedProject(proj)}
+              className={selectedProject.id === proj.id ? 'active' : ''}
+            >
+              {proj.semesters}
+            </button>
+          ))}
+        </div>
         <label htmlFor="title" className="modal-label">Title</label>
         <input
           id="title"
           type="text"
           name="title"
           className="modal-input"
-          value={editedProject.title}
+          value={selectedProject.title}
           onChange={handleChange}
         />
 
@@ -61,7 +88,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           id="contents"
           name="contents"
           className="modal-textarea"
-          value={editedProject.contents}
+          value={selectedProject.contents}
           onChange={handleChange}
         />
 
@@ -71,7 +98,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           type="text"
           name="stack"
           className="modal-input"
-          value={editedProject.stack}
+          value={selectedProject.stack}
           onChange={handleChange}
         />
 
@@ -81,7 +108,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           type="text"
           name="team_name"
           className="modal-input"
-          value={editedProject.team_name}
+          value={selectedProject.team_name}
           onChange={handleChange}
         />
 
@@ -90,7 +117,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           id="team_members"
           name="team_members"
           className="modal-textarea"
-          value={editedProject.team_members}
+          value={selectedProject.team_members}
           onChange={handleChange}
         />
         <label htmlFor="status" className="modal-label">Status</label>
@@ -98,7 +125,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           {statuses.map((status) => (
             <button
               key={status}
-              className={`status-button-edit ${status.toLowerCase().replace(/\s+/g, '-')}${editedProject.status === status ? ' selected' : ''}`}
+              className={`status-button-edit ${status.toLowerCase().replace(/\s+/g, '-')}${selectedProject.status === status ? ' selected' : ''}`}
               onClick={() => handleStatusChange(status)}
             >
               {status}
@@ -118,7 +145,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
             <option value="Unassigned">Unassigned</option>
           </select> */}
         <div className="modal-actions">
-          <button onClick={() => onSave(editedProject)}>Save</button>
+          <button onClick={() => onSave(selectedProject)}>Save</button>
           <button onClick={onCancel}>Cancel</button>
         </div>
       </div>
