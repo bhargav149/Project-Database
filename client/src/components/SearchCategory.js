@@ -36,7 +36,7 @@ export default function BasicSelect({ onCategoryChange, themeMode }) {
           <MenuItem value={'contents'}>Description</MenuItem>
           <MenuItem value={'stack'}>Stack</MenuItem>
           <MenuItem value={'team_name'}>Team Name</MenuItem>
-          <MenuItem value={'status'}>Status</MenuItem>
+          {/* <MenuItem value={'status'}>Status</MenuItem> */}
         </Select>
       </FormControl>
     </ThemeProvider>

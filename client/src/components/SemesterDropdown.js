@@ -19,6 +19,20 @@ const MenuProps = {
   },
 };
 
+function sortSemesters(semesters) {
+  return semesters.sort((a, b) => {
+    const [semesterA, yearA] = a.split(' ');
+    const [semesterB, yearB] = b.split(' ');
+
+    const semesterOrder = { 'Spring': 1, 'Fall': 2 };
+
+    if (yearA === yearB) {
+      return semesterOrder[semesterA] - semesterOrder[semesterB];
+    }
+    return yearA - yearB;
+  });
+}
+
 export default function SemesterDropdown({ themeMode, availableSemesters, selectedSemesters, setSelectedSemesters }) {
   const handleChange = (event) => {
     const {
@@ -36,6 +50,8 @@ export default function SemesterDropdown({ themeMode, availableSemesters, select
     },
   }), [themeMode]);
 
+  const sortedSemesters = React.useMemo(() => sortSemesters(availableSemesters), [availableSemesters]);
+  
   return (
     <ThemeProvider theme={theme}>
       <FormControl sx={{ m: 1, width: 180 }} size="small">
@@ -50,7 +66,7 @@ export default function SemesterDropdown({ themeMode, availableSemesters, select
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >
-          {availableSemesters.map((semester) => (
+          {sortedSemesters.map((semester) => (
             <MenuItem key={semester} value={semester}>
               <Checkbox checked={selectedSemesters.indexOf(semester) > -1} />
               <ListItemText primary={semester} />

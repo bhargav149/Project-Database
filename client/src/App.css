@@ -18,6 +18,7 @@
     width: 300px;
     transition: transform 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid #F6E8EA;
 }
 
 .card:hover {
@@ -415,6 +416,7 @@
 .light-theme .card {
     /* background-color: rgb(106, 108, 111); */
     background-color: #fff;
+    border: 1px solid #312F2F;
 }
 
 .light-theme .card strong {

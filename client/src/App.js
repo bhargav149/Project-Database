@@ -37,6 +37,7 @@ function App() {
     'Suspended': true,
     'Unassigned': true,
   });
+  
   const [selectedSemesters, setSelectedSemesters] = useState([]);
   const [showContinuedProjects, setShowContinuedProjects] = useState(true);
   
@@ -62,49 +63,41 @@ function App() {
 
   useEffect(() => {
     const rootProjects = data.filter(project => project.continuation_of_project_id === -1);
+    const continuedProjects = data.filter(project => project.continuation_of_project_id !== -1);
   
-    const semesterMatchesForProject = (project) => {
-      console.log(`Checking project: ${project.title} with semester ${project.semesters}`); // Debug log
-    
-      // Direct match on the project itself
-      if (selectedSemesters.includes(project.semesters)) {
-        console.log(`Direct match found for project: ${project.title}`); // Debug log
-        return true;
-      }
-    
-      // Recursively check continued projects
-      let currentProject = project;
-      while (currentProject) {
-        const continuedProject = data.find(p => p.continuation_of_project_id === currentProject.id);
-        if (continuedProject) {
-          console.log(`Found continued project: ${continuedProject.title} with semester ${continuedProject.semesters}`); // Debug log
-          if (selectedSemesters.includes(continuedProject.semesters)) {
-            console.log(`Match found in continued project: ${continuedProject.title}`); // Debug log
-            return true;
-          }
-        }
-        currentProject = continuedProject;
-      }
-    
-      return false;
-    };
-    
+    // Create a set of root project IDs that have continuations
+    const rootProjectsWithContinuations = new Set(continuedProjects.map(project => project.continuation_of_project_id));
+  
     const filteredProjects = rootProjects.filter(project => {
-      const matchesSearchTerm = searchTerm === '' || project[selectedCategory]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-      const statusIsSelected = selectedStatuses[project.status];
+      // Check for direct semester match or through continuations
       const semesterIsSelected = selectedSemesters.length === 0 || semesterMatchesForProject(project);
-      const isContinuedProject = data.some(p => p.continuation_of_project_id === project.id);
-      return (
-          matchesSearchTerm && 
-          statusIsSelected && 
-          semesterIsSelected && 
-          (showContinuedProjects || !isContinuedProject)
-      );
+      // Check for search term match
+      const matchesSearchTerm = searchTerm === '' || project[selectedCategory]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
+      // Check if status is selected
+      const statusIsSelected = selectedStatuses[project.status];
+      // If showContinuedProjects is false, exclude root projects that have continuations
+      const continuationCriteria = showContinuedProjects || !rootProjectsWithContinuations.has(project.id);
+  
+      return matchesSearchTerm && statusIsSelected && semesterIsSelected && continuationCriteria;
     });
   
     setFilteredData(filteredProjects);
   }, [data, searchTerm, selectedCategory, selectedStatuses, selectedSemesters, showContinuedProjects]);
   
+  const semesterMatchesForProject = (project) => {
+    // Check if the project or any of its continuations matches the selected semesters
+    const checkSemesters = (projectId) => {
+      const relatedProjects = data.filter(p => 
+        p.id === projectId || p.continuation_of_project_id === projectId
+      );
+  
+      return relatedProjects.some(p => selectedSemesters.includes(p.semesters));
+    };
+  
+    // Start the check with the current project
+    return checkSemesters(project.id);
+  };
+
   const fetchProjects = () => {
     fetch("http://localhost:8080/projects")
       .then(res => res.json())
@@ -124,7 +117,9 @@ function App() {
         stack: project.stack,
         team_name: project.team_name,
         team_members: project.team_members,
-        semesters: project.semesters 
+        status: project.status,
+        semesters: project.semesters,
+        continuation_of_project_id: project.continuation_of_project_id
       }),
     })
     .then(response => response.json())
@@ -225,6 +220,44 @@ function App() {
     }
   };
 
+  const getAllSemestersForProject = (projectId) => {
+    const rootProject = data.find(p => p.id === projectId);
+    const relatedProjects = data.filter(p => 
+      p.id === projectId || p.continuation_of_project_id === projectId
+    );
+  
+    const allSemestersSet = new Set();
+  
+    const addSemesters = (semesters) => {
+      if (Array.isArray(semesters)) {
+        semesters.forEach(semester => allSemestersSet.add(semester));
+      } else if (semesters) {
+        allSemestersSet.add(semesters);
+      }
+    };
+  
+    addSemesters(rootProject.semesters);
+    relatedProjects.forEach(p => addSemesters(p.semesters));
+  
+    // Convert the set to an array
+    let allSemestersArray = [...allSemestersSet];
+  
+    // Define the order of the terms
+    const termOrder = ['Spring', 'Summer', 'Fall', 'Winter'];
+  
+    // Sorting function
+    allSemestersArray.sort((a, b) => {
+      const [termA, yearA] = a.split(' ');
+      const [termB, yearB] = b.split(' ');
+      const yearComparison = yearA - yearB;
+      if (yearComparison !== 0) return yearComparison;
+      return termOrder.indexOf(termA) - termOrder.indexOf(termB);
+    });
+  
+    return allSemestersArray;
+  };
+  
+
   const getStatusStyle = (status) => {
     switch (status) {
       case 'Completed':
@@ -280,7 +313,6 @@ function App() {
           return indexA - indexB;
       });
     }
-  
     setData(sortedData);
   };
 
@@ -320,6 +352,39 @@ function App() {
     setShowContinuedProjects(true);
   };
 
+  const getAllTeamsForProjectSortedBySemester = (projectId) => {
+    const projectAndContinuations = data.filter(p => 
+      p.id === projectId || p.continuation_of_project_id === projectId
+    );
+  
+    const teamSemesterMap = new Map();
+  
+    const sortSemesters = (a, b) => {
+      const [termA, yearA] = a.split(' ');
+      const [termB, yearB] = b.split(' ');
+      const yearDiff = parseInt(yearA) - parseInt(yearB);
+      if (yearDiff !== 0) return yearDiff;
+      const termsOrder = ['Spring', 'Summer', 'Fall', 'Winter'];
+      return termsOrder.indexOf(termA) - termsOrder.indexOf(termB);
+    };
+
+    projectAndContinuations.forEach(project => {
+      const semesters = Array.isArray(project.semesters) ? project.semesters : [project.semesters];
+      const earliestSemester = semesters.sort(sortSemesters)[0];
+      if (teamSemesterMap.has(project.team_name)) {
+        const existingSemester = teamSemesterMap.get(project.team_name);
+        if (sortSemesters(earliestSemester, existingSemester) < 0) {
+          teamSemesterMap.set(project.team_name, earliestSemester);
+        }
+      } else {
+        teamSemesterMap.set(project.team_name, earliestSemester);
+      }
+    });
+    const sortedTeams = Array.from(teamSemesterMap.entries()).sort((a, b) => sortSemesters(a[1], b[1]));
+    return sortedTeams.map(entry => entry[0]);
+  };
+  
+  
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
       <header className="site-header">
@@ -361,7 +426,6 @@ function App() {
             />
           </div>
           <div className="status-filter-container">
-            <div className="button-description">Show / Hide:</div>
             {Object.keys(selectedStatuses).map((status) => (
               <div
                 key={status}
@@ -401,9 +465,9 @@ function App() {
                 <p><strong>Title:</strong> {project.title}</p>
                 <p><strong>Description:</strong> {project.contents}</p>
                 <p><strong>Stack:</strong> {project.stack}</p>
-                <p><strong>Team Name:</strong> {project.team_name}</p>
-                <p><strong>Team Members:</strong> {project.team_members}</p>
-                <p><strong>Semester:</strong> {project.semesters}</p>
+                <p><strong>Team:</strong> {getAllTeamsForProjectSortedBySemester(project.id).join(', ')}</p>
+                {/* <p><strong>Team Members:</strong> {project.team_members}</p> */}
+                <p><strong>Semester:</strong> {getAllSemestersForProject(project.id).join(', ')}</p>
                 <button className="status-button completed">Completed</button>
                 <div className="indicator-container">
                   {data.some(p => p.continuation_of_project_id === project.id) && (
@@ -431,7 +495,7 @@ function App() {
   
       {showAddProjectForm && (
         <div className="add-project-card">
-          <AddProjectForm onAdd={addProject} />
+          <AddProjectForm onAdd={addProject} projects={data} />
         </div>
       )}
   

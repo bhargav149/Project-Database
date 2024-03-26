@@ -159,3 +159,28 @@
 .unassigned {
     background-color: #ffb74d;
 }
+
+.project-selection-tabs {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px; /* Space between tabs and the next form field */
+  }
+  
+  .project-selection-tab {
+    background-color: #333; /* Dark background to match modal */
+    color: #F6E8EA; /* Light text color */
+    border: 1px solid #64b5f6; /* Blue border to tie in with the input focus color */
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .project-selection-tab.active, .project-selection-tab:hover {
+    background-color: #64b5f6; /* Lighter background on hover/active */
+    color: #312F2F; /* Dark text color for contrast */
+    border-color: #F6E8EA; /* Light border for contrast */
+  }
+  

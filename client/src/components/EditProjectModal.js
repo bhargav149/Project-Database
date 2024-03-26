@@ -54,6 +54,27 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
 
   const statuses = ['Completed', 'In-Progress', 'Suspended', 'Unassigned'];
 
+  // Function to split semester strings and return an object { term, year }
+  const parseSemester = (semester) => {
+    const [term, year] = semester.split(' ');
+    return { term, year: parseInt(year, 10) };
+  };
+
+  // Define the order of the terms
+  const termOrder = ['Spring', 'Fall'];
+
+  // Compare function for semesters
+  const compareSemesters = (a, b) => {
+    const semesterA = parseSemester(a.semesters);
+    const semesterB = parseSemester(b.semesters);
+    const yearComparison = semesterA.year - semesterB.year;
+    if (yearComparison !== 0) return yearComparison;
+    return termOrder.indexOf(semesterA.term) - termOrder.indexOf(semesterB.term);
+  };
+
+  // Sorted related projects
+  const sortedRelatedProjects = relatedProjects.sort(compareSemesters);
+
   return (
     <div className="modal-overlay">
       <div className="modal-card">
@@ -63,7 +84,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
         </div>
         <hr></hr>
         <div className="project-selection-tabs">
-          {relatedProjects.map((proj, index) => (
+          {sortedRelatedProjects.map((proj, index) => (
             <button
               key={index}
               onClick={() => setSelectedProject(proj)}

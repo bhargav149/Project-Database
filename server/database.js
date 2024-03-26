@@ -82,14 +82,14 @@ async function initializeDatabase() {
             ('Completed Project', 'Description of completed project...', 'Stack of completed project...', 'Completed Team', 'Completed Team Members', 'Completed', -1),
             ('Suspended Project', 'Description of suspended project...', 'Stack of suspended project...', 'Suspended Team', 'Suspended Team Members', 'Suspended', -1),
             ('Unassigned Project', 'Description of unassigned project...', 'Stack of unassigned project...', 'Unassigned Team', 'Unassigned Team Members', 'Unassigned', -1),
-            ('Continuation of Project Database 1', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
-            ('Continuation of Project Database 2', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
-            ('Continuation of Project Database 3', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
-            ('Continuation of Suspended Project 1', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
-            ('Continuation of Suspended Project 2', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
-            ('Continuation of Suspended Project 3', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
-            ('Continuation of Suspended Project 4', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
-            ('Continuation of Suspended Project 5', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3);
+            ('Project Database', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
+            ('Project Database', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
+            ('Project Database', 'Second phase with enhancements.', 'React, Node.js, GraphQL', 'Continuation Team 1', 'Charlie, Dana', 'In-Progress', 1),
+            ('Suspended Project', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
+            ('Suspended Project', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
+            ('Suspended Project', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
+            ('Suspended Project', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3),
+            ('Suspended Project', 'Final phase with additional features.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Evan, Faith', 'In-Progress', 3);
             `;
         await pool.query(seedDataSql);
 

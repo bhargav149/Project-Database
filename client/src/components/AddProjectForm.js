@@ -6,8 +6,13 @@ import Checkbox from '@mui/material/Checkbox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import Chip from '@mui/material/Chip';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
-function AddProjectForm({ onAdd }) {
+function AddProjectForm({ onAdd, projects }) {
     const [title, setTitle] = useState('');
     const [contents, setContents] = useState('');
     const [stack, setStack] = useState([]);
@@ -18,7 +23,10 @@ function AddProjectForm({ onAdd }) {
     const yearSelectorRef = useRef(null);
     const semesters = ['Spring', 'Fall'];
     const [selectedSemester, setSelectedSemester] = useState(semesters[0]);
-
+    const [isContinuation, setIsContinuation] = useState('no');
+    const [selectedContinuationProject, setSelectedContinuationProject] = useState(null);
+    const [cont, setCont] = useState(-1);
+    const [status, setStatus] = useState('In-Progress');
     const currentYear = new Date().getFullYear();
     const years = Array.from(new Array(121), (val, index) => currentYear - 20 + index);
 
@@ -67,8 +75,22 @@ function AddProjectForm({ onAdd }) {
         e.preventDefault();
 
         const stackString = stack.map(option => option.title).join(', ');
-        const newSemester = `${selectedSemester} ${year}`;
-        onAdd({ title, contents, stack: stackString, team_name, team_members, semesters: [newSemester] });
+        const projectData = {
+            title,
+            contents,
+            stack: stackString,
+            team_name,
+            team_members,
+            status,
+            semesters: [`${selectedSemester} ${year}`],
+            continuation_of_project_id: cont,
+        };
+    
+        if (isContinuation === 'yes' && !selectedContinuationProject) {
+            console.error("Please select a project to continue.");
+            return;
+        }
+        onAdd(projectData);
         
         setTitle('');
         setContents('');
@@ -76,7 +98,9 @@ function AddProjectForm({ onAdd }) {
         setTeamName('');
         setTeamMembers('');
         setSemester('');
+        setStatus('');
         setYear(new Date().getFullYear());
+        setSelectedContinuationProject(null);
     };
 
     const handleYearClick = (selectedYear) => {
@@ -97,9 +121,61 @@ function AddProjectForm({ onAdd }) {
             />
         ));
 
+    const handleProjectSelection = (event, value) => {
+        setSelectedContinuationProject(value);
+        setTitle(value ? value.title : '');
+        setCont(value ? value.id : '-1')
+        console.log(title);
+        console.log(cont);
+    };
+
+    const eligibleProjectsForContinuation = projects.filter(project => project.continuation_of_project_id === -1);
+
     return (
         <form onSubmit={handleSubmit} className="form-container">
             <div className="form-group">
+                <FormControl component="fieldset">
+                    <FormLabel component="legend"><strong>Is this a continued project?</strong></FormLabel>
+                    <RadioGroup
+                        row
+                        aria-label="isContinuation"
+                        name="isContinuation"
+                        value={isContinuation}
+                        onChange={(e) => setIsContinuation(e.target.value)}
+                        sx={{
+                            '.MuiFormControlLabel-label': { 
+                                fontSize: '0.75rem',
+                                color: '#fff'
+                            }
+                        }}
+                    >
+                        <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                        <FormControlLabel value="no" control={<Radio />} label="No" />
+                    </RadioGroup>
+                </FormControl><FormControl component="fieldset">
+                    <FormLabel component="legend"><strong>Select Status</strong></FormLabel>
+                    <RadioGroup
+                        row
+                        aria-label="status"
+                        name="status"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        sx={{
+                            '.MuiFormControlLabel-label': { 
+                                fontSize: '0.75rem',
+                                color: '#fff'
+                            }
+                        }}
+                    >
+                        <FormControlLabel value="In-Progress" control={<Radio />} label="In-Progress" />
+                        <FormControlLabel value="Unassigned" control={<Radio />} label="Unassigned" />
+                        <FormControlLabel value="Completed" control={<Radio />} label="Completed" />
+                        <FormControlLabel value="Suspended" control={<Radio />} label="Suspended" />
+                    </RadioGroup>
+                </FormControl>
+            </div>
+            {isContinuation === 'no' && (
+                <div className="form-group">
                 <label htmlFor="title"><strong>Title:</strong></label>
                 <input
                     id="title"
@@ -110,6 +186,43 @@ function AddProjectForm({ onAdd }) {
                     required
                 />
             </div>
+            )}
+            {isContinuation === 'yes' && (
+                <div>
+                    <strong>Title:</strong>
+                    <Autocomplete
+                        id="project-continuation-autocomplete"
+                        options={eligibleProjectsForContinuation}
+                        getOptionLabel={(option) => option.title}
+                        style={{ width: 300, height: 50 }}
+                        renderInput={(params) => <TextField {...params} variant="outlined"/>}
+                        onChange={handleProjectSelection}
+                        value={selectedContinuationProject}
+                        sx={{ 
+                            "& .MuiOutlinedInput-root": {
+                                padding: '2px', // Further reduce padding around the input field
+                                "& .MuiOutlinedInput-input": {
+                                    padding: '6px 4px', // Minimize vertical padding
+                                    fontSize: '0.75rem', // Further reduce font size if necessary for appearance
+                                },
+                                width: '87%',
+                                backgroundColor: '#fff',
+                                marginTop: '5px',
+                            },
+                            "& .MuiInputLabel-root": {
+                                transform: 'translate(14px, 4px) scale(1)', // Adjust label initial position for smaller input
+                                fontSize: '0.75rem', // Optional: Reduce label font size for consistency
+                            },
+                            "& .MuiInputLabel-shrink": {
+                                transform: 'translate(14px, -6px) scale(0.75)', // Adjust label position for focused state
+                            },
+                            "& .MuiSvgIcon-root": { // Adjust icon size if necessary
+                                fontSize: '1rem',
+                            },
+                        }}
+                    />
+                </div>
+            )}
             <div className="form-group">
                 <label htmlFor="contents"><strong>Description:</strong></label>
                 <input
