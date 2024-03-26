@@ -67,3 +67,18 @@ Optional: To remove the volumes along with the containers, use:
 ```bash
 docker compose down -v
 ```
+
+
+## CAS And Deployment Notes
+- There is a new folder called node in the project. This is the express backend for CAS. Use node start.js to run it locally on port 5000
+- In server/database.js, look at the comments and modify initializeDatabase() for local development and then revert when deploying
+- The site is deployed at https://bravesouls-projectdb.discovery.cs.vt.edu/. The login page is at https://bravesouls-projectdb.discovery.cs.vt.edu/login and is working but not connected to the rest of the site. It needs to be integrated and styled
+- The Docker image for the node project is not included in Dockerfile
+-FILES TO MODIFY BEFORE DEPLOYMENT: 
+    - server/database.js(look at lines 7-36)
+    - server/app.js(lines 17/18)
+    - client/src/components/LandingPage.js(lines 49/50)
+    - client/src/AppRoutes.js(line 14)
+    - all of these files will have comments telling you what to change
+
+

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import './App.css';
-import AddProjectForm from './components/AddProjectForm';
-import EditProjectModal from './components/EditProjectModal';
-import SideNavigation from './components/SideNavigation';
-import ViewProjectModal from './components/ViewProjectModal';
-import Toast from './components/Toast';
-import SemesterDropdown from './components/SemesterDropdown';
-import SearchCategory from './components/SearchCategory';
-import DataTable from './components/DataTable';
+import AddProjectForm from './AddProjectForm';
+import EditProjectModal from './EditProjectModal';
+import SideNavigation from './SideNavigation';
+import ViewProjectModal from './ViewProjectModal';
+import Toast from './Toast';
+import SemesterDropdown from './SemesterDropdown';
+import SearchCategory from './SearchCategory';
+import DataTable from './DataTable';
 
 import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw } from 'lucide-react';
+import './LandingPage.css';
 
 function App() {
 
@@ -45,6 +45,11 @@ function App() {
   const [relatedProjects, setRelatedProjects] = useState([]);
 
 
+  //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
+  // const url = "http://localhost:8080/";
+  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+
+
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -67,6 +72,20 @@ function App() {
   
     // Create a set of root project IDs that have continuations
     const rootProjectsWithContinuations = new Set(continuedProjects.map(project => project.continuation_of_project_id));
+
+    const semesterMatchesForProject = (project) => {
+      // Check if the project or any of its continuations matches the selected semesters
+      const checkSemesters = (projectId) => {
+        const relatedProjects = data.filter(p => 
+          p.id === projectId || p.continuation_of_project_id === projectId
+        );
+    
+        return relatedProjects.some(p => selectedSemesters.includes(p.semesters));
+      };
+    
+      // Start the check with the current project
+      return checkSemesters(project.id);
+    };
   
     const filteredProjects = rootProjects.filter(project => {
       // Check for direct semester match or through continuations
@@ -84,29 +103,17 @@ function App() {
     setFilteredData(filteredProjects);
   }, [data, searchTerm, selectedCategory, selectedStatuses, selectedSemesters, showContinuedProjects]);
   
-  const semesterMatchesForProject = (project) => {
-    // Check if the project or any of its continuations matches the selected semesters
-    const checkSemesters = (projectId) => {
-      const relatedProjects = data.filter(p => 
-        p.id === projectId || p.continuation_of_project_id === projectId
-      );
-  
-      return relatedProjects.some(p => selectedSemesters.includes(p.semesters));
-    };
-  
-    // Start the check with the current project
-    return checkSemesters(project.id);
-  };
+
 
   const fetchProjects = () => {
-    fetch("http://localhost:8080/projects")
+    fetch(url+"projects")
       .then(res => res.json())
       .then(data => setData(data.map(project => ({ ...project, isEditing: false }))))
       .catch(err => console.error(err));
   };
 
   const addProject = (project) => {
-    fetch("http://localhost:8080/projects", {
+    fetch(url+"projects", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -183,7 +190,7 @@ function App() {
     if (hasChildProjects) {
       const childProjectsToDelete = data.filter(project => project.continuation_of_project_id === id);
       const deleteChildProjectsPromises = childProjectsToDelete.map(childProject =>
-        fetch(`http://localhost:8080/projects/${childProject.id}`, { method: 'DELETE', })
+        fetch(url+`projects/${childProject.id}`, { method: 'DELETE', })
       );
 
       Promise.all(deleteChildProjectsPromises)
@@ -199,7 +206,7 @@ function App() {
 };
 
 const deleteRootProject = (id, deletedChildProjects) => {
-    fetch(`http://localhost:8080/projects/${id}`, {
+    fetch(url+`projects/${id}`, {
         method: 'DELETE',
     })
     .then(response => {
@@ -218,20 +225,6 @@ const deleteRootProject = (id, deletedChildProjects) => {
         showToastWithFadeOut("An error occurred while deleting the project.", true);
     });
 };
-
-
-  // const updateProject = (id, updatedProject) => {
-  //   fetch(`http://localhost:8080/projects/${id}`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(updatedProject),
-  //   })
-  //   .then(response => response.json())
-  //   .then(() => fetchProjects())
-  //   .catch(err => console.error(err));
-  // };
 
   const toggleEdit = (project) => {
     setIsModalOpen(true);
@@ -252,7 +245,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
 
   const saveEdit = (updatedProject) => {
     // console.log(`Saving project with updated status: `, updatedProject);
-    fetch(`http://localhost:8080/projects/${updatedProject.id}`, {
+    fetch(url+`projects/${updatedProject.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -460,8 +453,10 @@ const deleteRootProject = (id, deletedChildProjects) => {
           <div className="color-theme" onClick={toggleDarkMode}>
             {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
           </div>
-          <div className="login">
-            <button className="login-button">Logout</button>
+          <div className="logout">
+            <a href="/api/logout">
+              <button className="login-button">Logout</button>
+            </a>
           </div>
         </div>
       </header>

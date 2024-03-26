@@ -1,0 +1,23 @@
+.input-form {
+    border: 2px solid maroon;
+    border-radius: 20px;
+    box-shadow: #282C34 0px 13px 27px -5px, rgba(0, 0, 0, 0.2) 0px 8px 16px -8px;
+}
+
+.input-item {
+    margin: 10px;
+    border: 2px solid maroon;
+    border-radius: 20px;
+    box-shadow: #282C34 0px 13px 27px -5px, rgba(0, 0, 0, 0.2) 0px 8px 16px -8px;
+    padding: 7px
+}
+
+.input-header {
+    padding: 10px;
+    margin: 10px;
+}
+
+.item-center {
+    margin: auto;
+    display: block;
+}
