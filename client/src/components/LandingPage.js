@@ -437,7 +437,6 @@ const deleteRootProject = (id, deletedChildProjects) => {
     return sortedTeams.map(entry => entry[0]);
   };
   
-  
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
       <header className="site-header">
