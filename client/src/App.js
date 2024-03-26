@@ -145,25 +145,80 @@ function App() {
     }, 10000); // Time the toast is visible before starting to fade out
   };
 
+  // const deleteProject = (id) => {
+  //   const isConfirmed = window.confirm("Are you sure you want to delete this project?");
+  //   if (!isConfirmed) {
+  //     return;
+  //   }
+  
+  //   fetch(`http://localhost:8080/projects/${id}`, {
+  //     method: 'DELETE',
+  //   })
+  //   .then(response => {
+  //     if (response.ok) {
+  //       setData(data.filter(project => project.id !== id));
+  //       showToastWithFadeOut("Project successfully deleted.");
+  //     } else {
+  //       alert('Failed to delete the project');
+  //     }
+  //   })
+  //   .catch(err => console.error('Error:', err));
+  // };  
+
   const deleteProject = (id) => {
-    const isConfirmed = window.confirm("Are you sure you want to delete this project?");
+    // Check if there are any child projects.
+    const hasChildProjects = data.some(project => project.continuation_of_project_id === id);
+    
+    // Adjust the confirmation message based on whether there are child projects.
+    const confirmMessage = hasChildProjects
+      ? "This project has related projects that will also be deleted. Are you sure you want to delete this project and all its related projects?"
+      : "Are you sure you want to delete this project?";
+    
+    const isConfirmed = window.confirm(confirmMessage);
     if (!isConfirmed) {
       return;
     }
-  
+
+    // If there are child projects, delete them first.
+    if (hasChildProjects) {
+      const childProjectsToDelete = data.filter(project => project.continuation_of_project_id === id);
+      const deleteChildProjectsPromises = childProjectsToDelete.map(childProject =>
+        fetch(`http://localhost:8080/projects/${childProject.id}`, { method: 'DELETE', })
+      );
+
+      Promise.all(deleteChildProjectsPromises)
+        .then(() => deleteRootProject(id, true)) // Pass true to indicate child projects were also deleted
+        .catch(err => {
+          console.error('Failed to delete child projects:', err);
+          showToastWithFadeOut("An error occurred while deleting related projects.", true);
+        });
+    } else {
+      // If there are no child projects, directly delete the root project.
+      deleteRootProject(id, false); // Pass false as no child projects were deleted
+    }
+};
+
+const deleteRootProject = (id, deletedChildProjects) => {
     fetch(`http://localhost:8080/projects/${id}`, {
-      method: 'DELETE',
+        method: 'DELETE',
     })
     .then(response => {
-      if (response.ok) {
-        setData(data.filter(project => project.id !== id));
-        showToastWithFadeOut("Project successfully deleted.");
-      } else {
-        alert('Failed to delete the project');
-      }
+        if (response.ok) {
+            setData(data.filter(project => project.id !== id && project.continuation_of_project_id !== id));
+            const toastMessage = deletedChildProjects
+              ? "Project and all its related projects successfully deleted."
+              : "Project successfully deleted.";
+            showToastWithFadeOut(toastMessage);
+        } else {
+            alert('Failed to delete the project');
+        }
     })
-    .catch(err => console.error('Error:', err));
-  };  
+    .catch(err => {
+        console.error('Error:', err);
+        showToastWithFadeOut("An error occurred while deleting the project.", true);
+    });
+};
+
 
   // const updateProject = (id, updatedProject) => {
   //   fetch(`http://localhost:8080/projects/${id}`, {
@@ -221,7 +276,15 @@ function App() {
   };
 
   const getAllSemestersForProject = (projectId) => {
+    // Attempt to find the root project in the data array
     const rootProject = data.find(p => p.id === projectId);
+  
+    // If the rootProject does not exist, return an empty array early
+    if (!rootProject) {
+      return [];
+    }
+  
+    // Proceed with the original logic if rootProject exists
     const relatedProjects = data.filter(p => 
       p.id === projectId || p.continuation_of_project_id === projectId
     );
@@ -239,13 +302,9 @@ function App() {
     addSemesters(rootProject.semesters);
     relatedProjects.forEach(p => addSemesters(p.semesters));
   
-    // Convert the set to an array
     let allSemestersArray = [...allSemestersSet];
   
-    // Define the order of the terms
     const termOrder = ['Spring', 'Summer', 'Fall', 'Winter'];
-  
-    // Sorting function
     allSemestersArray.sort((a, b) => {
       const [termA, yearA] = a.split(' ');
       const [termB, yearB] = b.split(' ');
@@ -256,6 +315,7 @@ function App() {
   
     return allSemestersArray;
   };
+  
   
 
   const getStatusStyle = (status) => {

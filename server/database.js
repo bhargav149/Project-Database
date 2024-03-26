@@ -107,8 +107,8 @@ async function initializeDatabase() {
     
         const semesterData = [
             { projectId: 1, semester: 'Spring 2024' },
-            { projectId: 2, semester: 'Spring 2024' },
-            { projectId: 3, semester: 'Spring 2024' },
+            { projectId: 2, semester: 'Fall 2018' },
+            { projectId: 3, semester: 'Spring 2020' },
             { projectId: 4, semester: 'Spring 2024' },
             { projectId: 5, semester: 'Fall 2024' },
             { projectId: 6, semester: 'Spring 2025' },
