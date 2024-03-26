@@ -25,11 +25,14 @@ app.get("/projects/:id", async (req, res, next) => {
 })
 
 app.post("/projects", async (req, res, next) => {
-    const {title, contents, stack, team_name, team_members } = req.body
-    console.log("start post")
-    const note = await createProject(title, contents, stack, team_name, team_members)
-    console.log("got data")
-    res.status(201).json(note)
+    const {title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id} = req.body;
+    try {
+        const project = await createProject(title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id);
+        res.status(201).json(project);
+    } catch (err) {
+        console.error("Error creating project:", err);
+        res.status(500).send('Something went wrong');
+    }
 })
 
 app.delete("/projects/:id", async (req, res) => {
@@ -37,7 +40,7 @@ app.delete("/projects/:id", async (req, res) => {
         const id = req.params.id;
         const result = await deleteProject(id);
         if (result.affectedRows > 0) {
-            res.status(200).send(`Project with ID ${id} deleted successfully.`);
+            res.status(200).send(`Project with ID: ${id} deleted successfully.`);
         } else {
             res.status(404).send("Project not found.");
         }
@@ -49,22 +52,11 @@ app.delete("/projects/:id", async (req, res) => {
 
 app.put("/projects/:id", async (req, res) => {
     const { id } = req.params;
-    const { title, contents, stack, team_name, team_members, status } = req.body;
+    const { title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id } = req.body; // Assume `semesters` is provided as an array
 
     try {
-
-        // console.log('Received update request for project ID:', id);
-        // console.log('Request body:', req.body);
-
-        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members, status);
-
-        if (updatedProject) {
-            console.log('Project updated successfully:', updatedProject);
-            res.json(updatedProject);
-        } else {
-            console.log('Project not found.');
-            res.status(404).send("Project not found.");
-        }
+        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id); // Pass `semesters` to your function
+        res.json(updatedProject);
     } catch (error) {
         console.error('Error updating project:', error);
         res.status(500).send('Something went wrong');

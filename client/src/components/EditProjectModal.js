@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './EditProjectModal.css';
+import { X } from 'lucide-react';
 
-function EditProjectModal({ project, isOpen, onSave, onCancel }) {
+function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }) {
   const [editedProject, setEditedProject] = useState({
     title: '',
     contents: '',
@@ -11,6 +12,22 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
     status: '',
   });
 
+  const [currentProject, setCurrentProject] = useState(project);
+  const [selectedProject, setSelectedProject] = useState(project);
+
+  useEffect(() => {
+    setCurrentProject(project);
+  }, [project]);
+  
+  useEffect(() => {
+    setSelectedProject(project);
+  }, [project]);
+
+  const selectProject = (selectedProject) => {
+    setCurrentProject(selectedProject);
+  };
+
+  
   useEffect(() => {
     if (project && isOpen) {
       setEditedProject({
@@ -31,19 +48,59 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
     // console.log(`Updating status to: ${value}`);
   };
 
-  if (!isOpen) return null;
+  const handleStatusChange = (newStatus) => {
+    setEditedProject(prev => ({ ...prev, status: newStatus }));
+  };
+
+  const statuses = ['Completed', 'In-Progress', 'Suspended', 'Unassigned'];
+
+  // Function to split semester strings and return an object { term, year }
+  const parseSemester = (semester) => {
+    const [term, year] = semester.split(' ');
+    return { term, year: parseInt(year, 10) };
+  };
+
+  // Define the order of the terms
+  const termOrder = ['Spring', 'Fall'];
+
+  // Compare function for semesters
+  const compareSemesters = (a, b) => {
+    const semesterA = parseSemester(a.semesters);
+    const semesterB = parseSemester(b.semesters);
+    const yearComparison = semesterA.year - semesterB.year;
+    if (yearComparison !== 0) return yearComparison;
+    return termOrder.indexOf(semesterA.term) - termOrder.indexOf(semesterB.term);
+  };
+
+  // Sorted related projects
+  const sortedRelatedProjects = relatedProjects.sort(compareSemesters);
 
   return (
     <div className="modal-overlay">
       <div className="modal-card">
-        <h2 className="modal-title"> Modify Project Contents</h2>
+        <div className="modal-header">
+          <h2 className="modal-title">Quick Edit</h2>
+          <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
+        </div>
+        <hr></hr>
+        <div className="project-selection-tabs">
+          {sortedRelatedProjects.map((proj, index) => (
+            <button
+              key={index}
+              onClick={() => setSelectedProject(proj)}
+              className={selectedProject.id === proj.id ? 'active' : ''}
+            >
+              {proj.semesters}
+            </button>
+          ))}
+        </div>
         <label htmlFor="title" className="modal-label">Title</label>
         <input
           id="title"
           type="text"
           name="title"
           className="modal-input"
-          value={editedProject.title}
+          value={selectedProject.title}
           onChange={handleChange}
         />
 
@@ -52,7 +109,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           id="contents"
           name="contents"
           className="modal-textarea"
-          value={editedProject.contents}
+          value={selectedProject.contents}
           onChange={handleChange}
         />
 
@@ -62,7 +119,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           type="text"
           name="stack"
           className="modal-input"
-          value={editedProject.stack}
+          value={selectedProject.stack}
           onChange={handleChange}
         />
 
@@ -72,7 +129,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           type="text"
           name="team_name"
           className="modal-input"
-          value={editedProject.team_name}
+          value={selectedProject.team_name}
           onChange={handleChange}
         />
 
@@ -81,11 +138,22 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
           id="team_members"
           name="team_members"
           className="modal-textarea"
-          value={editedProject.team_members}
+          value={selectedProject.team_members}
           onChange={handleChange}
         />
         <label htmlFor="status" className="modal-label">Status</label>
-          <select
+        <div className="modal-status-buttons">
+          {statuses.map((status) => (
+            <button
+              key={status}
+              className={`status-button-edit ${status.toLowerCase().replace(/\s+/g, '-')}${selectedProject.status === status ? ' selected' : ''}`}
+              onClick={() => handleStatusChange(status)}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
+          {/* <select
             id="status"
             name="status"
             className="modal-input"
@@ -96,9 +164,9 @@ function EditProjectModal({ project, isOpen, onSave, onCancel }) {
             <option value="In-Progress">In-Progress</option>
             <option value="Suspended">Suspended</option>
             <option value="Unassigned">Unassigned</option>
-          </select>
+          </select> */}
         <div className="modal-actions">
-          <button onClick={() => onSave(editedProject)}>Save</button>
+          <button onClick={() => onSave(selectedProject)}>Save</button>
           <button onClick={onCancel}>Cancel</button>
         </div>
       </div>

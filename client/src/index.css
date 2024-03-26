@@ -1,7 +1,12 @@
+:root {
+  --background-color-dark: #373938; /* Original dark theme background */
+  --text-color-dark: #fff; /* Original dark theme text color */
+
+  --background-color-light: rgb(250, 249, 250); /* New light theme background */
+  --text-color-light: #000; /* New light theme text color */
+}
+
 body {
-  background-color: #181818;
-  font-size: 17px;
-  color: #fff;
   margin: 0;
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -9,6 +14,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body.dark-theme {
+  background-color: var(--background-color-dark);
+  color: var(--text-color-dark);
+}
+
+body.light-theme {
+  background-color: var(--background-color-light);
+  color: var(--text-color-light);
 }
 
 code {
