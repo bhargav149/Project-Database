@@ -1,0 +1,19 @@
+.home-container {
+    align-items: center;
+    height: 100%;
+    margin: 1em 4em;
+    border: 2px solid maroon;
+    border-radius: 20px;
+    box-shadow: #282C34 0px 13px 27px -5px, rgba(0, 0, 0, 0.2) 0px 8px 16px -8px;
+}
+
+.home-body {
+    padding: 0.5em 3em;
+    margin: 1em 0;
+}
+
+.home-auth {
+    padding: 10px;
+    display: block;
+    text-align: center;
+}

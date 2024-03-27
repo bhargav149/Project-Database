@@ -7,9 +7,16 @@ let pool;
 async function initializeDatabase() {
     console.log("Initializing database...");
     const connection = await mysql.createConnection({
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
+        //use for local development
+        // host: process.env.MYSQL_HOST,
+        // user: process.env.MYSQL_USER,
+        // password: process.env.MYSQL_PASSWORD,
+
+        //use for deployment
+        host:	'bravesouls-projectdb-mysql',
+        user: 'user',
+        password: 'bravesouls',
+
     });
 
     console.log("Connected to MySQL database.");
@@ -22,9 +29,16 @@ async function initializeDatabase() {
 
     console.log("Creating projects and project_semesters tables...");
     pool = mysql.createPool({
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
+        //use for local development
+        // host: process.env.MYSQL_HOST,
+        // user: process.env.MYSQL_USER,
+        // password: process.env.MYSQL_PASSWORD,
+
+        // use for cloud deployment
+        host:	'bravesouls-projectdb-mysql',
+        user: 'user',
+        password: 'bravesouls',
+        
         database: 'projects_app',
     });
 

@@ -13,18 +13,24 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.get("/projects", async (req, res) => {
+//use placeholder for local development, add "/server" for deployed
+// const url=""
+const url="/server"
+
+
+
+app.get(url+"/projects", async (req, res) => {
     const projects = await getProjects()
     res.json(projects)
 })
 
-app.get("/projects/:id", async (req, res, next) => {
+app.get(url+"/projects/:id", async (req, res, next) => {
     const id = req.params.id
     const project = await getProject(id)
     res.json(project)
 })
 
-app.post("/projects", async (req, res, next) => {
+app.post(url+"/projects", async (req, res, next) => {
     const {title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id} = req.body;
     try {
         const project = await createProject(title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id);
@@ -35,7 +41,7 @@ app.post("/projects", async (req, res, next) => {
     }
 })
 
-app.delete("/projects/:id", async (req, res) => {
+app.delete(url+"/projects/:id", async (req, res) => {
     try {
         const id = req.params.id;
         const result = await deleteProject(id);
@@ -50,7 +56,7 @@ app.delete("/projects/:id", async (req, res) => {
     }
 });
 
-app.put("/projects/:id", async (req, res) => {
+app.put(url+"/projects/:id", async (req, res) => {
     const { id } = req.params;
     const { title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id } = req.body; // Assume `semesters` is provided as an array
 
