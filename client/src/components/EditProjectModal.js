@@ -44,8 +44,10 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditedProject(prev => ({ ...prev, [name]: value }));
-    // console.log(`Updating status to: ${value}`);
+    setSelectedProject(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleStatusChange = (newStatus) => {

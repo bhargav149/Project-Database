@@ -7,15 +7,14 @@ let pool;
 async function initializeDatabase() {
     console.log("Initializing database...");
     const connection = await mysql.createConnection({
-        //use for local development
-        // host: process.env.MYSQL_HOST,
-        // user: process.env.MYSQL_USER,
-        // password: process.env.MYSQL_PASSWORD,
-
+        // use for local development
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
         //use for deployment
-        host:	'bravesouls-projectdb-mysql',
-        user: 'user',
-        password: 'bravesouls',
+        // host:	'bravesouls-projectdb-mysql',
+        // user: 'user',
+        // password: 'bravesouls',
 
     });
 
@@ -30,16 +29,16 @@ async function initializeDatabase() {
     console.log("Creating projects and project_semesters tables...");
     pool = mysql.createPool({
         //use for local development
-        // host: process.env.MYSQL_HOST,
-        // user: process.env.MYSQL_USER,
-        // password: process.env.MYSQL_PASSWORD,
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: 'projects_app',
 
         // use for cloud deployment
-        host:	'bravesouls-projectdb-mysql',
-        user: 'user',
-        password: 'bravesouls',
-        
-        database: 'projects_app',
+        // host:	'bravesouls-projectdb-mysql',
+        // user: 'user',
+        // password: 'bravesouls',
+        // database: 'projects_app',
     });
 
     // Create projects table
@@ -171,7 +170,7 @@ export async function getProject(id) {
     return rows;
 }
 
-export async function createProject(title, contents, stack, team_name, team_members, status = 'Unassigned', semesters = [], continuation_of_project_id = null) {
+export async function createProject(title, contents, stack, team_name, team_members, status = 'Unassigned', semesters = [], continuation_of_project_id) {
     console.log(`Creating project with semesters: ${semesters}`);
     const [projectResult] = await pool.query(`
         INSERT INTO projects (title, contents, stack, team_name, team_members, status, continuation_of_project_id)
@@ -223,7 +222,7 @@ export async function deleteProject(id) {
     return result;
 }
 
-export async function updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id = null) {
+export async function updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id) {
     const query = `
         UPDATE projects 
         SET title = ?, contents = ?, stack = ?, team_name = ?, team_members = ?, status = ?, continuation_of_project_id = ?
@@ -253,13 +252,16 @@ export async function getProjectSemesters(project_id) {
 }
 
 async function updateProjectSemesters(projectId, semesters) {
+    // Ensure semesters is always an array
+    const semestersArray = Array.isArray(semesters) ? semesters : [semesters].filter(Boolean);
+
     await pool.query(`
         DELETE FROM project_semesters
         WHERE project_id = ?
     `, [projectId]);
 
-    if (semesters && semesters.length > 0) {
-        await Promise.all(semesters.map(semester => 
+    if (semestersArray.length > 0) {
+        await Promise.all(semestersArray.map(semester => 
             pool.query(`
                 INSERT INTO project_semesters (project_id, semester)
                 VALUES (?, ?)

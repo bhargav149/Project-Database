@@ -14,8 +14,8 @@ app.use(express.json())
 app.use(cors())
 
 //use placeholder for local development, add "/server" for deployed
-// const url=""
-const url="/server"
+const url=""
+// const url="/server"
 
 
 

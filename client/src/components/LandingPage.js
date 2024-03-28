@@ -46,8 +46,8 @@ function App() {
 
 
   //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
-  // const url = "http://localhost:8080/";
-  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  const url = "http://localhost:8080/";
+  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
 
   useEffect(() => {
@@ -56,8 +56,9 @@ function App() {
 
   useEffect(() => {
     const semestersFromProjects = new Set(data.flatMap(project => project.semesters));
+    console.log("semesters from projects: ", semestersFromProjects)
     const newAvailableSemesters = [...semestersFromProjects];
-    console.log("Available Semesters:", newAvailableSemesters); // Debug log
+    console.log("new available Semesters:", newAvailableSemesters); // Debug log
     setAvailableSemesters(newAvailableSemesters);
   }, [data]);
   

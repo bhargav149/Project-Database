@@ -26,7 +26,7 @@ function AddProjectForm({ onAdd, projects }) {
     const [isContinuation, setIsContinuation] = useState('no');
     const [selectedContinuationProject, setSelectedContinuationProject] = useState(null);
     const [cont, setCont] = useState(-1);
-    const [status, setStatus] = useState('In-Progress');
+    const [status, setStatus] = useState('Unassigned');
     const currentYear = new Date().getFullYear();
     const years = Array.from(new Array(121), (val, index) => currentYear - 20 + index);
 
@@ -175,55 +175,19 @@ function AddProjectForm({ onAdd, projects }) {
                 </FormControl>
             </div>
             {isContinuation === 'no' && (
-                <div className="form-group">
-                <label htmlFor="title"><strong>Title:</strong></label>
-                <input
-                    id="title"
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. Project Database"
-                    required
-                />
-            </div>
-            )}
-            {isContinuation === 'yes' && (
                 <div>
-                    <strong>Title:</strong>
-                    <Autocomplete
-                        id="project-continuation-autocomplete"
-                        options={eligibleProjectsForContinuation}
-                        getOptionLabel={(option) => option.title}
-                        style={{ width: 300, height: 50 }}
-                        renderInput={(params) => <TextField {...params} variant="outlined"/>}
-                        onChange={handleProjectSelection}
-                        value={selectedContinuationProject}
-                        sx={{ 
-                            "& .MuiOutlinedInput-root": {
-                                padding: '2px', // Further reduce padding around the input field
-                                "& .MuiOutlinedInput-input": {
-                                    padding: '6px 4px', // Minimize vertical padding
-                                    fontSize: '0.75rem', // Further reduce font size if necessary for appearance
-                                },
-                                width: '87%',
-                                backgroundColor: '#fff',
-                                marginTop: '5px',
-                            },
-                            "& .MuiInputLabel-root": {
-                                transform: 'translate(14px, 4px) scale(1)', // Adjust label initial position for smaller input
-                                fontSize: '0.75rem', // Optional: Reduce label font size for consistency
-                            },
-                            "& .MuiInputLabel-shrink": {
-                                transform: 'translate(14px, -6px) scale(0.75)', // Adjust label position for focused state
-                            },
-                            "& .MuiSvgIcon-root": { // Adjust icon size if necessary
-                                fontSize: '1rem',
-                            },
-                        }}
-                    />
-                </div>
-            )}
-            <div className="form-group">
+                    <div className="form-group">
+                        <label htmlFor="title"><strong>Title:</strong></label>
+                        <input
+                            id="title"
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="e.g. Project Database"
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
                 <label htmlFor="contents"><strong>Description:</strong></label>
                 <input
                     id="contents"
@@ -279,6 +243,44 @@ function AddProjectForm({ onAdd, projects }) {
                 popupIcon={null}
             />
             </div>
+                </div>
+            )}
+            {isContinuation === 'yes' && (
+                <div>
+                    <strong>Title:</strong>
+                    <Autocomplete
+                        id="project-continuation-autocomplete"
+                        options={eligibleProjectsForContinuation}
+                        getOptionLabel={(option) => option.title}
+                        style={{ width: 300, height: 50 }}
+                        renderInput={(params) => <TextField {...params} variant="outlined"/>}
+                        onChange={handleProjectSelection}
+                        value={selectedContinuationProject}
+                        sx={{ 
+                            "& .MuiOutlinedInput-root": {
+                                padding: '2px', // Further reduce padding around the input field
+                                "& .MuiOutlinedInput-input": {
+                                    padding: '6px 4px', // Minimize vertical padding
+                                    fontSize: '0.75rem', // Further reduce font size if necessary for appearance
+                                },
+                                width: '87%',
+                                backgroundColor: '#fff',
+                                marginTop: '5px',
+                            },
+                            "& .MuiInputLabel-root": {
+                                transform: 'translate(14px, 4px) scale(1)', // Adjust label initial position for smaller input
+                                fontSize: '0.75rem', // Optional: Reduce label font size for consistency
+                            },
+                            "& .MuiInputLabel-shrink": {
+                                transform: 'translate(14px, -6px) scale(0.75)', // Adjust label position for focused state
+                            },
+                            "& .MuiSvgIcon-root": { // Adjust icon size if necessary
+                                fontSize: '1rem',
+                            },
+                        }}
+                    />
+                </div>
+            )}
             <div className="form-group">
                 <label htmlFor="team_name"><strong>Team Name:</strong></label>
                 <input
