@@ -152,7 +152,10 @@ async function initializeDatabase() {
             ('Suspended Project', 'Third phase with enhancements.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 2', 'Chris, Boone', 'In-Progress', 3),
             ('Suspended Project', 'Fourth phase with enhancements.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 3', 'Brown, Sunny', 'In-Progress', 3),
             ('Suspended Project', 'Fifth phase with enhancements.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 4', 'Some Creative Name, Some Creative Name', 'In-Progress', 3),
-            ('Suspended Project', 'Final phase with enhancements.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 5', 'Running out of Ideas..., Running out of Ideas...', 'In-Progress', 3);
+            ('Suspended Project', 'Final phase with enhancements.', 'React, Node.js, GraphQL, Docker', 'Continuation Team 5', 'Running out of Ideas..., Running out of Ideas...', 'In-Progress', 3),
+            ('Mobile App Development', 'Development of a cross-platform mobile application', 'React Native, Node.js', 'Mobile Devs', 'Alice, Bob, Charlie', 'In-Progress', -1),
+            ('Data Analysis Tool', 'Tool for analyzing large datasets with AI', 'Python, Pandas, TensorFlow', 'Data Wizards', 'Diana, Edward', 'Completed', -1),
+            ('E-commerce Website', 'An e-commerce website with custom CMS', 'PHP, Laravel, Vue.js', 'Commerce Crew', 'Faith, George, Hannah', 'Suspended', -1);
             `;
         await pool.query(seedDataSql);
 
@@ -181,6 +184,9 @@ async function initializeDatabase() {
             { projectId: 10, semester: 'Fall 2025' },
             { projectId: 11, semester: 'Spring 2026' },
             { projectId: 12, semester: 'Fall 2026' },
+            { projectId: 13, semester: 'Spring 2024' },
+            { projectId: 14, semester: 'Fall 2023' },
+            { projectId: 15, semester: 'Spring 2024' },
         ];
 
         await Promise.all(semesterData.map(data =>
@@ -193,9 +199,12 @@ async function initializeDatabase() {
         console.log("Seeding initial data for team, user, and admin tables...");
         // Insert teams linked to projects
         await pool.query(
-            "INSERT INTO team (team_name, team_members, project_id) VALUES (?, ?, ?)", 
-            ['Team 1', 'HyunJe, Atin, Prahaara', 1]
-        );
+            "INSERT INTO team (team_name, team_members, project_id) VALUES (?, ?, ?), (?, ?, ?), (?, ?, ?), (?, ?, ?)", 
+            ['Team 1', 'HyunJe, Atin, Prahaara', 1,
+            'Mobile Devs', 'Alice, Bob, Charlie', 13,
+            'Data Wizards', 'Diana, Edward', 14,
+            'Commerce Crew', 'Faith, George, Hannah', 15]
+        );        
         // Insert users linked to teams
         await pool.query(`
             INSERT INTO user (name, pid, team_id) VALUES
@@ -203,7 +212,15 @@ async function initializeDatabase() {
             ('Random person 1', 'pid1', 1),
             ('Random person 2', 'pid2', 2),
             ('Random person 3', 'pid3', 3),
-            ('Random person 4', 'pid4', 4);
+            ('Random person 4', 'pid4', 4),
+            ('Alice', 'user1', 2),
+            ('Bob', 'user2', 2),
+            ('Charlie', 'user3', 2),
+            ('Diana', 'user4', 3),
+            ('Edward', 'user5', 3),
+            ('Faith', 'user6', 4),
+            ('George', 'user7', 4),
+            ('Hannah', 'user8', 4);
         `);
         // Insert admins linked to teams
         await pool.query(`
