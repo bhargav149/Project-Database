@@ -73,11 +73,61 @@ async function initializeDatabase() {
     await pool.query(createProjectSemestersTableSql);
     console.log("Project_semesters table created.");
 
+    console.log("Creating user table...");
+    const createUserTableSql = `
+    CREATE TABLE IF NOT EXISTS user (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        pid VARCHAR(255) NOT NULL,
+        team_id INT DEFAULT -1
+    );`;
+    await pool.query(createUserTableSql);
+    console.log("User table created.");
+
+    console.log("Creating admin table...");
+    const createAdminTableSql = `
+    CREATE TABLE IF NOT EXISTS admin (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        pid VARCHAR(255) NOT NULL
+    );`;
+    await pool.query(createAdminTableSql);
+    console.log("Admin table created.");
+
+    console.log("Creating team table...");
+    const createTeamTableSql = `
+    CREATE TABLE IF NOT EXISTS team (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        team_name VARCHAR(255) NOT NULL,
+        team_members VARCHAR(255) NOT NULL,
+        project_id INT DEFAULT -1
+    );`;
+
+    await pool.query(createTeamTableSql);
+    console.log("Team table created or modified.");
+
+    console.log("Creating admin_project_notes table...");
+    const createAdminProjectNotesTableSql = `
+    CREATE TABLE IF NOT EXISTS admin_project_notes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        admin_id INT,
+        project_id INT,
+        note TEXT NOT NULL,
+        FOREIGN KEY (admin_id) REFERENCES admin(id) ON DELETE CASCADE,
+        FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+    );`;
+    await pool.query(createAdminProjectNotesTableSql);
+    console.log("Admin_project_notes table created.");
+
     // Check if tables were created successfully
     console.log("Verifying tables creation...");
     const [projectsTableRows] = await pool.query("SHOW TABLES LIKE 'projects'");
     const [projectSemestersTableRows] = await pool.query("SHOW TABLES LIKE 'project_semesters'");
-    if (projectsTableRows.length > 0 && projectSemestersTableRows.length > 0) {
+    const [projectTeamTableRows] = await pool.query("SHOW TABLES LIKE 'team'");
+    const [projectUserTableRows] = await pool.query("SHOW TABLES LIKE 'user'");
+    const [projectAdminTableRows] = await pool.query("SHOW TABLES LIKE 'admin'");
+
+    if (projectsTableRows.length > 0 && projectSemestersTableRows.length > 0 && projectTeamTableRows.length > 0
+        && projectUserTableRows.length > 0 && projectAdminTableRows.length > 0) {
         console.log("Tables created successfully.");
     } else {
         console.error("Failed to create tables.");
@@ -139,6 +189,39 @@ async function initializeDatabase() {
                 VALUES (?, ?)
             `, [data.projectId, data.semester])
         ));
+
+        console.log("Seeding initial data for team, user, and admin tables...");
+        // Insert teams linked to projects
+        await pool.query(
+            "INSERT INTO team (team_name, team_members, project_id) VALUES (?, ?, ?)", 
+            ['Team 1', 'HyunJe, Atin, Prahaara', 1]
+        );
+        // Insert users linked to teams
+        await pool.query(`
+            INSERT INTO user (name, pid, team_id) VALUES
+            ('HyunJe', 'k3h0j8', 1),
+            ('Random person 1', 'pid1', 1),
+            ('Random person 2', 'pid2', 2),
+            ('Random person 3', 'pid3', 3),
+            ('Random person 4', 'pid4', 4);
+        `);
+        // Insert admins linked to teams
+        await pool.query(`
+            INSERT INTO admin (pid) VALUES
+            ('k3h0j8'),
+            ('adminpid');
+        `);
+    
+        console.log("Seed data for team, user, and admin tables inserted successfully.");
+
+        console.log("Inserting initial note into admin_project_notes table...");
+        const insertNoteSql = `
+            INSERT INTO admin_project_notes (admin_id, project_id, note)
+            VALUES (1, 1, 'Initial note for the Project Database project');
+        `;
+        await pool.query(insertNoteSql);
+        console.log("Initial note inserted into admin_project_notes table.");
+
         console.log("Seed data inserted successfully.");
     } else {
         console.log("Seed data already exists in projects table.");
@@ -156,7 +239,7 @@ export async function getProjects() {
         LEFT JOIN project_semesters ps ON p.id = ps.project_id
         GROUP BY p.id
     `);
-    console.log("Fetched projects with semesters:", projects);
+    // console.log("Fetched projects with semesters:", projects);
     return projects;
 }
 
@@ -268,4 +351,121 @@ async function updateProjectSemesters(projectId, semesters) {
             `, [projectId, semester])
         ));
     }
+}
+
+export async function addNoteToProject(admin_id, project_id, note) {
+    await pool.query(`
+        INSERT INTO admin_project_notes (admin_id, project_id, note)
+        VALUES (?, ?, ?)
+    `, [admin_id, project_id, note]);
+}
+
+export async function getNotesForProject(admin_id, project_id) {
+    const [rows] = await pool.query(`
+        SELECT note
+        FROM admin_project_notes
+        WHERE admin_id = ? AND project_id = ?
+    `, [admin_id, project_id]);
+    return rows;
+}
+
+export async function updateNoteForProject(note_id, admin_id, newNote) {
+    await pool.query(`
+        UPDATE admin_project_notes
+        SET note = ?
+        WHERE id = ? AND admin_id = ?
+    `, [newNote, note_id, admin_id]);
+}
+
+export async function deleteNoteForProject(note_id, admin_id) {
+    await pool.query(`
+        DELETE FROM admin_project_notes
+        WHERE id = ? AND admin_id = ?
+    `, [note_id, admin_id]);
+}
+
+export async function createUser(name, pid, team_id) {
+    const [result] = await pool.query(`
+        INSERT INTO user (name, pid, team_id)
+        VALUES (?, ?, ?)
+    `, [name, pid, team_id]);
+    return result.insertId;
+}
+
+export async function getUsers() {
+    const [users] = await pool.query(`SELECT * FROM user`);
+    return users;
+}
+
+export async function getUser(id) {
+    const [rows] = await pool.query(`SELECT * FROM user WHERE id = ?`, [id]);
+    return rows[0];
+}
+export async function updateUser(id, name, pid, team_id) {
+    await pool.query(`
+        UPDATE user SET name = ?, pid = ?, team_id = ?
+        WHERE id = ?
+    `, [name, pid, team_id, id]);
+}
+
+export async function deleteUser(id) {
+    await pool.query(`DELETE FROM user WHERE id = ?`, [id]);
+}
+
+export async function createAdmin(pid) {
+    const [result] = await pool.query(`
+        INSERT INTO admin (pid)
+        VALUES (?)
+    `, [pid]);
+    return result.insertId;
+}
+
+export async function getAdmins() {
+    const [admins] = await pool.query(`SELECT * FROM admin`);
+    return admins;
+}
+
+export async function getAdmin(id) {
+    const [rows] = await pool.query(`SELECT * FROM admin WHERE id = ?`, [id]);
+    return rows[0];
+}
+
+export async function updateAdmin(id, pid) {
+    await pool.query(`
+        UPDATE admin SET pid = ?
+        WHERE id = ?
+    `, [pid, id]);
+}
+
+export async function deleteAdmin(id) {
+    await pool.query(`DELETE FROM admin WHERE id = ?`, [id]);
+}
+
+export async function createTeam(team_name, team_members, project_id) {
+    const [result] = await pool.query(`
+        INSERT INTO team (team_name, team_members, project_id)
+        VALUES (?, ?, ?)
+    `, [team_name, team_members, project_id]);
+    return result.insertId;
+}
+
+export async function getTeams() {
+    const [teams] = await pool.query(`SELECT * FROM team`);
+    return teams;
+}
+
+export async function getTeam(id) {
+    const [rows] = await pool.query(`SELECT * FROM team WHERE id = ?`, [id]);
+    return rows[0];
+}
+
+export async function updateTeam(id, team_name, team_members, project_id) {
+    await pool.query(`
+        UPDATE team SET team_name = ?, team_members = ?, project_id = ?
+        WHERE id = ?
+    `, [team_name, team_members, project_id, id]);
+}
+
+export async function deleteTeam(id) {
+    await pool.query(`DELETE FROM team WHERE id = ?`, [id]);
 }

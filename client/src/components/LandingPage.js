@@ -44,6 +44,7 @@ function App() {
   const [editingProject, setEditingProject] = useState(null);
   const [relatedProjects, setRelatedProjects] = useState([]);
 
+  const [notes, setNotes] = useState([]);
 
   //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
   const url = "http://localhost:8080/";
@@ -243,7 +244,6 @@ const deleteRootProject = (id, deletedChildProjects) => {
     setRelatedProjects(projectAndContinuations); // Update related projects to include continuations
   };
   
-
   const saveEdit = (updatedProject) => {
     // console.log(`Saving project with updated status: `, updatedProject);
     fetch(url+`projects/${updatedProject.id}`, {
@@ -309,8 +309,6 @@ const deleteRootProject = (id, deletedChildProjects) => {
   
     return allSemestersArray;
   };
-  
-  
 
   const getStatusStyle = (status) => {
     switch (status) {
@@ -370,9 +368,22 @@ const deleteRootProject = (id, deletedChildProjects) => {
     setData(sortedData);
   };
 
-  const viewProjectDetails = (project) => {
-    setEditingProject(project); // Reuse this state to avoid creating a new one
+  const viewProjectDetails = async (project) => {
     setIsViewModalOpen(true);
+    setEditingProject(project); // Assuming you're reusing this for viewing
+  
+    // Fetch related projects
+    const rootProjectId = project.continuation_of_project_id === -1 ? project.id : project.continuation_of_project_id;
+    const projectAndContinuations = data.filter(p => 
+      p.id === rootProjectId || p.continuation_of_project_id === rootProjectId
+    );
+    setRelatedProjects(projectAndContinuations);
+
+    // Fetch notes for the selected project
+    fetch(`${url}projects/${project.id}/notes`)
+      .then(response => response.json())
+      .then(notes => setNotes(notes))
+      .catch(err => console.error("Failed to fetch notes:", err));
   };
   
   const toggleDarkMode = () => {
@@ -569,6 +580,8 @@ const deleteRootProject = (id, deletedChildProjects) => {
           isOpen={isViewModalOpen}
           onClose={() => setIsViewModalOpen(false)}
           theme={isDarkMode ? 'dark' : 'light'}
+          relatedProjects={relatedProjects}
+          notes={notes}
         />
       )}
   

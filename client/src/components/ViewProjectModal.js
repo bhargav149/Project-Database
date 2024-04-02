@@ -1,11 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ViewProjectModal.css';
 import { X } from 'lucide-react';
 
-function ViewProjectModal({ project, isOpen, onClose, theme }) {
-  if (!isOpen) return null;
+function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes }) {
+  const [selectedProject, setSelectedProject] = useState(project);
 
+  useEffect(() => {
+    setSelectedProject(project); // Reset selected project when the main project changes
+  }, [project]);
+
+  if (!isOpen) return null;
+  console.log('Notes prop:', notes);
   const themeClass = theme === 'dark' ? 'dark-theme' : 'light-theme';
+  const semesterTabs = relatedProjects.map(proj => proj.semesters);
+
+  const getAllSemesters = () => {
+    const semesterSet = new Set();
+    relatedProjects.forEach(proj => {
+      // Ensure semesters is treated as an array
+      const semesters = Array.isArray(proj.semesters) ? proj.semesters : [proj.semesters];
+      semesters.forEach(semester => {
+        semesterSet.add(semester);
+      });
+    });
+    // Convert to array and sort, if sorting is needed
+    return Array.from(semesterSet).sort(); // Implement actual sorting logic if needed
+  };  
+
+  const allSemesters = getAllSemesters();
+
 
   return (
     <div className={`modal-overlay ${themeClass}`}>
@@ -15,11 +38,23 @@ function ViewProjectModal({ project, isOpen, onClose, theme }) {
           <X className="modal-close-btn" onClick={onClose}></X>
         </div>
         <hr></hr>
-        <p><strong>Description:</strong> {project.contents}</p>
-        <p><strong>Technology Stack:</strong> {project.stack}</p>
-        <p><strong>Team Name:</strong> {project.team_name}</p>
-        <p><strong>Team Members:</strong> {project.team_members}</p>
-        <p><strong>Status:</strong> {project.status}</p>
+        <div className="project-selection-tabs">
+          {relatedProjects.map((proj, index) => (
+            <button
+              key={index}
+              className={`semester-tab ${selectedProject.id === proj.id ? 'active' : ''}`}
+              onClick={() => setSelectedProject(proj)}
+            >
+              {proj.semesters}
+            </button>
+          ))}
+        </div>
+        <p><strong>Note:</strong> {notes.map(noteObj => noteObj.note).join(', ')}</p>
+        <p><strong>Description:</strong> {selectedProject.contents}</p>
+        <p><strong>Stack:</strong> {selectedProject.stack}</p>
+        <p><strong>Team:</strong> {selectedProject.team_name}</p>
+        <p><strong>Members:</strong> {selectedProject.team_members}</p>
+        <p><strong>Status:</strong> {selectedProject.status}</p>
       </div>
     </div>
   );
