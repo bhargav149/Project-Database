@@ -1,5 +1,13 @@
 import express from 'express'
 import cors from 'cors'
+import multer from 'multer'
+import path from 'path'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+import mime from 'mime-types'
+import fs from 'fs'
+
+
 import {
     getProjects,
     getProject,
@@ -24,7 +32,10 @@ import {
     addNoteToProject,
     getNotesForProject,
     updateNoteForProject,
-    deleteNoteForProject
+    deleteNoteForProject,
+    getFiles,
+    addFile,
+    deleteFileFromDatabase
 } from './database.js'
 
 const app = express()
@@ -33,14 +44,80 @@ app.use(express.json())
 app.use(cors())
 
 //use placeholder for local development, add "/server" for deployed
-const url=""
-// const url="/server"
+// const url=""
+const url="/server"
+
+
+const storage = multer.diskStorage({
+destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+},
+filename: function (req, file, cb) {
+    cb(null, file.originalname)
+}
+});
+const upload = multer({ storage: storage });
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+
+// POST endpoint for file uploads
+app.post(url+'/upload', upload.single('file'), (req, res) => {
+    // Access the uploaded file details from req.file
+    console.log('File uploaded:', req.file);
+    
+    // Generate a unique filename to ensure uniqueness
+    // const uniqueFilename = `${Date.now()}_${req.file.originalname}`;
+    
+    // Determine the file type
+    const fileType = mime.lookup(req.file.originalname);
+    
+    // Send the filename and file type in the response
+    res.json({ filename: req.file.originalname, fileType });
+});
+
+// Serve uploaded files statically
+app.use(url+'/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.post(url+'/files', async (req,res) => {
+    const {project_id, filename, filetype} = req.body;
+    try {
+        const file = await addFile(project_id, filename, filetype);
+        res.status(201).json(file);
+    } catch (err) {
+        console.error("Error uploading file:", err);
+        res.status(500).send('Something went wrong');
+    }
+})
+
+app.get(url+'/files/:semesterId', async (req,res) => {
+    const files = await getFiles(req.params.semesterId);
+    res.json(files);
+})
+
+app.delete(url+'/files/:filename', async (req, res) => {
+    const filename = req.params.filename;
+  
+    // Delete file entry from MySQL database
+    try {
+      await deleteFileFromDatabase(filename);
+      console.log(`File ${filename} deleted from database.`);
+      res.sendStatus(204); // No content - operation successful
+    } catch (error) {
+      console.error(`Error deleting file ${filename} from database:`, error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
 
 
 
 app.get(url+"/projects", async (req, res) => {
     const projects = await getProjects()
     res.json(projects)
+})
+
+app.get(url+"/admins", async (req,res) => {
+    const admins = await getAdmins()
+    res.json(admins)
 })
 
 app.get(url+"/projects/:id", async (req, res, next) => {

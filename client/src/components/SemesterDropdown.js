@@ -52,6 +52,7 @@ export default function SemesterDropdown({ themeMode, availableSemesters, select
 
   const sortedSemesters = React.useMemo(() => sortSemesters(availableSemesters), [availableSemesters]);
   
+  
   return (
     <ThemeProvider theme={theme}>
       <FormControl sx={{ m: 1, width: 180 }} size="small">

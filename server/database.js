@@ -8,13 +8,13 @@ async function initializeDatabase() {
     console.log("Initializing database...");
     const connection = await mysql.createConnection({
         // use for local development
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
+        // host: process.env.MYSQL_HOST,
+        // user: process.env.MYSQL_USER,
+        // password: process.env.MYSQL_PASSWORD,
         //use for deployment
-        // host:	'bravesouls-projectdb-mysql',
-        // user: 'user',
-        // password: 'bravesouls',
+        host:	'bravesouls-projectdb-mysql',
+        user: 'user',
+        password: 'bravesouls',
 
     });
 
@@ -29,16 +29,16 @@ async function initializeDatabase() {
     console.log("Creating projects and project_semesters tables...");
     pool = mysql.createPool({
         //use for local development
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: 'projects_app',
+        // host: process.env.MYSQL_HOST,
+        // user: process.env.MYSQL_USER,
+        // password: process.env.MYSQL_PASSWORD,
+        // database: 'projects_app',
 
         // use for cloud deployment
-        // host:	'bravesouls-projectdb-mysql',
-        // user: 'user',
-        // password: 'bravesouls',
-        // database: 'projects_app',
+        host:	'bravesouls-projectdb-mysql',
+        user: 'user',
+        password: 'bravesouls',
+        database: 'projects_app',
     });
 
     // Create projects table
@@ -118,6 +118,16 @@ async function initializeDatabase() {
     await pool.query(createAdminProjectNotesTableSql);
     console.log("Admin_project_notes table created.");
 
+    const createFileTableSql = `
+    CREATE TABLE IF NOT EXISTS files (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        project_id INT,
+        filename VARCHAR(255) NOT NULL,
+        filetype VARCHAR(255) NOT NULL
+    );`;
+
+    await pool.query(createFileTableSql);
+
     // Check if tables were created successfully
     console.log("Verifying tables creation...");
     const [projectsTableRows] = await pool.query("SHOW TABLES LIKE 'projects'");
@@ -158,6 +168,9 @@ async function initializeDatabase() {
             ('E-commerce Website', 'An e-commerce website with custom CMS', 'PHP, Laravel, Vue.js', 'Commerce Crew', 'Faith, George, Hannah', 'Suspended', -1);
             `;
         await pool.query(seedDataSql);
+
+
+
 
         // Insert 'Spring 2024' semester for all projects
         const spring2024Semester = 'Spring 2024';
@@ -226,6 +239,7 @@ async function initializeDatabase() {
         await pool.query(`
             INSERT INTO admin (pid) VALUES
             ('k3h0j8'),
+            ('atink'),
             ('adminpid');
         `);
     
@@ -243,11 +257,25 @@ async function initializeDatabase() {
     } else {
         console.log("Seed data already exists in projects table.");
     }
-
     console.log("Database initialization complete.");
 }
 
 initializeDatabase()
+
+export async function getFiles(projectId) {
+    const [files] = await pool.query(`
+        SELECT * FROM files WHERE project_id = ?
+    `, [projectId]);
+    return files;
+}
+
+export async function addFile(project_id, filename, filetype) {
+    const [result] = await pool.query(`
+    INSERT INTO files (project_id, filename, filetype)
+    VALUES (?,?,?)
+    `, [project_id,filename,filetype]);
+    return getFiles(project_id);
+}
 
 export async function getProjects() {
     const [projects] = await pool.query(`
@@ -485,4 +513,19 @@ export async function updateTeam(id, team_name, team_members, project_id) {
 
 export async function deleteTeam(id) {
     await pool.query(`DELETE FROM team WHERE id = ?`, [id]);
+}
+
+
+// Method to delete file entry from MySQL database
+export async function deleteFileFromDatabase(filename) {
+    return new Promise((resolve, reject) => {
+      const sql = 'DELETE FROM files WHERE filename = ?';
+      pool.query(sql, [filename], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
 }

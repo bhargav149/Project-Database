@@ -1,3 +1,4 @@
 .env
 .env.txt
 client/node_modules
+node_modules

@@ -75,10 +75,18 @@ docker compose down -v
 - The site is deployed at https://bravesouls-projectdb.discovery.cs.vt.edu/. The login page is at https://bravesouls-projectdb.discovery.cs.vt.edu/login and is working but not connected to the rest of the site. It needs to be integrated and styled
 - The Docker image for the node project is not included in Dockerfile
 -FILES TO MODIFY BEFORE DEPLOYMENT: 
-    - server/database.js(look at lines 7-36)
-    - server/app.js(lines 17/18)
+    - server/database.js(look at lines 10-40)
+    - server/app.js(lines 28/29)
     - client/src/components/LandingPage.js(lines 49/50)
     - client/src/AppRoutes.js(line 14)
+    - client/src/components/EditProjectModal.js(lines 20/21)
     - all of these files will have comments telling you what to change
+
+
+
+## IMPORTANT
+- When committing, run these after git add . if you see these are staged
+    - git restore --staged client/node_modules
+    - git restore --staged node_modules
 
 

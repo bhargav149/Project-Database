@@ -8,6 +8,8 @@ RUN npm install
 
 RUN npm i lucide-react
 
+RUN npm i axios
+
 COPY . .
 
 EXPOSE 3000

@@ -10,6 +10,8 @@ import DataTable from './DataTable';
 
 import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw } from 'lucide-react';
 import './LandingPage.css';
+import axios from 'axios';
+
 
 function App() {
 
@@ -46,9 +48,10 @@ function App() {
 
   const [notes, setNotes] = useState([]);
 
+
   //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
-  const url = "http://localhost:8080/";
-  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  // const url = "http://localhost:8080/";
+  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
 
   useEffect(() => {
@@ -587,6 +590,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
   
       <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} />
     </div>
+    
   );  
 }
 

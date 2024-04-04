@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './EditProjectModal.css';
 import { X } from 'lucide-react';
+import axios from 'axios';
+
 
 function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }) {
   const [editedProject, setEditedProject] = useState({
@@ -15,6 +17,9 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
   const [currentProject, setCurrentProject] = useState(project);
   const [selectedProject, setSelectedProject] = useState(project);
 
+  // const url = "http://localhost:8080/";
+  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+
   useEffect(() => {
     setCurrentProject(project);
   }, [project]);
@@ -26,6 +31,11 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
   const selectProject = (selectedProject) => {
     setCurrentProject(selectedProject);
   };
+
+  const changeProject = (project) => {
+    setSelectedProject(project)
+    fetchFiles()
+  }
 
   
   useEffect(() => {
@@ -77,6 +87,73 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
   // Sorted related projects
   const sortedRelatedProjects = relatedProjects.sort(compareSemesters);
 
+  const [fileType, setFileType] = useState(null);
+  const [file, setFile] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
+
+  const [files, setFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  useEffect(() => {
+    fetchFiles();
+  }, [uploadedFiles]);
+
+  const fetchFiles = () => {
+    fetch(url+"files/"+selectedProject.id)
+      .then(res => res.json())
+      .then(data => setUploadedFiles(data.map(project => ({ ...project}))))
+      .catch(err => console.error(err));
+  };
+  const handleDelete = async (index) => {
+    const filename = uploadedFiles[index].filename;
+    try {
+      // Send DELETE request to the Express backend endpoint
+      await axios.delete(url+`files/${filename}`);
+      console.log(`File ${filename} deleted successfully.`);
+    } catch (error) {
+      console.error(`Error deleting file ${filename}:`, error);
+    }
+  };
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    const formData = new FormData();
+    const uniqueFilename = `${Date.now()}_${file.name}`; // Generate unique filename
+    formData.append('file', file, uniqueFilename);
+    try {
+      const response = await axios.post(url+'upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log('File uploaded successfully:', response.data);
+      setUploadedFile(response.data.filename); // Assuming the server returns the filename
+      setFileType(response.data.fileType); // Assuming the server returns the file type
+      console.log("file type ",response.data.fileType);
+      fetch(url+"files", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          project_id: selectedProject.id,
+          filename: response.data.filename,
+          filetype: response.data.fileType
+        }),
+      })
+      .then(response => response.json())
+      .then(() => {fetchFiles()})
+      .catch(err => console.error(err));
+      console.log(uploadedFiles)
+
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal-card">
@@ -89,7 +166,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
           {sortedRelatedProjects.map((proj, index) => (
             <button
               key={index}
-              onClick={() => setSelectedProject(proj)}
+              onClick={() => changeProject(proj)}
               className={selectedProject.id === proj.id ? 'active' : ''}
             >
               {proj.semesters}
@@ -155,18 +232,24 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
             </button>
           ))}
         </div>
-          {/* <select
-            id="status"
-            name="status"
-            className="modal-input"
-            value={editedProject.status || 'Unassigned'}
-            onChange={handleChange}
-          >
-            <option value="Completed">Completed</option>
-            <option value="In-Progress">In-Progress</option>
-            <option value="Suspended">Suspended</option>
-            <option value="Unassigned">Unassigned</option>
-          </select> */}
+      <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload File</button>
+        <div>
+          {uploadedFiles.map((file, index) => (
+                <div key={index}>
+                  {file.filetype.startsWith('image') ? (
+                    <img src={url+`uploads/${file.filename}`} alt={`Uploaded File ${index + 1}`} style={{ maxWidth: '100%', maxHeight: '400px' }} />
+                  ) : (
+                    <div>
+                      <a href={url+`uploads/${file.filename}`} download>{file.filename}</a>
+                    </div>
+                  )}
+                  <button onClick={() => handleDelete(index)}><i className="fas fa-trash-alt"></i></button>
+                </div>
+              ))}
+        </div>
+    </div>
         <div className="modal-actions">
           <button onClick={() => onSave(selectedProject)}>Save</button>
           <button onClick={onCancel}>Cancel</button>
