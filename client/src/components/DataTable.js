@@ -43,7 +43,7 @@ export default function DataTable({ themeMode, deleteProject, saveEdit }) {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch(url+"/projects");
+        const response = await fetch(url+"projects");
         const data = await response.json();
         data.sort((a, b) => {
           const titleComparison = a.title.localeCompare(b.title);
