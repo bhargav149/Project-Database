@@ -240,6 +240,8 @@ async function initializeDatabase() {
             INSERT INTO admin (pid) VALUES
             ('k3h0j8'),
             ('atink'),
+            ('prahaara08'),
+            ('barry22'),
             ('adminpid');
         `);
     
@@ -471,7 +473,7 @@ export async function getAdmins() {
 }
 
 export async function getAdmin(id) {
-    const [rows] = await pool.query(`SELECT * FROM admin WHERE id = ?`, [id]);
+    const [rows] = await pool.query(`SELECT * FROM admin WHERE pid = ?`, [id]);
     return rows[0];
 }
 

@@ -115,10 +115,6 @@ app.get(url+"/projects", async (req, res) => {
     res.json(projects)
 })
 
-app.get(url+"/admins", async (req,res) => {
-    const admins = await getAdmins()
-    res.json(admins)
-})
 
 app.get(url+"/projects/:id", async (req, res, next) => {
     const id = req.params.id
@@ -220,9 +216,9 @@ app.get(`${url}/admins`, async (req, res) => {
     }
 });
 
-app.get(`${url}/admins/:id`, async (req, res) => {
+app.get(`${url}/admins/:pid`, async (req, res) => {
     try {
-        const admin = await getAdmin(req.params.id);
+        const admin = await getAdmin(req.params.pid);
         if (admin) res.json(admin);
         else res.status(404).send('Admin not found');
     } catch (error) {

@@ -53,6 +53,18 @@ function App() {
   // const url = "http://localhost:8080/";
   const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
+  const [user, setUser] = React.useState(null);
+  const [isAdmin,setIsAdmin]=useState(false);
+
+  useEffect(() => {
+    async function getCurrentUser() {
+      await fetch("/api/currentUser")
+        .then((res) => res.json())
+        .then((data) => setUser(data.user));
+    }
+    getCurrentUser();
+  }, []);
+
 
   useEffect(() => {
     fetchProjects();
@@ -451,6 +463,30 @@ const deleteRootProject = (id, deletedChildProjects) => {
     const sortedTeams = Array.from(teamSemesterMap.entries()).sort((a, b) => sortSemesters(a[1], b[1]));
     return sortedTeams.map(entry => entry[0]);
   };
+
+  async function fetchAdminData(adminId) {
+    try {
+        const response = await fetch(`${url}admins/${adminId}`);
+        if (!response.ok) {
+            throw new Error('Admin data not found');
+        }
+        return await response.json();
+    } catch (error) {
+        throw new Error('Error fetching admin data');
+    }
+}
+
+fetchAdminData(user)
+    .then(admin => {
+        setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
+        console.log('Is admin:', isAdmin);
+        // You can use the value of 'isAdmin' in your application logic
+    })
+    .catch(error => {
+        setIsAdmin(false)
+        console.error('Error:', error.message);
+        // Handle error appropriately
+    });
   
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
@@ -537,7 +573,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
                 <p><strong>Team:</strong> {getAllTeamsForProjectSortedBySemester(project.id).join(', ')}</p>
                 {/* <p><strong>Team Members:</strong> {project.team_members}</p> */}
                 <p><strong>Semester:</strong> {getAllSemestersForProject(project.id).join(', ')}</p>
-                <button className="status-button completed">Completed</button>
+                <button className="status-button suspended">Completed</button>
                 <div className="indicator-container">
                   {data.some(p => p.continuation_of_project_id === project.id) && (
                       <button className="continued-indicator" onClick={(e) => e.stopPropagation()}>
@@ -549,13 +585,16 @@ const deleteRootProject = (id, deletedChildProjects) => {
                   event.stopPropagation();
                   deleteProject(project.id);
                 }}>Delete</button>
-                <span className="button-edit" onClick={(event) => {
-                  event.stopPropagation();
-                  toggleEdit(project);
-                }} style={{ cursor: 'pointer' }}>
-                  <FilePenLine />
-                </span>
-                <button className={getStatusStyle(project.status)}>{project.status}</button>
+                {isAdmin ?
+                  (<><span className="button-edit" onClick={(event) => {
+                    event.stopPropagation();
+                    toggleEdit(project);
+                  } } style={{ cursor: 'pointer' }}>
+                    <FilePenLine />
+                  </span></>) :
+                  <></>
+              }
+              <button className={getStatusStyle(project.status)}>{project.status}</button>
               </div>
             ))}
           </div>

@@ -33,13 +33,17 @@ const columns = [
   }
 ];
 
+//USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
+// const url = "http://localhost:8080/";
+const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+
 export default function DataTable({ themeMode, deleteProject, saveEdit }) {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch("http://localhost:8080/projects");
+        const response = await fetch(url+"/projects");
         const data = await response.json();
         data.sort((a, b) => {
           const titleComparison = a.title.localeCompare(b.title);

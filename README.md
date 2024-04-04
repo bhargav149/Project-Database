@@ -80,6 +80,7 @@ docker compose down -v
     - client/src/components/LandingPage.js(lines 49/50)
     - client/src/AppRoutes.js(line 14)
     - client/src/components/EditProjectModal.js(lines 20/21)
+    - client/src/components/DataTable.js(lines 37/38)
     - all of these files will have comments telling you what to change
 
 
