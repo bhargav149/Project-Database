@@ -7,8 +7,9 @@ import Toast from './Toast';
 import SemesterDropdown from './SemesterDropdown';
 import SearchCategory from './SearchCategory';
 import DataTable from './DataTable';
+import SettingsPage from './Settings';
 
-import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw } from 'lucide-react';
+import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw, Settings, Undo2 } from 'lucide-react';
 import './LandingPage.css';
 import axios from 'axios';
 
@@ -48,22 +49,23 @@ function App() {
 
   const [notes, setNotes] = useState([]);
 
+  const [settingsView, setSettingsView] = useState(false);
 
   //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
-  // const url = "http://localhost:8080/";
-  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  const url = "http://localhost:8080/";
+  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
   const [user, setUser] = React.useState(null);
-  const [isAdmin,setIsAdmin]=useState(false);
+  const [isAdmin,setIsAdmin]=useState(true);
 
-  useEffect(() => {
-    async function getCurrentUser() {
-      await fetch("/api/currentUser")
-        .then((res) => res.json())
-        .then((data) => setUser(data.user));
-    }
-    getCurrentUser();
-  }, []);
+  // useEffect(() => {
+  //   async function getCurrentUser() {
+  //     await fetch("/api/currentUser")
+  //       .then((res) => res.json())
+  //       .then((data) => setUser(data.user));
+  //   }
+  //   getCurrentUser();
+  // }, []);
 
 
   useEffect(() => {
@@ -410,6 +412,10 @@ const deleteRootProject = (id, deletedChildProjects) => {
     setTableView(!tableView);
   };
 
+  const toggleSettingsView = () => {
+    setSettingsView(!settingsView);
+  };
+
   // const options = [
   //   { value: 'spring_2024', label: 'Spring 2024' },
   //   { value: 'fall_2024', label: 'Fall 2024' },
@@ -475,18 +481,21 @@ const deleteRootProject = (id, deletedChildProjects) => {
         throw new Error('Error fetching admin data');
     }
 }
+  const revertToPreviousView = () => {
+    setSettingsView(false); // Assuming you want to leave settings view when undo is clicked
+  };
 
-fetchAdminData(user)
-    .then(admin => {
-        setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
-        console.log('Is admin:', isAdmin);
-        // You can use the value of 'isAdmin' in your application logic
-    })
-    .catch(error => {
-        setIsAdmin(false)
-        console.error('Error:', error.message);
-        // Handle error appropriately
-    });
+// fetchAdminData(user)
+//     .then(admin => {
+//         setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
+//         console.log('Is admin:', isAdmin);
+//         // You can use the value of 'isAdmin' in your application logic
+//     })
+//     .catch(error => {
+//         setIsAdmin(false)
+//         console.error('Error:', error.message);
+//         // Handle error appropriately
+//     });
   
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
@@ -511,7 +520,7 @@ fetchAdminData(user)
         </div>
       </header>
   
-      {!tableView && (
+      {!tableView && !settingsView && (
         <>
           <SideNavigation onSort={handleSort} theme={isDarkMode ? 'dark' : 'light'} />
           <div className="search-container">
@@ -557,11 +566,19 @@ fetchAdminData(user)
         <button onClick={toggleAddProjectForm} className="add-project-button">
           {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
         </button>
+
         <button onClick={toggleView} className="view-toggle-button">
           {tableView ? <LayoutGrid size={24}/> : <Table2 size={24}/>}
         </button>
 
-        {tableView ? (
+        <button onClick={toggleSettingsView} className="settings-toggle-button">
+          {settingsView ? <Undo2 size={24}/> : <Settings size={24}/>}
+        </button>
+
+        { settingsView ? (
+        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'}/>
+      ) :
+      tableView ? (
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'}/>
         ) : (
           <div className="cards-container">

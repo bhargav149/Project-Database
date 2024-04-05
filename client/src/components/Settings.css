@@ -1,0 +1,96 @@
+/* Container for the sidebar and content */
+.settings-container {
+    display: flex;
+    min-height: 80vh;
+    width: 80vw;
+    margin-top: 50px;
+}
+
+.settings-container.light {
+    background-color: #fff; /* Light background */
+    color: #000; /* Dark text for light background */
+  }
+  
+  .settings-container.dark {
+    background-color: #333; /* Dark background */
+    color: #fff; /* Light text for dark background */
+  }
+
+/* Sidebar styling */
+.sidebar {
+    flex: 0 0 170px; /* Fixed width for sidebar */
+    padding: 20px;
+    background-color: #F6E8EA; /* Light grey background */
+    border-right: 1px solid #F6E8EA; /* Separator line */
+    border-radius: 15px 0 0 15px; /* Rounded left edges */
+    background-color: rgb(34,32,31);
+}
+
+/* Navigation link styling */
+.navLink {
+    display: block;
+    padding: 10px;
+    margin: 5px 0;
+    color: #F6E8EA; /* Dark text color for contrast */
+    text-decoration: none; /* Remove underline */
+    cursor: pointer;
+    border-radius: 15px; /* Rounded corners for links */
+    transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+/* Hover effect for navigation links */
+.navLink:hover {
+    background-color: #F6E8EA; /* Lighter grey on hover */
+    color: rgb(34,32,31);
+}
+
+/* Active navigation link styling */
+.navLink.active {
+    background-color: #F6E8EA; /* Bootstrap primary color for reference */
+    color: rgb(34,32,31); /* White text color */
+    font-weight: bold; /* Make it pop */
+}
+
+/* Main content area styling */
+.mainContent {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #F6E8EA; /* White background */
+    text-align: left;
+    border-radius: 0 15px 15px 0; /* Rounded right edges */
+    color: rgb(34,32,31);
+    opacity: 0.95;
+}
+
+.settingsContainer {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 15px; /* Rounded corners for the container */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Soft shadow for depth */
+}
+
+.settings-container.light .sidebar {
+    background-color: rgb(123,40,65); /* Light background for light theme */
+    color: rgb(34,32,31); /* Dark text color for light background */
+    border: 1px solid #000;
+}
+
+.settings-container.light .mainContent {
+    background-color: #FEFEFF; /* Light background for light theme */
+    color: rgb(34,32,31); /* Dark text color for light background */
+    border: 1px solid #000;
+}
+
+.settings-container.light .navLink:hover {
+    background-color: #FEFEFF; /* Dark background color on hover for light theme */
+    color: #000; /* Light text color on hover for light theme */
+}
+
+.settings-container.light .navLink.active {
+    background-color: #FEFEFF; /* Dark background color for active state in light theme */
+    color: #000; /* Light text color for active state in light theme */
+}
+
+.settings-container.light .navLink {
+    color: #fff; /* Light text color for active state in light theme */
+}

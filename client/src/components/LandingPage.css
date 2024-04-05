@@ -209,7 +209,7 @@
     width: 70%;
 }
 
-.add-project-button, .view-toggle-button {
+.add-project-button, .view-toggle-button, .settings-toggle-button {
     position: absolute;
     right: 50px;
     width: 40px;
@@ -227,7 +227,7 @@
     transition: transform 0.3s ease;
 }
 
-.add-project-button:hover, .view-toggle-button:hover {
+.add-project-button:hover, .view-toggle-button:hover, .settings-toggle-button:hover {
     transform: scale(1.1);
 }
 
@@ -237,6 +237,10 @@
 
 .view-toggle-button {
     top: 200px;
+}
+
+.settings-toggle-button {
+    top: 265px;
 }
 
 .login-button {
@@ -418,6 +422,12 @@
 }
 
 .light-theme .view-toggle-button {
+    background-color: rgb(123,40,65);
+    color: #fff;
+    border: 1px solid #fff;
+}
+
+.light-theme .settings-toggle-button {
     background-color: rgb(123,40,65);
     color: #fff;
     border: 1px solid #fff;

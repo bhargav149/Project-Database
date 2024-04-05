@@ -17,8 +17,8 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
   const [currentProject, setCurrentProject] = useState(project);
   const [selectedProject, setSelectedProject] = useState(project);
 
-  // const url = "http://localhost:8080/";
-  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  const url = "http://localhost:8080/";
+  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
   useEffect(() => {
     setCurrentProject(project);
