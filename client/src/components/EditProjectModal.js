@@ -4,7 +4,7 @@
   import axios from 'axios';
 
 
-  function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }) {
+  function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, notes }) {
     const [editedProject, setEditedProject] = useState({
       title: '',
       contents: '',
@@ -17,8 +17,9 @@
     const [currentProject, setCurrentProject] = useState(project);
     const [selectedProject, setSelectedProject] = useState(project);
     const [dragging, setDragging] = useState(false);
+    const [editedNote, setEditedNote] = useState('');
+
     const url = "http://localhost:8080/";
-    const furl = "http://localhost:8080";
 
     // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -30,7 +31,12 @@
     
     useEffect(() => {
       setSelectedProject(project);
-    }, [project]);
+      // Filter the notes array for the note corresponding to the selected project
+      const projectNote = notes.find(n => n.projectId === project.id);
+      setEditedNote(projectNote ? projectNote.note : '');
+  }, [project, notes]);
+
+
 
     const selectProject = (selectedProject) => {
       setCurrentProject(selectedProject);
@@ -222,8 +228,32 @@
           await handleUpload(file); // Wait for the file to be uploaded
       }
       // After file upload, proceed with saving project data...
-      onSave(selectedProject); // Assuming onSave is your function for saving project details
+      onSave({ ...selectedProject }); // Assuming onSave is your function for saving project details
+
+      try {
+        const notePayload = { 
+            // Include necessary fields for your note update API
+            note: editedNote,
+            projectId: selectedProject.id,
+            // Add admin_id if required by your backend
+        };
+
+        // Assuming an endpoint exists to update a note for a project
+        // Adjust the URL and method (POST/PUT) according to your API
+        await axios.post(`${process.env.REACT_APP_API_URL}/projects/${selectedProject.id}/notes`, notePayload);
+        console.log('Note updated successfully');
+        // Optionally, refresh notes from the server or update local state to reflect the change
+    } catch (error) {
+        console.error('Failed to update note', error);
+    }
+
+    // Continue with any additional save logic, such as closing the modal or updating local state
+    onSave();
   };
+
+  const handleNoteChange = (e) => {
+    setEditedNote(e.target.value);
+};
 
     return (
       <div className="modal-overlay">
@@ -254,6 +284,13 @@
             onChange={handleChange}
           />
 
+<label htmlFor="note" className="modal-label">Note:</label>
+                <textarea
+                    id="note"
+                    className="modal-textarea"
+                    value={editedNote}
+                    onChange={handleNoteChange}
+                />
           <label htmlFor="contents" className="modal-label">Description</label>
           <textarea
             id="contents"

@@ -396,11 +396,19 @@ const deleteRootProject = (id, deletedChildProjects) => {
     );
     setRelatedProjects(projectAndContinuations);
 
-    // Fetch notes for the selected project
-    fetch(`${url}projects/${project.id}/notes`)
-      .then(response => response.json())
-      .then(notes => setNotes(notes))
-      .catch(err => console.error("Failed to fetch notes:", err));
+    // Fetch notes for all related projects
+  const notesPromises = projectAndContinuations.map(proj =>
+    fetch(`${url}projects/${proj.id}/notes`).then(res => res.json())
+  );
+
+  try {
+    const notesArrays = await Promise.all(notesPromises);
+    // Flatten the array of arrays and set the notes
+    const allNotes = [].concat(...notesArrays);
+    setNotes(allNotes);
+  } catch (err) {
+    console.error("Failed to fetch notes for related projects:", err);
+  }
   };
   
   const toggleDarkMode = () => {
@@ -631,6 +639,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
           onSave={saveEdit}
           onCancel={cancelEdit}
           relatedProjects={relatedProjects}
+          notes={notes}
         />
       )}
       {isViewModalOpen && editingProject && (
