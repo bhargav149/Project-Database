@@ -1,6 +1,6 @@
   import React, { useState, useEffect } from 'react';
   import './EditProjectModal.css';
-  import { X } from 'lucide-react';
+  import { X, Download, Trash2 } from 'lucide-react';
   import axios from 'axios';
 
 
@@ -308,20 +308,23 @@
         <div className="file-list">
           {uploadedFiles.map((file, index) => (
             <div key={index} className="file-item">
-              {file.filename}
-              <a
-                href={`${url}uploads/${file.filename}`}
-                download
-                className="download-btn"
-              >
-                Download
-              </a>
-              <button
-                onClick={() => handleDelete(file.filename)}
-                className="delete-btn"
-              >
-                Delete
-              </button>
+              <div className="file-name">{file.filename}</div>
+              <div>
+                <a
+                  href={`${url}uploads/${file.filename}`}
+                  download
+                  className="download-btn"
+                >
+                  <Download />
+                </a>
+                <button
+                  onClick={() => handleDelete(file.filename)}
+                  className="file-delete"
+                  style={{ color: '#64b5f6', border: 'none', background: 'none' }}
+                >
+                  <Trash2 />
+                </button>
+              </div>
             </div>
           ))}
         </div>

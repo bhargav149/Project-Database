@@ -223,10 +223,25 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-  }
-  
-  .download-btn,
-  .delete-btn {
+}
+
+.file-name {
+    flex: 1; /* Allow file name to take remaining space */
+    overflow: hidden; /* Hide overflowed text */
+    white-space: nowrap; /* Prevent wrapping */
+    text-overflow: ellipsis; /* Display ellipsis for truncated text */
+}
+
+.download-btn,
+.file-delete {
     margin-left: 10px;
-  }
-  
+    color: #64b5f6;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.download-btn svg,
+.file-delete svg {
+    width: 24px;
+    height: 24px;
+}
