@@ -11,8 +11,8 @@ const AppRoutes = () => {
 <Router>
       <Routes>
         {/* change MainPage to App if you want to run locally */}
-        {/* <Route path="/" element={<MainPage />} /> */}
-        <Route path="/" element={<App />} />
+        <Route path="/" element={<MainPage />} />
+        {/* <Route path="/" element={<App />} /> */}
         {/* <Route path="/login" element={<Home />} /> */}
       </Routes>
     </Router>

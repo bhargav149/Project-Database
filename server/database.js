@@ -8,13 +8,13 @@ async function initializeDatabase() {
     console.log("Initializing database...");
     const connection = await mysql.createConnection({
         // use for local development
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
+        // host: process.env.MYSQL_HOST,
+        // user: process.env.MYSQL_USER,
+        // password: process.env.MYSQL_PASSWORD,
         //use for deployment
-        // host:	'bravesouls-projectdb-mysql',
-        // user: 'user',
-        // password: 'bravesouls',
+        host:	'bravesouls-projectdb-mysql',
+        user: 'user',
+        password: 'bravesouls',
 
     });
 
@@ -29,16 +29,16 @@ async function initializeDatabase() {
     console.log("Creating projects and project_semesters tables...");
     pool = mysql.createPool({
         //use for local development
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: 'projects_app',
+        // host: process.env.MYSQL_HOST,
+        // user: process.env.MYSQL_USER,
+        // password: process.env.MYSQL_PASSWORD,
+        // database: 'projects_app',
 
         // use for cloud deployment
-        // host:	'bravesouls-projectdb-mysql',
-        // user: 'user',
-        // password: 'bravesouls',
-        // database: 'projects_app',
+        host:	'bravesouls-projectdb-mysql',
+        user: 'user',
+        password: 'bravesouls',
+        database: 'projects_app',
     });
 
     // Create projects table
@@ -77,9 +77,9 @@ async function initializeDatabase() {
     const createUserTableSql = `
     CREATE TABLE IF NOT EXISTS user (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
         pid VARCHAR(255) NOT NULL,
-        team_id INT DEFAULT -1
+        name VARCHAR(255) DEFAULT 'None',
+        project_id INT DEFAULT -1
     );`;
     await pool.query(createUserTableSql);
     console.log("User table created.");
@@ -220,7 +220,7 @@ async function initializeDatabase() {
         );        
         // Insert users linked to teams
         await pool.query(`
-            INSERT INTO user (name, pid, team_id) VALUES
+            INSERT INTO user (name, pid, project_id) VALUES
             ('HyunJe', 'k3h0j8', 1),
             ('Random person 1', 'pid1', 1),
             ('Random person 2', 'pid2', 2),
@@ -431,11 +431,11 @@ export async function deleteNoteForProject(note_id, admin_id) {
     `, [note_id, admin_id]);
 }
 
-export async function createUser(name, pid, team_id) {
+export async function createUser(pid, name, project_id) {
     const [result] = await pool.query(`
-        INSERT INTO user (name, pid, team_id)
+        INSERT INTO user (pid, name, project_id)
         VALUES (?, ?, ?)
-    `, [name, pid, team_id]);
+    `, [pid, name, project_id]);
     return result.insertId;
 }
 
@@ -531,3 +531,20 @@ export async function deleteFileFromDatabase(filename) {
       });
     });
 }
+
+export async function getProjectByPID(pid) {
+    const [rows] = await pool.query(`
+        SELECT project_id 
+        FROM user
+        WHERE pid = ?
+    `, [pid]);
+    return rows[0];
+}
+
+export async function switchProject(pid, project_id) {
+    await pool.query(`
+        UPDATE user SET project_id = ?
+        WHERE pid = ?
+    `, [project_id, pid]);
+}
+

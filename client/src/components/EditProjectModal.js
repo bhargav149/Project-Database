@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import axios from 'axios';
 
 
-function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }) {
+function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, isAdmin, projectId, pid}) {
   const [editedProject, setEditedProject] = useState({
     title: '',
     contents: '',
@@ -14,11 +14,12 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
     status: '',
   });
 
+  
   const [currentProject, setCurrentProject] = useState(project);
   const [selectedProject, setSelectedProject] = useState(project);
 
-  const url = "http://localhost:8080/";
-  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  // const url = "http://localhost:8080/";
+  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
   useEffect(() => {
     setCurrentProject(project);
@@ -37,7 +38,6 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
     fetchFiles()
   }
 
-  
   useEffect(() => {
     if (project && isOpen) {
       setEditedProject({
@@ -98,6 +98,19 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
     fetchFiles();
   }, [uploadedFiles]);
 
+  const switchUserProject = (project_id) => {
+    fetch(url+"user/"+pid, {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        project_id: project_id,
+      }),
+    })
+    .catch(err => console.error(err));
+  }
+
   const fetchFiles = () => {
     fetch(url+"files/"+selectedProject.id)
       .then(res => res.json())
@@ -156,7 +169,9 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
 
   return (
     <div className="modal-overlay">
-      <div className="modal-card">
+      {isAdmin || projectId===selectedProject.id ?
+
+      (<div className="modal-card">
         <div className="modal-header">
           <h2 className="modal-title">Quick Edit</h2>
           <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
@@ -254,7 +269,115 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }
           <button onClick={() => onSave(selectedProject)}>Save</button>
           <button onClick={onCancel}>Cancel</button>
         </div>
+      </div>) :
+          (<div className="modal-card">
+          <div className="modal-header">
+            <h2 className="modal-title">Quick Edit</h2>
+            <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
+          </div>
+          <hr></hr>
+          <div className="project-selection-tabs">
+            {sortedRelatedProjects.map((proj, index) => (
+              <button
+                key={index}
+                onClick={() => changeProject(proj)}
+                className={selectedProject.id === proj.id ? 'active' : ''}
+              >
+                {proj.semesters}
+              </button>
+            ))}
+          </div>
+          <label htmlFor="title" className="modal-label">Title</label>
+          <input
+            id="title"
+            type="text"
+            name="title"
+            className="modal-input"
+            value={selectedProject.title}
+            onChange={handleChange}
+            disabled={true}
+          />
+  
+          <label htmlFor="contents" className="modal-label">Description</label>
+          <textarea
+            id="contents"
+            name="contents"
+            className="modal-textarea"
+            value={selectedProject.contents}
+            onChange={handleChange}
+            disabled={true}
+          />
+  
+          <label htmlFor="stack" className="modal-label">Technology Stack</label>
+          <input
+            id="stack"
+            type="text"
+            name="stack"
+            className="modal-input"
+            value={selectedProject.stack}
+            onChange={handleChange}
+            disabled={true}
+          />
+  
+          <label htmlFor="team_name" className="modal-label">Team Name</label>
+          <input
+            id="team_name"
+            type="text"
+            name="team_name"
+            className="modal-input"
+            value={selectedProject.team_name}
+            onChange={handleChange}
+            disabled={true}
+          />
+  
+          <label htmlFor="team_members" className="modal-label">Team Members</label>
+          <textarea
+            id="team_members"
+            name="team_members"
+            className="modal-textarea"
+            value={selectedProject.team_members}
+            onChange={handleChange}
+            disabled={true}
+          />
+          <label htmlFor="status" className="modal-label">Status</label>
+          <div className="modal-status-buttons">
+            {statuses.map((status) => (
+              <button
+                key={status}
+                disabled={true}
+                className={`status-button-edit ${status.toLowerCase().replace(/\s+/g, '-')}${selectedProject.status === status ? ' selected' : ''}`}
+                onClick={() => handleStatusChange(status)
+                }
+              >
+                {status}
+              </button>
+            ))}
+          </div>
+        <div>
+          <div>
+            {uploadedFiles.map((file, index) => (
+                  <div key={index}>
+                    {file.filetype.startsWith('image') ? (
+                      <img src={url+`uploads/${file.filename}`} alt={`Uploaded File ${index + 1}`} style={{ maxWidth: '100%', maxHeight: '400px' }} />
+                    ) : (
+                      <div>
+                        <a href={url+`uploads/${file.filename}`} download>{file.filename}</a>
+                      </div>
+                    )}
+                  </div>
+                ))}
+          </div>
       </div>
+          <div className="modal-actions">
+          <button onClick={(event) => {
+                      event.stopPropagation();
+                      switchUserProject(selectedProject.id)
+                      onSave(selectedProject)
+                    }}>Join Team</button>
+            <button onClick={onCancel}>Cancel</button>
+          </div>
+        </div>)
+    }
     </div>
   );
 }

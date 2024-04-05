@@ -35,7 +35,9 @@ import {
     deleteNoteForProject,
     getFiles,
     addFile,
-    deleteFileFromDatabase
+    deleteFileFromDatabase,
+    getProjectByPID,
+    switchProject
 } from './database.js'
 
 const app = express()
@@ -44,8 +46,8 @@ app.use(express.json())
 app.use(cors())
 
 //use placeholder for local development, add "/server" for deployed
-const url=""
-// const url="/server"
+// const url=""
+const url="/server"
 
 
 const storage = multer.diskStorage({
@@ -179,6 +181,28 @@ app.get(`${url}/users/:id`, async (req, res) => {
         res.status(500).send('Error fetching user');
     }
 });
+
+app.get(`${url}/user/:pid`, async (req, res) => {
+    try {
+        const project_id = await getProjectByPID(req.params.pid)
+        if (!project_id) {
+            await createUser(req.params.pid, "None", -1);
+            return res.json({ project_id: -1 });
+        }
+        res.json(project_id)
+    }catch (error) {
+        res.status(500).send('Error fetching project by pid');
+    }
+})
+
+app.put(`${url}/user/:pid`, async(req,res) => {
+    try {
+        await switchProject(req.params.pid, req.body.project_id);
+        res.status(200).send('Project switched successfully');
+    }catch (error) {
+        res.status(500).send('Error switching project');
+    }
+})
 
 app.post(`${url}/users`, async (req, res) => {
     try {

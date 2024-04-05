@@ -11,7 +11,6 @@ import SettingsPage from './Settings';
 
 import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw, Settings, Undo2 } from 'lucide-react';
 import './LandingPage.css';
-import axios from 'axios';
 
 
 function App() {
@@ -52,25 +51,35 @@ function App() {
   const [settingsView, setSettingsView] = useState(false);
 
   //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
-  const url = "http://localhost:8080/";
-  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  // const url = "http://localhost:8080/";
+  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState('');
   const [isAdmin,setIsAdmin]=useState(true);
 
-  // useEffect(() => {
-  //   async function getCurrentUser() {
-  //     await fetch("/api/currentUser")
-  //       .then((res) => res.json())
-  //       .then((data) => setUser(data.user));
-  //   }
-  //   getCurrentUser();
-  // }, []);
+  const [userProject, setUserProject] = React.useState(null);
+  const [userRootProject, setUserRootProject] = useState(-1);
 
+
+  useEffect(() => {
+    async function getCurrentUser() {
+      await fetch("/api/currentUser")
+        .then((res) => res.json())
+        .then((data) => setUser(data.user));
+    }
+    getCurrentUser();
+  }, []);
+
+
+  useEffect(() => {
+    getUserProject();
+  });
 
   useEffect(() => {
     fetchProjects();
   }, []);
+
+
 
   useEffect(() => {
     const semestersFromProjects = new Set(data.flatMap(project => project.semesters));
@@ -131,6 +140,40 @@ function App() {
       .catch(err => console.error(err));
   };
 
+  const getUserProject =() => {
+    fetch(url+"user/"+user)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Fetched user project: ", data, data.project_id)
+      setUserProject(data.project_id);
+      console.log("Current user's project: ", userProject)
+      getUserRootProject()
+    })
+    .catch(error => {
+      console.error("Error fetching user project:", error);
+    });
+  }
+
+  const getUserRootProject =() => {
+    fetch(url+"projects/"+userProject)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Fetched project row: ", data)
+      const rootId = data[0].continuation_of_project_id;
+      if(rootId===-1){
+        setUserRootProject(userProject);
+      }
+      else{
+        setUserRootProject(rootId)
+      }
+      console.log("Current user's root project: ", userRootProject)
+    })
+    .catch(error => {
+      console.error("Error fetching user root project:", error);
+    });
+  }
+
+
   const addProject = (project) => {
     fetch(url+"projects", {
       method: "POST",
@@ -171,25 +214,6 @@ function App() {
     }, 10000); // Time the toast is visible before starting to fade out
   };
 
-  // const deleteProject = (id) => {
-  //   const isConfirmed = window.confirm("Are you sure you want to delete this project?");
-  //   if (!isConfirmed) {
-  //     return;
-  //   }
-  
-  //   fetch(`http://localhost:8080/projects/${id}`, {
-  //     method: 'DELETE',
-  //   })
-  //   .then(response => {
-  //     if (response.ok) {
-  //       setData(data.filter(project => project.id !== id));
-  //       showToastWithFadeOut("Project successfully deleted.");
-  //     } else {
-  //       alert('Failed to delete the project');
-  //     }
-  //   })
-  //   .catch(err => console.error('Error:', err));
-  // };  
 
   const deleteProject = (id) => {
     // Check if there are any child projects.
@@ -397,7 +421,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
     setRelatedProjects(projectAndContinuations);
 
     // Fetch notes for the selected project
-    fetch(`${url}projects/${project.id}/notes`)
+    fetch(url+`projects/${project.id}/notes`)
       .then(response => response.json())
       .then(notes => setNotes(notes))
       .catch(err => console.error("Failed to fetch notes:", err));
@@ -470,9 +494,9 @@ const deleteRootProject = (id, deletedChildProjects) => {
     return sortedTeams.map(entry => entry[0]);
   };
 
-  async function fetchAdminData(adminId) {
+   const fetchAdminData=async (adminId)=> {
     try {
-        const response = await fetch(`${url}admins/${adminId}`);
+        const response = await fetch(url+`admins/${adminId}`);
         if (!response.ok) {
             throw new Error('Admin data not found');
         }
@@ -480,22 +504,24 @@ const deleteRootProject = (id, deletedChildProjects) => {
     } catch (error) {
         throw new Error('Error fetching admin data');
     }
-}
+};
+
+fetchAdminData(user)
+    .then(admin => {
+        setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
+        console.log('Is admin:', isAdmin);
+        // You can use the value of 'isAdmin' in your application logic
+    })
+    .catch(error => {
+        setIsAdmin(false)
+        console.error('Error:', error.message);
+        // Handle error appropriately
+    });
+
   const revertToPreviousView = () => {
     setSettingsView(false); // Assuming you want to leave settings view when undo is clicked
   };
 
-// fetchAdminData(user)
-//     .then(admin => {
-//         setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
-//         console.log('Is admin:', isAdmin);
-//         // You can use the value of 'isAdmin' in your application logic
-//     })
-//     .catch(error => {
-//         setIsAdmin(false)
-//         console.error('Error:', error.message);
-//         // Handle error appropriately
-//     });
   
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
@@ -598,11 +624,24 @@ const deleteRootProject = (id, deletedChildProjects) => {
                       </button>
                   )}
                 </div>
-                <button className="button-delete" onClick={(event) => {
-                  event.stopPropagation();
-                  deleteProject(project.id);
-                }}>Delete</button>
-                {isAdmin ?
+                {
+                  isAdmin ? (
+                    <button className="button-delete" onClick={(event) => {
+                      event.stopPropagation();
+                      deleteProject(project.id);
+                    }}>Delete</button>
+                  ) : project.status==='Unassigned' && !(userRootProject===project.id) ? (
+                    <button className="button-join" onClick={(event) => {
+                      // Handle Join Team action
+                      event.stopPropagation();
+                      toggleEdit(project);
+                    }}>Join Team</button>
+                  ) : (
+                    <></>
+                  )
+                }
+
+                {isAdmin || userRootProject===project.id ?
                   (<><span className="button-edit" onClick={(event) => {
                     event.stopPropagation();
                     toggleEdit(project);
@@ -610,7 +649,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
                     <FilePenLine />
                   </span></>) :
                   <></>
-              }
+                }
               <button className={getStatusStyle(project.status)}>{project.status}</button>
               </div>
             ))}
@@ -631,6 +670,9 @@ const deleteRootProject = (id, deletedChildProjects) => {
           onSave={saveEdit}
           onCancel={cancelEdit}
           relatedProjects={relatedProjects}
+          isAdmin={isAdmin}
+          projectId={userProject}
+          pid={user}
         />
       )}
       {isViewModalOpen && editingProject && (
