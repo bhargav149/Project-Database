@@ -183,3 +183,50 @@
     color: #312F2F;
     border-color: #F6E8EA;
 }
+
+/* Basic styling for the drop zone */
+.drop-zone {
+    border: 2px dashed #64b5f6; /* Light blue border, dashed */
+    border-radius: 4px; /* Match the modal's input styling */
+    padding: 20px;
+    text-align: center;
+    margin: 10px 0; /* Spacing for consistency */
+    background-color: #333; /* Dark background to match the modal */
+    color: #F6E8EA; /* Light text color for contrast */
+    cursor: pointer; /* Indicate it's clickable */
+  }
+  
+  /* Style when dragging files over */
+  .drop-zone.dragging {
+    background-color: #3a3a3a; /* Slightly lighter to indicate active state */
+    border-style: solid; /* Change from dashed to solid */
+  }
+  
+  /* Optional: Style for instructional text */
+  .drop-zone p {
+    margin: 10px 0;
+    color: #bbb; /* Lighter text color for the instructions */
+  }
+  
+  /* Ensuring the file input is not visually present */
+  .drop-zone input[type="file"] {
+    display: none;
+  }
+  
+
+  .file-list {
+    margin-top: 20px;
+  }
+  
+  .file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .download-btn,
+  .delete-btn {
+    margin-left: 10px;
+  }
+  

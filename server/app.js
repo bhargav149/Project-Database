@@ -96,9 +96,10 @@ app.get(url+'/files/:semesterId', async (req,res) => {
 
 app.delete(url+'/files/:filename', async (req, res) => {
     const filename = req.params.filename;
-  
+    console.log(`Received request to delete file: ${filename}`);
     // Delete file entry from MySQL database
     try {
+      console.log(`Attempting to delete file: ${filename}`);
       await deleteFileFromDatabase(filename);
       console.log(`File ${filename} deleted from database.`);
       res.sendStatus(204); // No content - operation successful

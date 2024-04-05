@@ -1,262 +1,369 @@
-import React, { useState, useEffect } from 'react';
-import './EditProjectModal.css';
-import { X } from 'lucide-react';
-import axios from 'axios';
+  import React, { useState, useEffect } from 'react';
+  import './EditProjectModal.css';
+  import { X } from 'lucide-react';
+  import axios from 'axios';
 
 
-function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }) {
-  const [editedProject, setEditedProject] = useState({
-    title: '',
-    contents: '',
-    stack: '',
-    team_name: '',
-    team_members: '',
-    status: '',
-  });
+  function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects }) {
+    const [editedProject, setEditedProject] = useState({
+      title: '',
+      contents: '',
+      stack: '',
+      team_name: '',
+      team_members: '',
+      status: '',
+    });
 
-  const [currentProject, setCurrentProject] = useState(project);
-  const [selectedProject, setSelectedProject] = useState(project);
+    const [currentProject, setCurrentProject] = useState(project);
+    const [selectedProject, setSelectedProject] = useState(project);
+    const [dragging, setDragging] = useState(false);
+    const url = "http://localhost:8080/";
+    const furl = "http://localhost:8080";
 
-  const url = "http://localhost:8080/";
-  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+    // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const fileInputRef = React.useRef(null);
 
-  useEffect(() => {
-    setCurrentProject(project);
-  }, [project]);
-  
-  useEffect(() => {
-    setSelectedProject(project);
-  }, [project]);
+    useEffect(() => {
+      setCurrentProject(project);
+    }, [project]);
+    
+    useEffect(() => {
+      setSelectedProject(project);
+    }, [project]);
 
-  const selectProject = (selectedProject) => {
-    setCurrentProject(selectedProject);
-  };
+    const selectProject = (selectedProject) => {
+      setCurrentProject(selectedProject);
+    };
 
-  const changeProject = (project) => {
-    setSelectedProject(project)
-    fetchFiles()
-  }
-
-  
-  useEffect(() => {
-    if (project && isOpen) {
-      setEditedProject({
-        id: project.id,
-        title: project.title || '',
-        contents: project.contents || '',
-        stack: project.stack || '',
-        team_name: project.team_name || '',
-        team_members: project.team_members || '',
-        status: project.status || '',
-      });
+    const changeProject = (project) => {
+      setSelectedProject(project)
+      fetchFiles()
     }
-  }, [project, isOpen]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setSelectedProject(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+    
+    useEffect(() => {
+      if (project && isOpen) {
+        setEditedProject({
+          id: project.id,
+          title: project.title || '',
+          contents: project.contents || '',
+          stack: project.stack || '',
+          team_name: project.team_name || '',
+          team_members: project.team_members || '',
+          status: project.status || '',
+        });
+      }
+    }, [project, isOpen]);
 
-  const handleStatusChange = (newStatus) => {
-    setEditedProject(prev => ({ ...prev, status: newStatus }));
-  };
-
-  const statuses = ['Completed', 'In-Progress', 'Suspended', 'Unassigned'];
-
-  // Function to split semester strings and return an object { term, year }
-  const parseSemester = (semester) => {
-    const [term, year] = semester.split(' ');
-    return { term, year: parseInt(year, 10) };
-  };
-
-  // Define the order of the terms
-  const termOrder = ['Spring', 'Fall'];
-
-  // Compare function for semesters
-  const compareSemesters = (a, b) => {
-    const semesterA = parseSemester(a.semesters);
-    const semesterB = parseSemester(b.semesters);
-    const yearComparison = semesterA.year - semesterB.year;
-    if (yearComparison !== 0) return yearComparison;
-    return termOrder.indexOf(semesterA.term) - termOrder.indexOf(semesterB.term);
-  };
-
-  // Sorted related projects
-  const sortedRelatedProjects = relatedProjects.sort(compareSemesters);
-
-  const [fileType, setFileType] = useState(null);
-  const [file, setFile] = useState(null);
-  const [uploadedFile, setUploadedFile] = useState(null);
-
-  const [files, setFiles] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-
-  useEffect(() => {
-    fetchFiles();
-  }, [uploadedFiles]);
-
-  const fetchFiles = () => {
-    fetch(url+"files/"+selectedProject.id)
-      .then(res => res.json())
-      .then(data => setUploadedFiles(data.map(project => ({ ...project}))))
-      .catch(err => console.error(err));
-  };
-  const handleDelete = async (index) => {
-    const filename = uploadedFiles[index].filename;
-    try {
-      // Send DELETE request to the Express backend endpoint
-      await axios.delete(url+`files/${filename}`);
-      console.log(`File ${filename} deleted successfully.`);
-    } catch (error) {
-      console.error(`Error deleting file ${filename}:`, error);
-    }
-  };
-
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    const formData = new FormData();
-    const uniqueFilename = `${Date.now()}_${file.name}`; // Generate unique filename
-    formData.append('file', file, uniqueFilename);
-    try {
-      const response = await axios.post(url+'upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+    useEffect(() => {
+      // Clean up the preview URL
+      return () => {
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
         }
-      });
-      console.log('File uploaded successfully:', response.data);
-      setUploadedFile(response.data.filename); // Assuming the server returns the filename
-      setFileType(response.data.fileType); // Assuming the server returns the file type
-      console.log("file type ",response.data.fileType);
-      fetch(url+"files", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          project_id: selectedProject.id,
-          filename: response.data.filename,
-          filetype: response.data.fileType
-        }),
-      })
-      .then(response => response.json())
-      .then(() => {fetchFiles()})
-      .catch(err => console.error(err));
-      console.log(uploadedFiles)
+      };
+    }, [previewUrl]);
 
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
+    
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setSelectedProject(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    };
+
+    const handleStatusChange = (newStatus) => {
+      setEditedProject(prev => ({ ...prev, status: newStatus }));
+    };
+
+    const statuses = ['Completed', 'In-Progress', 'Suspended', 'Unassigned'];
+
+    // Function to split semester strings and return an object { term, year }
+    const parseSemester = (semester) => {
+      const [term, year] = semester.split(' ');
+      return { term, year: parseInt(year, 10) };
+    };
+
+    // Define the order of the terms
+    const termOrder = ['Spring', 'Fall'];
+
+    // Compare function for semesters
+    const compareSemesters = (a, b) => {
+      const semesterA = parseSemester(a.semesters);
+      const semesterB = parseSemester(b.semesters);
+      const yearComparison = semesterA.year - semesterB.year;
+      if (yearComparison !== 0) return yearComparison;
+      return termOrder.indexOf(semesterA.term) - termOrder.indexOf(semesterB.term);
+    };
+
+    // Sorted related projects
+    const sortedRelatedProjects = relatedProjects.sort(compareSemesters);
+
+    const [fileType, setFileType] = useState(null);
+    const [file, setFile] = useState(null);
+    const [uploadedFile, setUploadedFile] = useState(null);
+
+    const [files, setFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+
+    // Prevent default behavior for drag events to allow for drop handling
+    const handleDrag = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    // Update dragging state on drag enter
+    const handleDragIn = (e) => {
+      handleDrag(e);
+      if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+        setDragging(true);
+      }
+    };
+
+    // Update dragging state on drag leave
+    const handleDragOut = (e) => {
+      handleDrag(e);
+      setDragging(false);
+    };
+
+    // Handle file drop
+    const handleDrop = (e) => {
+      e.preventDefault();
+      setDragging(false);
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const droppedFile = e.dataTransfer.files[0];
+        setFile(droppedFile);
+        const url = URL.createObjectURL(droppedFile);
+        setPreviewUrl(url); // Set the preview URL
+        e.dataTransfer.clearData();
+      }
+    };
+
+    useEffect(() => {
+      fetchFiles();
+    }, [uploadedFiles]);
+
+    useEffect(() => {
+      fetchFiles();
+    }, [selectedProject]);
+
+    const fetchFiles = () => {
+      fetch(url+"files/"+selectedProject.id)
+        .then(res => res.json())
+        .then(data => setUploadedFiles(data.map(project => ({ ...project}))))
+        .catch(err => console.error(err));
+    };
+
+    const handleDelete = async (filename) => {
+      try {
+        const encodedFilename = encodeURIComponent(filename);
+        console.log(`Encoded filename for deletion: ${encodedFilename}`); // Log the encoded filename
+        console.log(`${url}files/${encodedFilename}`);
+        const response = await axios.delete(`${url}files/${encodedFilename}`);
+        console.log(`Response status after file deletion: ${response.status}`); // Log response status
+        if (response.status === 204) {
+          console.log(`File ${filename} deleted successfully.`);
+          fetchFiles();
+        }
+      } catch (error) {
+        console.error(`Error deleting file ${filename}:`, error);
+      }
+    };
+
+    const handleFileChange = (event) => {
+      const fileSelected = event.target.files[0];
+      if (fileSelected) {
+        setFile(fileSelected);
+        const url = URL.createObjectURL(fileSelected);
+        setPreviewUrl(url); // Set the preview URL
+      }
+    };
+
+    const handleUpload = async (fileParam) => {
+      const uploadFile = fileParam || file;
+      const formData = new FormData();
+      const uniqueFilename = `${Date.now()}_${uploadFile.name}`; // Generate unique filename
+      formData.append('file', uploadFile, uniqueFilename);
+      try {
+        const response = await axios.post(url+'upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log('File uploaded successfully:', response.data);
+        setUploadedFile(response.data.filename); // Assuming the server returns the filename
+        setFileType(response.data.fileType); // Assuming the server returns the file type
+        console.log("file type ",response.data.fileType);
+        fetch(url+"files", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            project_id: selectedProject.id,
+            filename: response.data.filename,
+            filetype: response.data.fileType
+          }),
+        })
+        .then(response => response.json())
+        .then(() => {fetchFiles()})
+        .catch(err => console.error(err));
+        console.log(uploadedFiles)
+
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    };
+
+    const handleSave = async () => {
+      if (file) { // Check if there's a file to upload
+          await handleUpload(file); // Wait for the file to be uploaded
+      }
+      // After file upload, proceed with saving project data...
+      onSave(selectedProject); // Assuming onSave is your function for saving project details
   };
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal-card">
-        <div className="modal-header">
-          <h2 className="modal-title">Quick Edit</h2>
-          <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
-        </div>
-        <hr></hr>
-        <div className="project-selection-tabs">
-          {sortedRelatedProjects.map((proj, index) => (
-            <button
-              key={index}
-              onClick={() => changeProject(proj)}
-              className={selectedProject.id === proj.id ? 'active' : ''}
-            >
-              {proj.semesters}
-            </button>
-          ))}
-        </div>
-        <label htmlFor="title" className="modal-label">Title</label>
-        <input
-          id="title"
-          type="text"
-          name="title"
-          className="modal-input"
-          value={selectedProject.title}
-          onChange={handleChange}
-        />
+    return (
+      <div className="modal-overlay">
+        <div className="modal-card">
+          <div className="modal-header">
+            <h2 className="modal-title">Quick Edit</h2>
+            <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
+          </div>
+          <hr></hr>
+          <div className="project-selection-tabs">
+            {sortedRelatedProjects.map((proj, index) => (
+              <button
+                key={index}
+                onClick={() => changeProject(proj)}
+                className={selectedProject.id === proj.id ? 'active' : ''}
+              >
+                {proj.semesters}
+              </button>
+            ))}
+          </div>
+          <label htmlFor="title" className="modal-label">Title</label>
+          <input
+            id="title"
+            type="text"
+            name="title"
+            className="modal-input"
+            value={selectedProject.title}
+            onChange={handleChange}
+          />
 
-        <label htmlFor="contents" className="modal-label">Description</label>
-        <textarea
-          id="contents"
-          name="contents"
-          className="modal-textarea"
-          value={selectedProject.contents}
-          onChange={handleChange}
-        />
+          <label htmlFor="contents" className="modal-label">Description</label>
+          <textarea
+            id="contents"
+            name="contents"
+            className="modal-textarea"
+            value={selectedProject.contents}
+            onChange={handleChange}
+          />
 
-        <label htmlFor="stack" className="modal-label">Technology Stack</label>
-        <input
-          id="stack"
-          type="text"
-          name="stack"
-          className="modal-input"
-          value={selectedProject.stack}
-          onChange={handleChange}
-        />
+          <label htmlFor="stack" className="modal-label">Technology Stack</label>
+          <input
+            id="stack"
+            type="text"
+            name="stack"
+            className="modal-input"
+            value={selectedProject.stack}
+            onChange={handleChange}
+          />
 
-        <label htmlFor="team_name" className="modal-label">Team Name</label>
-        <input
-          id="team_name"
-          type="text"
-          name="team_name"
-          className="modal-input"
-          value={selectedProject.team_name}
-          onChange={handleChange}
-        />
+          <label htmlFor="team_name" className="modal-label">Team Name</label>
+          <input
+            id="team_name"
+            type="text"
+            name="team_name"
+            className="modal-input"
+            value={selectedProject.team_name}
+            onChange={handleChange}
+          />
 
-        <label htmlFor="team_members" className="modal-label">Team Members</label>
-        <textarea
-          id="team_members"
-          name="team_members"
-          className="modal-textarea"
-          value={selectedProject.team_members}
-          onChange={handleChange}
-        />
-        <label htmlFor="status" className="modal-label">Status</label>
-        <div className="modal-status-buttons">
-          {statuses.map((status) => (
-            <button
-              key={status}
-              className={`status-button-edit ${status.toLowerCase().replace(/\s+/g, '-')}${selectedProject.status === status ? ' selected' : ''}`}
-              onClick={() => handleStatusChange(status)}
-            >
-              {status}
-            </button>
-          ))}
-        </div>
-      <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload File</button>
+          <label htmlFor="team_members" className="modal-label">Team Members</label>
+          <textarea
+            id="team_members"
+            name="team_members"
+            className="modal-textarea"
+            value={selectedProject.team_members}
+            onChange={handleChange}
+          />
+          <label htmlFor="status" className="modal-label">Status</label>
+          <div className="modal-status-buttons">
+            {statuses.map((status) => (
+              <button
+                key={status}
+                className={`status-button-edit ${status.toLowerCase().replace(/\s+/g, '-')}${selectedProject.status === status ? ' selected' : ''}`}
+                onClick={() => handleStatusChange(status)}
+              >
+                {status}
+              </button>
+            ))}
+          </div>
         <div>
+        
+        <div className="file-list">
           {uploadedFiles.map((file, index) => (
-                <div key={index}>
-                  {file.filetype.startsWith('image') ? (
-                    <img src={url+`uploads/${file.filename}`} alt={`Uploaded File ${index + 1}`} style={{ maxWidth: '100%', maxHeight: '400px' }} />
-                  ) : (
-                    <div>
-                      <a href={url+`uploads/${file.filename}`} download>{file.filename}</a>
-                    </div>
-                  )}
-                  <button onClick={() => handleDelete(index)}><i className="fas fa-trash-alt"></i></button>
-                </div>
-              ))}
+            <div key={index} className="file-item">
+              {file.filename}
+              <a
+                href={`${url}uploads/${file.filename}`}
+                download
+                className="download-btn"
+              >
+                Download
+              </a>
+              <button
+                onClick={() => handleDelete(file.filename)}
+                className="delete-btn"
+              >
+                Delete
+              </button>
+            </div>
+          ))}
         </div>
-    </div>
-        <div className="modal-actions">
-          <button onClick={() => onSave(selectedProject)}>Save</button>
-          <button onClick={onCancel}>Cancel</button>
+        <div
+          className={`drop-zone ${dragging ? "dragging" : ""}`}
+          onClick={() => fileInputRef.current.click()}
+          onDragOver={handleDrag}
+          onDragEnter={handleDragIn}
+          onDragLeave={handleDragOut}
+          onDrop={handleDrop}
+        >
+        <p>Drag and drop a file here or click to select a file</p>
+          <input type="file" onChange={handleFileChange} ref={fileInputRef} style={{ display: "none" }} multiple/>
+        </div>
+        <div className="image-preview">
+          {previewUrl && (
+            <img src={previewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '400px' }} />
+          )}
+        </div>
+        {/* <button onClick={handleUpload}>Upload File</button>
+          <div>
+            {uploadedFiles.map((file, index) => (
+                  <div key={index}>
+                    {file.filetype.startsWith('image') ? (
+                      <img src={url+`uploads/${file.filename}`} alt={`Uploaded File ${index + 1}`} style={{ maxWidth: '100%', maxHeight: '400px' }} />
+                    ) : (
+                      <div>
+                        <a href={url+`uploads/${file.filename}`} download>{file.filename}</a>
+                      </div>
+                    )}
+                    <button onClick={() => handleDelete(index)}><i className="fas fa-trash-alt"></i></button>
+                  </div>
+                ))}
+          </div> */}
+      </div>
+          <div className="modal-actions">
+            <button onClick={handleSave}>Save</button>
+            <button onClick={onCancel}>Cancel</button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-export default EditProjectModal;
+  export default EditProjectModal;
