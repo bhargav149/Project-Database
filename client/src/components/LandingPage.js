@@ -54,8 +54,8 @@ function App() {
   // const url = "http://localhost:8080/";
   const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('');
-  const [isAdmin,setIsAdmin]=useState(true);
+  const [user, setUser] = React.useState('notanadmin');
+  const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
   const [userRootProject, setUserRootProject] = useState(-1);
@@ -420,11 +420,19 @@ const deleteRootProject = (id, deletedChildProjects) => {
     );
     setRelatedProjects(projectAndContinuations);
 
-    // Fetch notes for the selected project
-    fetch(url+`projects/${project.id}/notes`)
-      .then(response => response.json())
-      .then(notes => setNotes(notes))
-      .catch(err => console.error("Failed to fetch notes:", err));
+    // Fetch notes for all related projects
+  const notesPromises = projectAndContinuations.map(proj =>
+    fetch(`${url}projects/${proj.id}/notes`).then(res => res.json())
+  );
+
+  try {
+    const notesArrays = await Promise.all(notesPromises);
+    // Flatten the array of arrays and set the notes
+    const allNotes = [].concat(...notesArrays);
+    setNotes(allNotes);
+  } catch (err) {
+    console.error("Failed to fetch notes for related projects:", err);
+  }
   };
   
   const toggleDarkMode = () => {
@@ -510,6 +518,7 @@ fetchAdminData(user)
     .then(admin => {
         setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
         console.log('Is admin:', isAdmin);
+        console.log(user)
         // You can use the value of 'isAdmin' in your application logic
     })
     .catch(error => {
@@ -673,6 +682,7 @@ fetchAdminData(user)
           isAdmin={isAdmin}
           projectId={userProject}
           pid={user}
+          notes={notes}
         />
       )}
       {isViewModalOpen && editingProject && (

@@ -25,9 +25,9 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
     });
     // Convert to array and sort, if sorting is needed
     return Array.from(semesterSet).sort(); // Implement actual sorting logic if needed
-  };  
+  };
 
-  const allSemesters = getAllSemesters();
+  const filteredNotes = notes.filter(note => note.projectId === selectedProject.id);
 
 
   return (
@@ -49,7 +49,16 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
             </button>
           ))}
         </div>
-        <p><strong>Note:</strong> {notes.map(noteObj => noteObj.note).join(', ')}</p>
+        <div>
+          <strong>Note:</strong>
+          {filteredNotes.length > 0 ? (
+            filteredNotes.map((note, index) => (
+              <p key={index}>{note.note}</p>
+            ))
+          ) : (
+            <p>No notes for this project.</p>
+          )}
+        </div>
         <p><strong>Description:</strong> {selectedProject.contents}</p>
         <p><strong>Stack:</strong> {selectedProject.stack}</p>
         <p><strong>Team:</strong> {selectedProject.team_name}</p>

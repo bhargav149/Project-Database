@@ -98,9 +98,10 @@ app.get(url+'/files/:semesterId', async (req,res) => {
 
 app.delete(url+'/files/:filename', async (req, res) => {
     const filename = req.params.filename;
-  
+    console.log(`Received request to delete file: ${filename}`);
     // Delete file entry from MySQL database
     try {
+      console.log(`Attempting to delete file: ${filename}`);
       await deleteFileFromDatabase(filename);
       console.log(`File ${filename} deleted from database.`);
       res.sendStatus(204); // No content - operation successful
@@ -329,13 +330,17 @@ app.delete(`${url}/teams/:id`, async (req, res) => {
 });
 
 // Get notes for a project
-app.get('/projects/:projectId/notes', async (req, res) => {
+app.get(`${url}/projects/:projectId/notes`, async (req, res) => {
     const { projectId } = req.params;
     const admin_id = 1;
 
     try {
+        console.log(`Received request to fetch notes for project ID ${projectId}`);
+        
         const notes = await getNotesForProject(admin_id, projectId);
+
         console.log(`Notes fetched: ${JSON.stringify(notes)}`);
+        
         res.json(notes);
     } catch (error) {
         console.error(`Error fetching notes for project ID ${projectId}:`, error);

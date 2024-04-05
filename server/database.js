@@ -1,9 +1,12 @@
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv';    
+import { fileURLToPath } from 'url';
+import path from 'path';
+import fs from 'fs';
 dotenv.config();
 
 let pool;
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 async function initializeDatabase() {
     console.log("Initializing database...");
     const connection = await mysql.createConnection({
@@ -250,7 +253,37 @@ async function initializeDatabase() {
         console.log("Inserting initial note into admin_project_notes table...");
         const insertNoteSql = `
             INSERT INTO admin_project_notes (admin_id, project_id, note)
-            VALUES (1, 1, 'Initial note for the Project Database project');
+            VALUES 
+            (1, 1, 'Project Database, Spring 2024, Written by: Admin 1'),
+            (2, 1, 'Project Database, Spring 2024, Written by: Admin 2'),
+            (1, 2, 'Completed Project, Spring 2024, Written by: Admin 1'),
+            (2, 2, 'Completed Project, Spring 2024, Written by: Admin 2'),
+            (1, 3, 'Suspended Project, Spring 2024, Written by: Admin 1'),
+            (2, 3, 'Suspended Project, Spring 2024, Written by: Admin 2'),
+            (1, 4, 'Unassigned Project, Spring 2024, Written by: Admin 1'),
+            (2, 4, 'Unassigned Project, Spring 2024, Written by: Admin 2'),
+            (1, 5, 'Project Database Phase 2, Spring 2024, Written by: Admin 1'),
+            (2, 5, 'Project Database Phase 2, Spring 2024, Written by: Admin 2'),
+            (1, 6, 'Project Database Phase 3, Spring 2024, Written by: Admin 1'),
+            (2, 6, 'Project Database Phase 3, Spring 2024, Written by: Admin 2'),
+            (1, 7, 'Project Database Phase 4, Spring 2024, Written by: Admin 1'),
+            (2, 7, 'Project Database Phase 4, Spring 2024, Written by: Admin 2'),
+            (1, 8, 'Suspended Project Phase 2, Spring 2024, Written by: Admin 1'),
+            (2, 8, 'Suspended Project Phase 2, Spring 2024, Written by: Admin 2'),
+            (1, 9, 'Suspended Project Phase 3, Spring 2024, Written by: Admin 1'),
+            (2, 9, 'Suspended Project Phase 3, Spring 2024, Written by: Admin 2'),
+            (1, 10, 'Suspended Project Phase 4, Spring 2024, Written by: Admin 1'),
+            (2, 10, 'Suspended Project Phase 4, Spring 2024, Written by: Admin 2'),
+            (1, 11, 'Suspended Project Phase 5, Spring 2024, Written by: Admin 1'),
+            (2, 11, 'Suspended Project Phase 5, Spring 2024, Written by: Admin 2'),
+            (1, 12, 'Suspended Project Final Phase, Spring 2024, Written by: Admin 1'),
+            (2, 12, 'Suspended Project Final Phase, Spring 2024, Written by: Admin 2'),
+            (1, 13, 'Mobile App Development, Spring 2024, Written by: Admin 1'),
+            (2, 13, 'Mobile App Development, Spring 2024, Written by: Admin 2'),
+            (1, 14, 'Data Analysis Tool, Spring 2024, Written by: Admin 1'),
+            (2, 14, 'Data Analysis Tool, Spring 2024, Written by: Admin 2'),
+            (1, 15, 'E-commerce Website, Spring 2024, Written by: Admin 1'),
+            (2, 15, 'E-commerce Website, Spring 2024, Written by: Admin 2');
         `;
         await pool.query(insertNoteSql);
         console.log("Initial note inserted into admin_project_notes table.");
@@ -408,13 +441,29 @@ export async function addNoteToProject(admin_id, project_id, note) {
 }
 
 export async function getNotesForProject(admin_id, project_id) {
-    const [rows] = await pool.query(`
-        SELECT note
-        FROM admin_project_notes
-        WHERE admin_id = ? AND project_id = ?
-    `, [admin_id, project_id]);
-    return rows;
+    try {
+        console.log(`Fetching notes for project ID ${project_id} by admin ID ${admin_id}`);
+        
+        // Include `project_id` in your SELECT clause
+        const [rows] = await pool.query(`
+            SELECT note, project_id
+            FROM admin_project_notes
+            WHERE admin_id = ? AND project_id = ?
+        `, [admin_id, project_id]);
+        
+        console.log(`Fetched ${rows.length} notes for project ID ${project_id}`);
+        
+        // Now, since `project_id` is being selected, it will be included in each row
+        return rows.map(row => ({
+            note: row.note,
+            projectId: row.project_id  // Correctly including project_id in the response
+        }));
+    } catch (error) {
+        console.error('Error fetching notes for project:', error);
+        throw error; // Re-throw the error to be caught by the caller
+    }
 }
+
 
 export async function updateNoteForProject(note_id, admin_id, newNote) {
     await pool.query(`
@@ -517,20 +566,38 @@ export async function deleteTeam(id) {
     await pool.query(`DELETE FROM team WHERE id = ?`, [id]);
 }
 
-
 // Method to delete file entry from MySQL database
 export async function deleteFileFromDatabase(filename) {
-    return new Promise((resolve, reject) => {
+    try {
+      // First, delete the file record from the database
       const sql = 'DELETE FROM files WHERE filename = ?';
-      pool.query(sql, [filename], (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results);
-        }
+      const [result] = await pool.query(sql, [filename]);
+      
+      // Check if the file was actually deleted from the database
+      if (result.affectedRows > 0) {
+          // Construct the path to the file
+          const filePath = path.join(__dirname, 'uploads', filename);
+
+      // Check if the file exists and delete it
+      fs.unlink(filePath, (err) => {
+          if (err) {
+              console.error(`Failed to delete file from file system: ${filename}`, err);
+              // Consider how you want to handle this error. You might not want to throw here.
+          } else {
+              console.log(`File ${filename} deleted from file system.`);
+          }
       });
-    });
+    } else {
+        console.log(`No database entry found for filename: ${filename}`);
+    }
+
+    return result; // You might adjust what you return based on your needs
+  } catch (error) {
+    console.error(`Database error when attempting to delete file ${filename}:`, error);
+    throw error; // Make sure to re-throw the error to catch it in the route handler
+  }
 }
+
 
 export async function getProjectByPID(pid) {
     const [rows] = await pool.query(`
