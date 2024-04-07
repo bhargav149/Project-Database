@@ -291,6 +291,22 @@ const deleteRootProject = (id, deletedChildProjects) => {
     
     setEditingProject(project); // Keep the selected project as the editing project
     setRelatedProjects(projectAndContinuations); // Update related projects to include continuations
+
+    const fetchNotesForProjects = async () => {
+      try {
+        const notesPromises = projectAndContinuations.map(proj =>
+          fetch(`${url}projects/${proj.id}/notes`).then(res => res.json())
+        );
+        const notesArrays = await Promise.all(notesPromises);
+        // Flatten the array of arrays and set the notes
+        const allNotes = [].concat(...notesArrays);
+        setNotes(allNotes);
+      } catch (err) {
+        console.error("Failed to fetch notes for related projects:", err);
+      }
+    };
+  
+    fetchNotesForProjects();
   };
   
   const saveEdit = async (updatedProject) => {
