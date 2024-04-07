@@ -82,11 +82,13 @@ function App() {
 
 
   useEffect(() => {
-    const semestersFromProjects = new Set(data.flatMap(project => project.semesters));
-    console.log("semesters from projects: ", semestersFromProjects)
-    const newAvailableSemesters = [...semestersFromProjects];
-    console.log("new available Semesters:", newAvailableSemesters); // Debug log
-    setAvailableSemesters(newAvailableSemesters);
+    if (data && data.length > 0) {
+      const semestersFromProjects = new Set(data.flatMap(project => project.semesters));
+      console.log("semesters from projects: ", semestersFromProjects)
+      const newAvailableSemesters = [...semestersFromProjects];
+      console.log("new available Semesters:", newAvailableSemesters); // Debug log
+      setAvailableSemesters(newAvailableSemesters);
+    }
   }, [data]);
   
 
@@ -160,12 +162,17 @@ function App() {
     .then(res => res.json())
     .then(data => {
       console.log("Fetched project row: ", data)
-      const rootId = data[0].continuation_of_project_id;
-      if(rootId===-1){
-        setUserRootProject(userProject);
+      if (data && data.length > 0) {
+        const rootId = data[0].continuation_of_project_id;
+        if(rootId===-1){
+          setUserRootProject(userProject);
+        }
+        else{
+          setUserRootProject(rootId)
+        }
       }
-      else{
-        setUserRootProject(rootId)
+      else {
+        console.log("No project data found");
       }
       console.log("Current user's root project: ", userRootProject)
     })
