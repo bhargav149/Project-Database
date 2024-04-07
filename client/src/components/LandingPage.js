@@ -531,6 +531,24 @@ fetchAdminData(user)
     setSettingsView(false); // Assuming you want to leave settings view when undo is clicked
   };
 
+  const getMostRecentStatus = (projectId) => {
+    // Collect all related projects including the root and its continuations
+    const relatedProjects = data.filter(p => 
+      p.id === projectId || p.continuation_of_project_id === projectId
+    );
+  
+    // Sort projects by semester and year
+    const sortedProjects = relatedProjects.sort((a, b) => {
+      const [termA, yearA] = a.semesters.split(' ');
+      const [termB, yearB] = b.semesters.split(' ');
+      const yearDiff = yearA - yearB;
+      if (yearDiff !== 0) return yearDiff; // Sort by year first
+      return termA === 'Spring' ? -1 : 1; // Assuming only Spring and Fall, sort Spring before Fall
+    });
+  
+    // The last project in the sorted array is the most recent
+    return sortedProjects.length > 0 ? sortedProjects[sortedProjects.length - 1].status : '';
+  };
   
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
@@ -626,6 +644,7 @@ fetchAdminData(user)
                 {/* <p><strong>Team Members:</strong> {project.team_members}</p> */}
                 <p><strong>Semester:</strong> {getAllSemestersForProject(project.id).join(', ')}</p>
                 <button className="status-button suspended">Completed</button>
+                
                 <div className="indicator-container">
                   {data.some(p => p.continuation_of_project_id === project.id) && (
                       <button className="continued-indicator" onClick={(e) => e.stopPropagation()}>
@@ -659,7 +678,10 @@ fetchAdminData(user)
                   </span></>) :
                   <></>
                 }
-              <button className={getStatusStyle(project.status)}>{project.status}</button>
+              {/* <button className={getStatusStyle(project.status)}>{project.status}</button> */}
+              <button className={getStatusStyle(getMostRecentStatus(project.id))}>
+        {getMostRecentStatus(project.id)}
+      </button>
               </div>
             ))}
           </div>
