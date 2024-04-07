@@ -293,22 +293,26 @@ const deleteRootProject = (id, deletedChildProjects) => {
     setRelatedProjects(projectAndContinuations); // Update related projects to include continuations
   };
   
-  const saveEdit = (updatedProject) => {
+  const saveEdit = async (updatedProject) => {
     // console.log(`Saving project with updated status: `, updatedProject);
-    fetch(url+`projects/${updatedProject.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedProject),
-    })
-    .then(response => response.json())
-    .then(() => {
+    try {
+      const response = await fetch(url + `projects/${updatedProject.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedProject),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update project");
+      }
       setIsModalOpen(false);
-      fetchProjects();
+      fetchProjects(); // Update project data after save
       showToastWithFadeOut("Project successfully updated.");
-    })
-    .catch(err => console.error(err));
+    } catch (error) {
+      console.error(error);
+      showToastWithFadeOut("An error occurred while updating the project.", true);
+    }
   };
 
   const cancelEdit = () => {
