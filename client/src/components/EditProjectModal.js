@@ -31,12 +31,12 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, 
       setCurrentProject(project);
     }, [project]);
     
-    useEffect(() => {
-      setSelectedProject(project);
-      // Filter the notes array for the note corresponding to the selected project
-      const projectNote = notes.find(n => n.projectId === project.id);
-      setEditedNote(projectNote ? projectNote.note : '');
-  }, [project, notes]);
+useEffect(() => {
+  // Ensure this effect runs when selectedProject changes
+  const projectNote = notes.find(n => n.projectId === selectedProject.id);
+  setEditedNote(projectNote ? projectNote.note : '');
+}, [selectedProject, notes]);
+
 
 
 
@@ -257,25 +257,9 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, 
           await handleUpload(file); // Wait for the file to be uploaded
       }
       // After file upload, proceed with saving project data...
-      onSave({ ...selectedProject }); // Assuming onSave is your function for saving project details
+      onSave({ ...selectedProject });
 
-      try {
-        const notePayload = { 
-            // Include necessary fields for your note update API
-            note: editedNote,
-            projectId: selectedProject.id,
-            // Add admin_id if required by your backend
-        };
-
-        // Assuming an endpoint exists to update a note for a project
-        // Adjust the URL and method (POST/PUT) according to your API
-        await axios.post(`${process.env.REACT_APP_API_URL}/projects/${selectedProject.id}/notes`, notePayload);
-        console.log('Note updated successfully');
-        // Optionally, refresh notes from the server or update local state to reflect the change
-    } catch (error) {
-        console.error('Failed to update note', error);
-    }
-
+      
     // Continue with any additional save logic, such as closing the modal or updating local state
     onSave();
   };
