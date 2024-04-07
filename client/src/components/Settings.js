@@ -8,7 +8,8 @@ function SettingsPage({ themeMode }) {
     const [teamId, setTeamId] = useState('');
     const [activeTab, setActiveTab] = useState('Profile');
     const [users, setUsers] = useState([]);
-
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    
     // Hardcoded PID for the current user
     const pid = "k3h0j8";
     const id = "1";

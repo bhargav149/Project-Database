@@ -1,7 +1,7 @@
 /* Container for the sidebar and content */
 .settings-container {
     display: flex;
-    min-height: 80vh;
+    height: 80vh;
     width: 80vw;
     margin-top: 50px;
 }
@@ -9,12 +9,12 @@
 .settings-container.light {
     background-color: #fff; /* Light background */
     color: #000; /* Dark text for light background */
-  }
-  
-  .settings-container.dark {
+}
+
+.settings-container.dark {
     background-color: #333; /* Dark background */
     color: #fff; /* Light text for dark background */
-  }
+}
 
 /* Sidebar styling */
 .sidebar {

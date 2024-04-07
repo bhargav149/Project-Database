@@ -11,13 +11,13 @@ async function initializeDatabase() {
     console.log("Initializing database...");
     const connection = await mysql.createConnection({
         // use for local development
-        // host: process.env.MYSQL_HOST,
-        // user: process.env.MYSQL_USER,
-        // password: process.env.MYSQL_PASSWORD,
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
         //use for deployment
-        host:	'bravesouls-projectdb-mysql',
-        user: 'user',
-        password: 'bravesouls',
+        // host:	'bravesouls-projectdb-mysql',
+        // user: 'user',
+        // password: 'bravesouls',
 
     });
 
@@ -32,16 +32,16 @@ async function initializeDatabase() {
     console.log("Creating projects and project_semesters tables...");
     pool = mysql.createPool({
         //use for local development
-        // host: process.env.MYSQL_HOST,
-        // user: process.env.MYSQL_USER,
-        // password: process.env.MYSQL_PASSWORD,
-        // database: 'projects_app',
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: 'projects_app',
 
         // use for cloud deployment
-        host:	'bravesouls-projectdb-mysql',
-        user: 'user',
-        password: 'bravesouls',
-        database: 'projects_app',
+        // host:	'bravesouls-projectdb-mysql',
+        // user: 'user',
+        // password: 'bravesouls',
+        // database: 'projects_app',
     });
 
     // Create projects table

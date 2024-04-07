@@ -51,24 +51,24 @@ function App() {
   const [settingsView, setSettingsView] = useState(false);
 
   //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
-  // const url = "http://localhost:8080/";
-  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  const url = "http://localhost:8080/";
+  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('notanadmin');
+  const [user, setUser] = React.useState('adminpid');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
   const [userRootProject, setUserRootProject] = useState(-1);
 
 
-  useEffect(() => {
-    async function getCurrentUser() {
-      await fetch("/api/currentUser")
-        .then((res) => res.json())
-        .then((data) => setUser(data.user));
-    }
-    getCurrentUser();
-  }, []);
+  // useEffect(() => {
+  //   async function getCurrentUser() {
+  //     await fetch("/api/currentUser")
+  //       .then((res) => res.json())
+  //       .then((data) => setUser(data.user));
+  //   }
+  //   getCurrentUser();
+  // }, []);
 
 
   useEffect(() => {

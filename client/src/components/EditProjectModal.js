@@ -20,8 +20,8 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, 
   const [dragging, setDragging] = useState(false);
   const [editedNote, setEditedNote] = useState('');
 
-  // const url = "http://localhost:8080/";
-  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  const url = "http://localhost:8080/";
+  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
     // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
     const [previewUrl, setPreviewUrl] = useState(null);
