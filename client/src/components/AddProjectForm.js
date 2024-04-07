@@ -73,7 +73,16 @@ function AddProjectForm({ onAdd, projects }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        // Calculate how far in the future the selected year is
+        const yearsAhead = year - new Date().getFullYear();
 
+        // Warn and confirm if the selected year is 3 or more years ahead
+        if (yearsAhead >= 3) {
+            const isConfirmed = window.confirm(`The selected year is ${yearsAhead} years in the future. Are you sure you want to proceed?`);
+            if (!isConfirmed) {
+                return; // If the user does not confirm, prevent form submission
+            }
+        }
         const stackString = stack.map(option => option.title).join(', ');
         const projectData = {
             title,
