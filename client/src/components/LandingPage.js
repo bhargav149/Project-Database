@@ -121,7 +121,8 @@ function App() {
       // Check for search term match
       const matchesSearchTerm = searchTerm === '' || project[selectedCategory]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
       // Check if status is selected
-      const statusIsSelected = selectedStatuses[project.status];
+      const mostRecentStatus = getMostRecentStatus(project.id);
+      const statusIsSelected = selectedStatuses[mostRecentStatus];
       // If showContinuedProjects is false, exclude root projects that have continuations
       const continuationCriteria = showContinuedProjects || !rootProjectsWithContinuations.has(project.id);
   
