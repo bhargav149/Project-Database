@@ -200,9 +200,61 @@ export default function UsersTable({ themeMode }) {
   );
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ display: 'flex', justifyContent: 'start', marginTop: '20px' }}>
-        <div style={{ height: '85%', width: '70%' }}>
-          
+      <div style={{ display: 'flex', flexDirection: 'column', marginTop: '20px', marginLeft: '20px' }}>
+      <div style={{ display: 'flex', marginBottom: '10px' }}>
+          <Button 
+            variant="contained" 
+            onClick={makeAdmin} 
+            sx={{ 
+              marginRight: '10px',
+              border: '1px solid transparent',
+              backgroundColor: 'transparent',
+                color: 'black',
+                border: '1px solid black',
+              '&:hover': { 
+                backgroundColor: '#373938',
+                color: 'white',
+              } 
+            }}
+          >
+            Set Admin
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={removeAdmin} 
+            sx={{ 
+              marginRight: '10px',
+              border: '1px solid transparent',
+              backgroundColor: 'transparent',
+                color: 'black',
+                border: '1px solid black',
+              '&:hover': { 
+                backgroundColor: '#373938',
+                color: 'white',
+              } 
+            }}
+          >
+            Remove Admin
+          </Button>
+          <Button
+            variant="contained" 
+            onClick={handleDeleteUser} 
+            sx={{
+              border: '1px solid transparent',
+              backgroundColor: 'transparent',
+                color: 'black',
+                border: '1px solid black',
+              '&:hover': { 
+                backgroundColor: '#CD5C5C',
+                color: 'white',
+                border: '1px solid #CD5C5C',
+              } 
+            }}
+          >
+            Remove User
+          </Button>
+        </div>
+        <div style={{ height: '85%', width: '98%', marginTop: '20px' }}>
           <DataGrid
             rows={users}
             columns={columns}
@@ -216,56 +268,6 @@ export default function UsersTable({ themeMode }) {
             selected={selected}
             {...selected}
           />
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', marginTop: '20px', marginRight: '20px', marginLeft: '20px' }}>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={makeAdmin} 
-            sx={{ 
-              marginBottom: '10px', 
-              border: '1px solid transparent',
-              '&:hover': { 
-                backgroundColor: 'transparent',
-                color: 'blue',
-                border: '1px solid blue',
-              } 
-            }}
-          >
-            Set Admin
-          </Button>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={removeAdmin} 
-            sx={{ 
-              marginBottom: '10px', 
-              border: '1px solid transparent',
-              '&:hover': { 
-                backgroundColor: 'transparent',
-                color: 'blue',
-                border: '1px solid blue',
-              } 
-            }}
-          >
-            Remove Admin
-          </Button>
-          <Button
-            variant="contained" 
-            onClick={handleDeleteUser} 
-            color="primary" 
-            sx={{
-              marginBottom: '10px', 
-              border: '1px solid transparent',
-              '&:hover': { 
-                backgroundColor: 'transparent',
-                color: 'red',
-                border: '1px solid red',
-              } 
-            }}
-          >
-            Remove User
-          </Button>
         </div>
       </div>
     </ThemeProvider>
