@@ -199,6 +199,7 @@ app.get(`${url}/user/:pid`, async (req, res) => {
 app.put(`${url}/user/:pid`, async(req,res) => {
     try {
         await switchProject(req.params.pid, req.body.project_id);
+        console.log("REQ PARAM AND PROJECT ID: ", req.body.project_id, req.params.pid);
         res.status(200).send('Project switched successfully');
     }catch (error) {
         res.status(500).send('Error switching project');

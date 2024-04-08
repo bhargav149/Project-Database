@@ -609,6 +609,7 @@ export async function getProjectByPID(pid) {
 }
 
 export async function switchProject(pid, project_id) {
+    console.log("Inside SwitchProjects")
     await pool.query(`
         UPDATE user SET project_id = ?
         WHERE pid = ?

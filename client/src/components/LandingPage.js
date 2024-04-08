@@ -84,9 +84,9 @@ function App() {
   useEffect(() => {
     if (data && data.length > 0) {
       const semestersFromProjects = new Set(data.flatMap(project => project.semesters));
-      console.log("semesters from projects: ", semestersFromProjects)
+      // console.log("semesters from projects: ", semestersFromProjects)
       const newAvailableSemesters = [...semestersFromProjects];
-      console.log("new available Semesters:", newAvailableSemesters); // Debug log
+      // console.log("new available Semesters:", newAvailableSemesters);
       setAvailableSemesters(newAvailableSemesters);
     }
   }, [data]);
@@ -147,13 +147,13 @@ function App() {
     fetch(url+"user/"+user)
     .then(res => res.json())
     .then(data => {
-      console.log("Fetched user project: ", data, data.project_id)
+      // console.log("Fetched user project: ", data, data.project_id)
       setUserProject(data.project_id);
-      console.log("Current user's project: ", userProject)
+      // console.log("Current user's project: ", userProject)
       getUserRootProject()
     })
     .catch(error => {
-      console.error("Error fetching user project:", error);
+      // console.error("Error fetching user project:", error);
     });
   }
 
@@ -161,7 +161,7 @@ function App() {
     fetch(url+"projects/"+userProject)
     .then(res => res.json())
     .then(data => {
-      console.log("Fetched project row: ", data)
+      // console.log("Fetched project row: ", data)
       if (data && data.length > 0) {
         const rootId = data[0].continuation_of_project_id;
         if(rootId===-1){
@@ -172,9 +172,9 @@ function App() {
         }
       }
       else {
-        console.log("No project data found");
+        // console.log("No project data found");
       }
-      console.log("Current user's root project: ", userRootProject)
+      // console.log("Current user's root project: ", userRootProject)
     })
     .catch(error => {
       console.error("Error fetching user root project:", error);
@@ -545,8 +545,8 @@ const deleteRootProject = (id, deletedChildProjects) => {
 fetchAdminData(user)
     .then(admin => {
         setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
-        console.log('Is admin:', isAdmin);
-        console.log(user)
+        // console.log('Is admin:', isAdmin);
+        // console.log(user)
         // You can use the value of 'isAdmin' in your application logic
     })
     .catch(error => {

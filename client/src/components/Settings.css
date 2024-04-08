@@ -2,7 +2,7 @@
 .settings-container {
     display: flex;
     height: 80vh;
-    width: 80vw;
+    width: 60vw;
     margin-top: 50px;
 }
 
@@ -94,4 +94,72 @@
 
 .settings-container.light .navLink {
     color: #fff; /* Light text color for active state in light theme */
+}
+
+.profile-section label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555; /* Slightly lighter text for labels */
+    font-weight: 500; /* Medium font weight for clarity */
+}
+
+.profile-section input[type="text"] {
+    max-width: 30%;
+    padding: 8px 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc; /* Subtle border for inputs */
+    border-radius: 4px; /* Rounded corners for inputs */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
+}
+
+.profile-section button {
+    width: auto; /* Allow the button to resize based on content */
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Green color for actions */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.profile-section button:hover {
+    background-color: #45a049; /* Darker shade of green on hover */
+}
+
+/* Adjustments for light and dark themes within the profile section */
+.settings-container.light .profile-section {
+    background-color: #fff; /* Brighter background for light theme */
+    color: #2c3e50; /* Darker text for contrast */
+}
+
+.settings-container.dark .profile-section {
+    background-color: #34495e; /* Dark background for dark theme */
+    color: #ecf0f1; /* Light text for readability */
+}
+
+.settings-container.dark .profile-section input[type="text"],
+.settings-container.dark .profile-section button {
+    border-color: #555; /* Darker borders for inputs and buttons in dark theme */
+}
+
+.settings-container.dark .profile-section button {
+    background-color: #27ae60; /* Adapted green for dark theme, maintaining accessibility */
+}
+
+.profile-section {
+    display: flex;
+    justify-content: space-between;
+    position: relative; /* Ensure positioning context for the pseudo-element */
+}
+
+.personal-info, .project-info {
+    flex: 1;
+    padding: 0 20px; 
+}
+
+@media (max-width: 600px) {
+    .project-info::before {
+        display: none;
+    }
 }
