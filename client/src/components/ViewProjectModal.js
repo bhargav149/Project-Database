@@ -2,17 +2,28 @@ import React, { useState, useEffect } from 'react';
 import './ViewProjectModal.css';
 import { X } from 'lucide-react';
 
-function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes }) {
+function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes, pid }) {
   const [selectedProject, setSelectedProject] = useState(project);
+  const [userProject, setUserProject] = React.useState(null);
+  const [userRootProject, setUserRootProject] = useState(-1);
+  
 
   useEffect(() => {
     setSelectedProject(project); // Reset selected project when the main project changes
   }, [project]);
 
+  useEffect(() => {
+    getUserProject();
+  });
+
   if (!isOpen) return null;
   console.log('Notes prop:', notes);
   const themeClass = theme === 'dark' ? 'dark-theme' : 'light-theme';
   const semesterTabs = relatedProjects.map(proj => proj.semesters);
+
+  const url = "http://localhost:8080/";
+  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+
 
   const getAllSemesters = () => {
     const semesterSet = new Set();
@@ -28,6 +39,57 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
   };
 
   const filteredNotes = notes.filter(note => note.projectId === selectedProject.id);
+
+  const getUserProject =() => {
+    fetch(url+"user/"+pid)
+    .then(res => res.json())
+    .then(data => {
+      // console.log("Fetched user project: ", data, data.project_id)
+      setUserProject(data.project_id);
+      // console.log("Current user's project: ", userProject)
+      getUserRootProject()
+    })
+    .catch(error => {
+      // console.error("Error fetching user project:", error);
+    });
+  }
+
+  const getUserRootProject =() => {
+    fetch(url+"projects/"+userProject)
+    .then(res => res.json())
+    .then(data => {
+      // console.log("Fetched project row: ", data)
+      if (data && data.length > 0) {
+        const rootId = data[0].continuation_of_project_id;
+        if(rootId===-1){
+          setUserRootProject(userProject);
+        }
+        else{
+          setUserRootProject(rootId)
+        }
+      }
+      else {
+        // console.log("No project data found");
+      }
+      // console.log("Current user's root project: ", userRootProject)
+    })
+    .catch(error => {
+      console.error("Error fetching user root project:", error);
+    });
+  }
+
+  const switchUserProject = (project_id) => {
+    fetch(url+"user/"+pid, {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        project_id: project_id,
+      }),
+    })
+    .catch(err => console.error(err));
+  }
 
 
   return (
@@ -64,6 +126,14 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
         <p><strong>Team:</strong> {selectedProject.team_name}</p>
         <p><strong>Members:</strong> {selectedProject.team_members}</p>
         <p><strong>Status:</strong> {selectedProject.status}</p>
+        <div className="modal-actions">
+        {selectedProject.status==="Unassigned" && selectedProject.id !== userProject? (<button onClick={(event) => {
+          // event.stopPropagation();
+          switchUserProject(selectedProject.id)
+          onClose()
+        }}>Join Team</button>) : <></>}
+        </div>
+
       </div>
     </div>
   );

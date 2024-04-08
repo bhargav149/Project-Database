@@ -20,6 +20,7 @@ function AddProjectForm({ onAdd, projects }) {
     const [team_members, setTeamMembers] = useState('');
     const [semester, setSemester] = useState('Spring');
     const [year, setYear] = useState(new Date().getFullYear());
+    const [stackString,setStackString] = React.useState("");
     const yearSelectorRef = useRef(null);
     const semesters = ['Spring', 'Fall'];
     const [selectedSemester, setSelectedSemester] = useState(semesters[0]);
@@ -29,6 +30,8 @@ function AddProjectForm({ onAdd, projects }) {
     const [status, setStatus] = useState('Unassigned');
     const currentYear = new Date().getFullYear();
     const years = Array.from(new Array(121), (val, index) => currentYear - 20 + index);
+    const url = "http://localhost:8080/";
+    // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
     const stackOptions = [
         { title: 'React.js' },
@@ -71,7 +74,22 @@ function AddProjectForm({ onAdd, projects }) {
         }
     }, []);
 
-    const handleSubmit = (e) => {
+    const fetchName = async () => {
+        try {
+          const response = await fetch(url+'projecttitle/'+title)
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          const stackFromJson = data.stack; // Extract "stack" field from JSON object
+          setStack(stackFromJson); // Set "stack" variable to the value extracted from JSON
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+    };
+  
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Calculate how far in the future the selected year is
         const yearsAhead = year - new Date().getFullYear();
@@ -83,33 +101,74 @@ function AddProjectForm({ onAdd, projects }) {
                 return; // If the user does not confirm, prevent form submission
             }
         }
-        const stackString = stack.map(option => option.title).join(', ');
-        const projectData = {
-            title,
-            contents,
-            stack: stackString,
-            team_name,
-            team_members,
-            status,
-            semesters: [`${selectedSemester} ${year}`],
-            continuation_of_project_id: cont,
-        };
-    
-        if (isContinuation === 'yes' && !selectedContinuationProject) {
-            console.error("Please select a project to continue.");
-            return;
+        if(isContinuation==='yes') {
+            try {
+                const response = await fetch(url+'projecttitle/'+title);
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                const stackFromJson = data.stack;
+                const projectData = {
+                    title,
+                    contents,
+                    stack: stackFromJson,
+                    team_name,
+                    team_members,
+                    status,
+                    semesters: [`${selectedSemester} ${year}`],
+                    continuation_of_project_id: cont,
+                };
+                console.log(projectData)
+                if (isContinuation === 'yes' && !selectedContinuationProject) {
+                    console.error("Please select a project to continue.");
+                    return;
+                }
+                onAdd(projectData);
+                setTitle('');
+                setContents('');
+                setStack([]);
+                setTeamName('');
+                setTeamMembers('');
+                setSemester('');
+                setStatus('');
+                setStackString('');
+                setYear(new Date().getFullYear());
+                setSelectedContinuationProject(null);
+              } catch (error) {
+                console.error('Error fetching data:', error);
+              }
         }
-        onAdd(projectData);
-        
-        setTitle('');
-        setContents('');
-        setStack([]);
-        setTeamName('');
-        setTeamMembers('');
-        setSemester('');
-        setStatus('');
-        setYear(new Date().getFullYear());
-        setSelectedContinuationProject(null);
+        else{
+            const temp = stack.map(option => option.title).join(', ')
+            setStackString(temp);
+            const projectData = {
+                title,
+                contents,
+                stack: temp,
+                team_name,
+                team_members,
+                status,
+                semesters: [`${selectedSemester} ${year}`],
+                continuation_of_project_id: cont,
+            };
+            if (isContinuation === 'yes' && !selectedContinuationProject) {
+                console.error("Please select a project to continue.");
+                return;
+            }
+            onAdd(projectData);
+            
+            setTitle('');
+            setContents('');
+            setStack([]);
+            setTeamName('');
+            setTeamMembers('');
+            setSemester('');
+            setStatus('');
+            setStackString('');
+            setYear(new Date().getFullYear());
+            setSelectedContinuationProject(null);
+        }
     };
 
     const handleYearClick = (selectedYear) => {
@@ -289,29 +348,8 @@ function AddProjectForm({ onAdd, projects }) {
                         }}
                     />
                 </div>
+                
             )}
-            <div className="form-group">
-                <label htmlFor="team_name"><strong>Team Name:</strong></label>
-                <input
-                    id="team_name"
-                    type="text"
-                    value={team_name}
-                    onChange={(e) => setTeamName(e.target.value)}
-                    placeholder="e.g. Brave Souls"
-                    required
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="team_members"><strong>Team Members:</strong></label>
-                <input
-                    id="team_members"
-                    type="text"
-                    value={team_members}
-                    onChange={(e) => setTeamMembers(e.target.value)}
-                    placeholder="Team Members"
-                    required
-                />
-            </div>
             <label><strong>Semester and Year:</strong></label>
             <div className="semester-year-group">
                 <div className="semester-selector">

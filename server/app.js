@@ -37,7 +37,11 @@ import {
     addFile,
     deleteFileFromDatabase,
     getProjectByPID,
-    switchProject
+    switchProject,
+    getProjectByTitle,
+    getUserByPID,
+    getProjectWithSemesters,
+    updateProjectMembers
 } from './database.js'
 
 const app = express()
@@ -125,6 +129,13 @@ app.get(url+"/projects/:id", async (req, res, next) => {
     res.json(project)
 })
 
+app.get(url+"/projecttitle/:title", async (req,res) => {
+    const title = req.params.title
+    const project = await getProjectByTitle(title)
+    console.log(project.stack)
+    res.json(project)
+})
+
 app.post(url+"/projects", async (req, res, next) => {
     const {title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id} = req.body;
     try {
@@ -198,9 +209,43 @@ app.get(`${url}/user/:pid`, async (req, res) => {
 
 app.put(`${url}/user/:pid`, async(req,res) => {
     try {
+        const user = await getUserByPID(req.params.pid)
+        //first remove user from old project
+        const oldProjectId = await getProjectByPID(req.params.pid)
+        const oldProjects = await getProject(oldProjectId.project_id)
+        if(oldProjects.length>0){
+            const oldProject = oldProjects[0]
+            console.log("old project: ", oldProject)
+            const oldMembers = oldProject.team_members
+            console.log("old members: ", oldMembers)
+            const index = oldMembers.indexOf(user.name);
+            let prefix = '';
+            let suffix=0
+            if (index > 0) {
+                prefix = ', ';
+            }
+            else{
+                suffix=2
+            }
+            console.log("string stuff", index, prefix.length)
+
+            const removedMembers = oldMembers.slice(0, index - prefix.length) + oldMembers.slice(index + suffix + user.name.length);
+            await updateProjectMembers(oldProjectId.project_id,removedMembers); 
+            console.log("Updated old members")
+        }
+
+
+        //then switch the project and add the user to the new one
         await switchProject(req.params.pid, req.body.project_id);
         console.log("REQ PARAM AND PROJECT ID: ", req.body.project_id, req.params.pid);
-        res.status(200).send('Project switched successfully');
+        const project = await getProjectWithSemesters(req.body.project_id)
+        let newMembers = project.team_members+", "+user.name
+        if(project.team_members==''){
+            newMembers = user.name
+        }
+        await updateProjectMembers(req.body.project_id,newMembers); 
+        const newProject = await getProjectWithSemesters(req.body.project_id)
+        res.status(200).send('Project switched successfully',newProject);
     }catch (error) {
         res.status(500).send('Error switching project');
     }

@@ -54,7 +54,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('k3h0j8');
+  const [user, setUser] = React.useState('pid1');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -200,10 +200,14 @@ function App() {
       }),
     })
     .then(response => response.json())
-    .then(() => {
-      fetchProjects();
-      showToastWithFadeOut("Successfully added project.");
-      setShowAddProjectForm(false);
+    .then((data) => {
+      if (data !== null) {
+        fetchProjects();
+        showToastWithFadeOut("Successfully added project.");
+        setShowAddProjectForm(false);
+      } else {
+        showToastWithFadeOut("Project title already exists; please choose a different name or continue an existing project");
+      }
     })
     .catch(err => console.error(err));
   };
@@ -221,6 +225,8 @@ function App() {
       }, 700); // This duration should match the CSS animation duration for fading out
     }, 10000); // Time the toast is visible before starting to fade out
   };
+
+  
 
 
   const deleteProject = (id) => {
@@ -686,12 +692,6 @@ fetchAdminData(user)
                       event.stopPropagation();
                       deleteProject(project.id);
                     }}>Delete</button>
-                  ) : project.status==='Unassigned' && !(userRootProject===project.id) ? (
-                    <button className="button-join" onClick={(event) => {
-                      // Handle Join Team action
-                      event.stopPropagation();
-                      toggleEdit(project);
-                    }}>Join Team</button>
                   ) : (
                     <></>
                   )
@@ -739,10 +739,14 @@ fetchAdminData(user)
         <ViewProjectModal
           project={editingProject}
           isOpen={isViewModalOpen}
-          onClose={() => setIsViewModalOpen(false)}
+          onClose={() => {
+            setIsViewModalOpen(false)
+            fetchProjects()
+          }}
           theme={isDarkMode ? 'dark' : 'light'}
           relatedProjects={relatedProjects}
           notes={notes}
+          pid={user}
         />
       )}
   

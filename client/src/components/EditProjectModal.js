@@ -64,7 +64,7 @@ useEffect(() => {
     }, [project, isOpen]);
 
   const handleStatusChange = (newStatus) => {
-    setEditedProject(prev => ({ ...prev, status: newStatus }));
+    setSelectedProject(prev => ({ ...prev, status: newStatus }));
   };
 
   const statuses = ['Completed', 'In-Progress', 'Suspended', 'Unassigned'];
@@ -578,11 +578,6 @@ return (
       </div>
   </div>
       <div className="modal-actions">
-      <button onClick={(event) => {
-          event.stopPropagation();
-          switchUserProject(selectedProject.id)
-          onSave(selectedProject)
-        }}>Join Team</button>
         <button onClick={onCancel}>Cancel</button>
       </div>
     </div>)}

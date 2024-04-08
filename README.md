@@ -83,6 +83,8 @@ docker compose down -v
     - client/src/components/DataTable.js(lines 37/38)
     - client/src/components/Settings.js(lines 14-18)
     - client/src/components/UserTable.js(lines 40-41)
+    - client/src/components/AddProjectForm.js(lines 33-34)
+    - client/src/components/ViewProjectModal.js(lines 17-18)
     - all of these files will have comments telling you what to change
 
 

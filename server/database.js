@@ -333,8 +333,23 @@ export async function getProject(id) {
     return rows;
 }
 
+//returns root project given a title
+export async function getProjectByTitle(title) {
+    const [project] = await pool.query(`SELECT * 
+    FROM projects
+    WHERE title = ?`, [title])
+    console.log(project)
+    return project[0]
+}
+
 export async function createProject(title, contents, stack, team_name, team_members, status = 'Unassigned', semesters = [], continuation_of_project_id) {
     console.log(`Creating project with semesters: ${semesters}`);
+    const [existingProjects] = await pool.query(`SELECT * 
+    FROM projects
+    WHERE title = ?`, [title])
+    if(existingProjects.length>0 && continuation_of_project_id==-1){
+        return null;
+    }
     const [projectResult] = await pool.query(`
         INSERT INTO projects (title, contents, stack, team_name, team_members, status, continuation_of_project_id)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -353,7 +368,7 @@ export async function createProject(title, contents, stack, team_name, team_memb
     return getProjectWithSemesters(projectId);
 }
 
-async function getProjectWithSemesters(projectId) {
+export async function getProjectWithSemesters(projectId) {
     const [projectRows] = await pool.query(`
         SELECT * 
         FROM projects
@@ -397,6 +412,16 @@ export async function updateProject(id, title, contents, stack, team_name, team_
     return getProjectWithSemesters(id);
 }
 
+export async function updateProjectMembers(id, newTeamMembers) {
+    const query = `
+        UPDATE projects 
+        SET team_members = ?
+        WHERE id = ?
+    `;
+
+    await pool.query(query, [newTeamMembers, id]);
+    return getProjectWithSemesters(id);
+}
 
 export async function addSemesterToProject(project_id, semester) {
     await pool.query(`
@@ -497,6 +522,12 @@ export async function getUser(id) {
     const [rows] = await pool.query(`SELECT * FROM user WHERE id = ?`, [id]);
     return rows[0];
 }
+
+export async function getUserByPID(pid) {
+    const [rows] = await pool.query(`SELECT * FROM user WHERE pid = ?`, [pid]);
+    return rows[0];
+}
+
 export async function updateUser(id, name, pid, team_id) {
     await pool.query(`
         UPDATE user SET name = ?, pid = ?, team_id = ?
@@ -605,6 +636,10 @@ export async function getProjectByPID(pid) {
         FROM user
         WHERE pid = ?
     `, [pid]);
+    if (rows.length === 0) {
+        // No rows found
+        return null; // Or handle the case as per your requirement
+    }
     return rows[0];
 }
 
