@@ -60,6 +60,7 @@
     border-radius: 0 15px 15px 0; /* Rounded right edges */
     color: rgb(34,32,31);
     opacity: 0.95;
+    min-width: 40vw;
 }
 
 .settingsContainer {

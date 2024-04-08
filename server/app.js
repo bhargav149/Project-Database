@@ -269,11 +269,16 @@ app.put(`${url}/admins/:id`, async (req, res) => {
     }
 });
 
-app.delete(`${url}/admins/:id`, async (req, res) => {
+app.delete(`${url}/admins/:pid`, async (req, res) => {
     try {
-        await deleteAdmin(req.params.id);
+        const result = await deleteAdmin(req.params.pid);
+        // if (result.affectedRows === 0) {
+        //     // No rows affected, meaning the pid doesn't exist
+        //     return res.status(404).send('Admin not found');
+        // }
         res.status(200).send('Admin deleted successfully');
     } catch (error) {
+        console.error('Error deleting admin:', error);
         res.status(500).send('Error deleting admin');
     }
 });

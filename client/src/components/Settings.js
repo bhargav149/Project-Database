@@ -54,7 +54,12 @@ function SettingsPage({ themeMode }) {
             // case 'Users':
             //     return renderUsersTable();
             case 'Users':
-                return <UsersTable themeMode="light" />;
+                return (
+                    <>
+                        <h2>Manage Users</h2>
+                        <UsersTable themeMode="light" />
+                    </>
+                );
             default:
                 return <div>Select a tab</div>;
         }

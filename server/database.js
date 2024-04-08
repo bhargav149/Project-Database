@@ -533,8 +533,8 @@ export async function updateAdmin(id, pid) {
     `, [pid, id]);
 }
 
-export async function deleteAdmin(id) {
-    await pool.query(`DELETE FROM admin WHERE id = ?`, [id]);
+export async function deleteAdmin(pid) {
+    await pool.query(`DELETE FROM admin WHERE pid = ?`, [pid]);
 }
 
 export async function createTeam(team_name, team_members, project_id) {
