@@ -23,7 +23,6 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, 
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-    // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
     const [previewUrl, setPreviewUrl] = useState(null);
     const fileInputRef = React.useRef(null);
 
@@ -288,15 +287,23 @@ return (
           </button>
         ))}
       </div>
-      <label htmlFor="title" className="modal-label">Title</label>
-      <input
-        id="title"
-        type="text"
-        name="title"
-        className="modal-input"
-        value={selectedProject.title}
-        onChange={handleChange}
-      />
+      {sortedRelatedProjects.length===1 ? (
+      <><label htmlFor="title" className="modal-label">Title</label><input
+            id="title"
+            type="text"
+            name="title"
+            className="modal-input"
+            value={selectedProject.title}
+            onChange={handleChange} /></> ): 
+          (<><label htmlFor="title" className="modal-label">Title</label><input
+          id="title"
+          type="text"
+          name="title"
+          className="modal-input"
+          value={selectedProject.title}
+          onChange={handleChange} 
+          disabled={true}/></>)
+        }
 
 <label htmlFor="note" className="modal-label">Note:</label>
             <textarea
@@ -305,6 +312,7 @@ return (
                 value={editedNote}
                 onChange={handleNoteChange}
             />
+      {sortedRelatedProjects.length===1 ? (<>
       <label htmlFor="contents" className="modal-label">Description</label>
       <textarea
         id="contents"
@@ -312,8 +320,18 @@ return (
         className="modal-textarea"
         value={selectedProject.contents}
         onChange={handleChange}
-      />
-
+      /></>) :
+      (<>
+        <label htmlFor="contents" className="modal-label">Description</label>
+        <textarea
+          id="contents"
+          name="contents"
+          className="modal-textarea"
+          value={selectedProject.contents}
+          onChange={handleChange}
+          disabled={true}
+        /></>)}
+      {sortedRelatedProjects.length===1 ? (<>
       <label htmlFor="stack" className="modal-label">Technology Stack</label>
       <input
         id="stack"
@@ -322,7 +340,18 @@ return (
         className="modal-input"
         value={selectedProject.stack}
         onChange={handleChange}
-      />
+      /></>) :
+      (<>
+        <label htmlFor="stack" className="modal-label">Technology Stack</label>
+        <input
+          id="stack"
+          type="text"
+          name="stack"
+          className="modal-input"
+          value={selectedProject.stack}
+          onChange={handleChange}
+          disabled={true}
+        /></>)}
 
       <label htmlFor="team_name" className="modal-label">Team Name</label>
       <input
