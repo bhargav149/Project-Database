@@ -85,6 +85,18 @@ export default function UsersTable({ themeMode }) {
   const handleDeleteUser = async () => {
     const affectedUsers = selected.map(id => users.find(user => user.id === id));
   
+    // Check if any of the users being deleted is an admin
+    const adminsBeingDeleted = affectedUsers.filter(user => user.isAdmin);
+
+    // If deleting admins, check if at least one admin will remain
+    if (adminsBeingDeleted.length > 0) {
+      const remainingAdminsCount = users.filter(user => user.isAdmin).length - adminsBeingDeleted.length;
+      if (remainingAdminsCount < 1) {
+        alert("Operation not allowed. There must be at least one admin.");
+        return;
+      }
+    }
+  
     // Show confirmation dialog with affected users details
     const confirmMakeAdmin = window.confirm(
       `Are you sure you want to delete the selected user(s)? You cannot undo this action.\n\nAffected Users:\n${affectedUsers.map(user => `- ${user.name}`).join('\n')}`
@@ -138,6 +150,17 @@ export default function UsersTable({ themeMode }) {
 
     const affectedUsers = selected.map(id => users.find(user => user.id === id));
   
+    const adminsBeingRemoved = affectedUsers.filter(user => user.isAdmin);
+
+    // Count how many admins will remain after this operation
+    const remainingAdminsCount = users.filter(user => user.isAdmin).length - adminsBeingRemoved.length;
+
+    // Ensure at least one admin remains
+    if (remainingAdminsCount < 1) {
+      alert("Operation not allowed. There must be at least one admin.");
+      return;
+    }
+
     // Show confirmation dialog with affected users details
     const confirmRemoveAdmin = window.confirm(
       `Are you sure you want to remove admin privileges from the selected user(s)?\n\nAffected Users:\n${affectedUsers.map(user => `${user.name}`).join('\n')}`
