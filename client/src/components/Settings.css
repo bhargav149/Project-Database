@@ -200,6 +200,34 @@
     opacity: 1;
 }
 
+.edit-project-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border: 2px solid #64b5f6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: #64b5f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.edit-project-button:hover, .edit-project-button:focus {
+    background-color: #64b5f6;
+    color: #fff;
+    border-color: #64b5f6;
+}
+
+.edit-project-button svg {
+    transform: scale(1); /* Adjust scaling factor as needed */
+}
+
 .search-projects {
     height: 100%;
 }

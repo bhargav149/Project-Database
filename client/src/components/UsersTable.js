@@ -22,17 +22,17 @@ const columns = [
     width: 80,
     renderCell: (params) => (params.value ? 'Admin' : 'User'),
   },
+  {
+    field: 'teamName',
+    headerName: 'Team',
+    width: 160,
+    renderCell: (params) => params.value || 'No Team', // Render the team name
+  },
   { 
     field: 'project_id', 
     headerName: 'Project', 
     width: 200,
     renderCell: (params) => params.row.projectName || 'No Project', // Custom rendering to show project name
-  },
-  {
-    field: 'teamName',
-    headerName: 'Team Name',
-    width: 200,
-    renderCell: (params) => params.value || 'No Team', // Render the team name
   },
 ];
 

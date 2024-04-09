@@ -4,6 +4,7 @@ import UsersTable from './UsersTable';
 import { createTheme, Button } from '@mui/material/styles';
 import { FormControl, InputLabel, NativeSelect } from '@mui/material';
 import EditProjectModal from './EditProjectModal';
+import { FilePenLine } from 'lucide-react';
 
 
 function SettingsPage({ themeMode }) {
@@ -16,7 +17,9 @@ function SettingsPage({ themeMode }) {
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState('');
 
-    
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingProject, setEditingProject] = useState(null);
+
     // Hardcoded PID for the current user
     const pid = "k3h0j8";
     const id = "1";
@@ -220,13 +223,22 @@ function SettingsPage({ themeMode }) {
 
                             {projectID !== -1 && (
                                     <div style={{marginTop: '20px'}}>
-                                        <button 
-                                            onClick={handleLeaveTeam} 
-                                            className="leave-team-button"
-                                        >
-                                        Leave Team
-                                        </button>
-                                    </div>
+                                    <span 
+                                        className="edit-project-button" 
+                                        onClick={() => {
+                                            setEditingProject(projectInfo);
+                                            setIsEditModalOpen(true);
+                                        }}
+                                    >
+                                        <FilePenLine />
+                                    </span>
+                                    <button 
+                                        onClick={handleLeaveTeam} 
+                                        className="leave-team-button"
+                                    >
+                                    Leave Team
+                                    </button>
+                                </div>
                             )}
                         </div>
                         ) : (
@@ -236,6 +248,24 @@ function SettingsPage({ themeMode }) {
                             </div>
                         )}
                     </div>
+                    {isEditModalOpen && (
+                        <EditProjectModal
+                            project={projectInfo} // Assuming projectInfo holds the current project's data
+                            isOpen={isEditModalOpen}
+                            onSave={(updatedProject) => {
+                            // Handle the project update logic here.
+                            // This could involve updating the projectInfo state,
+                            // calling an API to save the updated project, and then closing the modal.
+                            setIsEditModalOpen(false);
+                            }}
+                            onCancel={() => setIsEditModalOpen(false)}
+                            relatedProjects={[]} // Pass related projects if applicable
+                            isAdmin={true} // Adjust based on your logic to determine if the user is an admin
+                            projectId={projectID} // The current project ID
+                            pid={pid} // User's PID
+                            notes={[]} // Pass notes if applicable
+                        />
+                        )}
                     </>
                 );
             case 'Teams':
