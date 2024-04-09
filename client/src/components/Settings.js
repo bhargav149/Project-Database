@@ -22,6 +22,7 @@ function SettingsPage({ themeMode, data }) {
 
     // Hardcoded PID for the current user
     const pid = "k3h0j8";
+
     const id = "1";
     //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
     const url = "http://localhost:8080/";
@@ -197,7 +198,7 @@ function SettingsPage({ themeMode, data }) {
                                     </FormControl>
                                     <Tooltip title="Can't find what you are looking for? Try refreshing the page">
                                         <span>
-                                            <Info size={24} />
+                                            <Info size={24} style={{color:'blue'}}/>
                                         </span>
                                     </Tooltip>
                                     <button 

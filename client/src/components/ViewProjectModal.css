@@ -209,8 +209,8 @@
 
 .email-icon-container {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    top: 65px;
+    right: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -218,6 +218,12 @@
     color: lightskyblue;
 }
 
+.email-icon-container svg {
+    width: 25px;
+    height: 25px;
+}
+
 .email-icon-container:hover {
     transform: scale(1.2); /* Increase size by 20% on hover */
 }
+
