@@ -229,8 +229,8 @@ export default function UsersTable({ themeMode }) {
             onClick={makeAdmin} 
             sx={{ 
               marginRight: '10px',
-              border: '1px solid transparent',
-              backgroundColor: 'transparent',
+              border: '1px solid white',
+              backgroundColor: 'white',
                 color: 'black',
                 border: '1px solid black',
               '&:hover': { 
@@ -246,8 +246,8 @@ export default function UsersTable({ themeMode }) {
             onClick={removeAdmin} 
             sx={{ 
               marginRight: '10px',
-              border: '1px solid transparent',
-              backgroundColor: 'transparent',
+              border: '1px solid white',
+              backgroundColor: 'white',
                 color: 'black',
                 border: '1px solid black',
               '&:hover': { 
@@ -262,8 +262,8 @@ export default function UsersTable({ themeMode }) {
             variant="contained" 
             onClick={handleDeleteUser} 
             sx={{
-              border: '1px solid transparent',
-              backgroundColor: 'transparent',
+              border: '1px solid white',
+              backgroundColor: 'white',
                 color: 'black',
                 border: '1px solid black',
               '&:hover': { 

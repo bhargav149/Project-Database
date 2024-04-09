@@ -3,6 +3,8 @@ import './Settings.css';
 import UsersTable from './UsersTable';
 import { createTheme, Button } from '@mui/material/styles';
 import { FormControl, InputLabel, NativeSelect } from '@mui/material';
+import EditProjectModal from './EditProjectModal';
+
 
 function SettingsPage({ themeMode }) {
     const [userName, setUserName] = useState('');
@@ -14,6 +16,7 @@ function SettingsPage({ themeMode }) {
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState('');
 
+    
     // Hardcoded PID for the current user
     const pid = "k3h0j8";
     const id = "1";
@@ -160,62 +163,66 @@ function SettingsPage({ themeMode }) {
             case 'Profile':
                 return (
                     <>
-                        <div className="profile-section" style={{ backgroundColor: 'transparent', color: 'black'}}>
-                        {/* Personal Information Section */}
-                        <div className="personal-info">
-                            <h2>Profile Information</h2>
-                            <p>Name: {userName}</p>
-                            <p>Project: {projectInfo.title}</p>
-                            <p>Team: {projectInfo.team_name}</p>
-
-                            <h2>Search Open Projects</h2>
-                            <div className="search-projects">
-                            <FormControl>
-                                <NativeSelect
-                                    value={selectedProject}
-                                    onChange={handleChange}
-                                    inputProps={{
-                                    name: 'project',
-                                    id: 'project-select',
-                                    }}
-                                >
-                                    {projects.map((project) => (
-                                    <option key={project.id} value={project.id}>
-                                        {project.title}
-                                    </option>
-                                    ))}
-                                </NativeSelect>
-                                </FormControl>
-
-                                <button 
-                                    onClick={handleJoinTeam} 
-                                    style={{marginLeft: '10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}
-                                >
-                                    Join Team
-                                </button>
+                    <div className="top-section">
+                        {/* User Profile & Search Projects */}
+                        <div className="leftSection">
+                            <div className="profile-settings">
+                                <h2>Profile Information</h2>
+                                <p><strong>Name: </strong> {userName}</p>
+                                <p><strong>Project: </strong> {projectInfo.title}</p>
+                                <p><strong>Team: </strong> {projectInfo.team_name}</p>
                             </div>
                         </div>
-                        {/* Project Information Section */}
-                        <div className="project-info">
+                        <div className="rightSection">
+                            <div className="search-projects">
+                                <h2>Search Open Projects</h2>
+                                <FormControl>
+                                    <NativeSelect
+                                        value={selectedProject}
+                                        onChange={handleChange}
+                                        inputProps={{
+                                        name: 'project',
+                                        id: 'project-select',
+                                        }}
+                                    >
+                                        {projects.map((project) => (
+                                        <option key={project.id} value={project.id}>
+                                            {project.title}
+                                        </option>
+                                        ))}
+                                    </NativeSelect>
+                                    </FormControl>
+
+                                    <button 
+                                        onClick={handleJoinTeam} 
+                                        className="join-team-button"
+                                    >
+                                        Join Team
+                                    </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bottom-section">
+                        {/* Project Overview */}
                         {projectID !== -1 ? (
-                        <div className="project-info">
+                        <div className="project-overview">
                             <h2>Project Overview</h2>
-                            <p>Name: {projectInfo.title}</p>
-                            <p>Description: {projectInfo.contents}</p>
-                            <p>Stack: {projectInfo.stack}</p>
-                            <p>Semester:</p>
-                            <p>Summary:</p>
-                            <p>Team: {projectInfo.team_name}</p>
-                            <p>Members: {projectInfo.team_members}</p>
-                            <p>Status: {projectInfo.status}</p>
-                            <p>Links:</p>
-                            <p>Files:</p>
+                            <p><strong>Name:</strong> {projectInfo.title}</p>
+                            <p><strong>Description:</strong> {projectInfo.contents}</p>
+                            <p><strong>Stack:</strong> {projectInfo.stack}</p>
+                            <p><strong>Semester:</strong></p>
+                            <p><strong>Summary:</strong></p>
+                            <p><strong>Team:</strong> {projectInfo.team_name}</p>
+                            <p><strong>Members:</strong> {projectInfo.team_members}</p>
+                            <p><strong>Status:</strong> {projectInfo.status}</p>
+                            <p><strong>Links:</strong></p>
+                            <p><strong>Files:</strong></p>
 
                             {projectID !== -1 && (
                                     <div style={{marginTop: '20px'}}>
                                         <button 
                                             onClick={handleLeaveTeam} 
-                                            style={{padding: '10px 20px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}
+                                            className="leave-team-button"
                                         >
                                         Leave Team
                                         </button>
@@ -223,12 +230,11 @@ function SettingsPage({ themeMode }) {
                             )}
                         </div>
                         ) : (
-                            <div className="project-info">
+                            <div className="project-overview">
                                 <h2>You are not part of a team</h2>
                                 <p>Join a team to see project information</p>
                             </div>
                         )}
-                        </div>
                     </div>
                     </>
                 );
@@ -258,7 +264,7 @@ function SettingsPage({ themeMode }) {
     return (
         <div className={`settings-container ${themeMode}`}>
             <div className="sidebar">
-                <div className={`navLink ${activeTab === 'Profile' ? 'active' : ''}`} onClick={() => setActiveTab('Profile')}>Profile</div>
+                <div className={`navLink ${activeTab === 'Profile' ? 'active' : ''}`} onClick={() => setActiveTab('Profile')}>Settings</div>
                 <div className={`navLink ${activeTab === 'Teams' ? 'active' : ''}`} onClick={() => setActiveTab('Teams')}>Teams</div>
                 <div className={`navLink ${activeTab === 'Users' ? 'active' : ''}`} onClick={() => setActiveTab('Users')}>Users</div>
             </div>

@@ -53,14 +53,17 @@
 
 /* Main content area styling */
 .mainContent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     flex-grow: 1;
-    padding: 20px;
     background-color: #F6E8EA; /* White background */
     text-align: left;
     border-radius: 0 15px 15px 0; /* Rounded right edges */
     color: rgb(34,32,31);
     opacity: 0.95;
     min-width: 40vw;
+    overflow-y: auto;
 }
 
 .settingsContainer {
@@ -96,37 +99,6 @@
     color: #fff; /* Light text color for active state in light theme */
 }
 
-.profile-section label {
-    display: block;
-    margin-bottom: 8px;
-    color: #555; /* Slightly lighter text for labels */
-    font-weight: 500; /* Medium font weight for clarity */
-}
-
-.profile-section input[type="text"] {
-    max-width: 30%;
-    padding: 8px 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc; /* Subtle border for inputs */
-    border-radius: 4px; /* Rounded corners for inputs */
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
-}
-
-.profile-section button {
-    width: auto; /* Allow the button to resize based on content */
-    padding: 10px 20px;
-    background-color: #4CAF50; /* Green color for actions */
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-}
-
-.profile-section button:hover {
-    background-color: #45a049; /* Darker shade of green on hover */
-}
-
 /* Adjustments for light and dark themes within the profile section */
 .settings-container.light .profile-section {
     background-color: #fff; /* Brighter background for light theme */
@@ -138,28 +110,96 @@
     color: #ecf0f1; /* Light text for readability */
 }
 
-.settings-container.dark .profile-section input[type="text"],
-.settings-container.dark .profile-section button {
-    border-color: #555; /* Darker borders for inputs and buttons in dark theme */
-}
-
-.settings-container.dark .profile-section button {
-    background-color: #27ae60; /* Adapted green for dark theme, maintaining accessibility */
-}
-
-.profile-section {
+.top-section {
     display: flex;
     justify-content: space-between;
-    position: relative; /* Ensure positioning context for the pseudo-element */
 }
 
-.personal-info, .project-info {
+.bottom-section {
+    margin-top: 20px; /* Adjust based on your design preference */
+    border: 1px solid #373938;
+    border-radius: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    overflow: auto;
+}
+
+.leftSection, .rightSection, .bottom-section {
     flex: 1;
-    padding: 0 20px; 
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
-@media (max-width: 600px) {
-    .project-info::before {
-        display: none;
-    }
+.profile-settings, .search-projects {
+    padding: 0 20px;
+    margin: 20px 20px 10px 20px;
+}
+
+.bottom-section {
+    padding: 0 20px;
+    margin: 10px 20px 20px 20px;
+}
+
+.profile-settings, .search-projects, .bottom-section {
+    border: 1px solid #373938;
+    border-radius: 15px; /* Feel free to adjust the styling */
+    background-color: #fff; /* Adjust background colors as needed */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional shadow for depth */
+    padding-left: 20px;
+    padding-bottom: 20px;
+    padding-right: 10px;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    overflow: auto;
+}
+
+.join-team-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    padding: 10px 20px;
+    background-color: #8bc34a;
+    color: #fff;
+    border: 1px solid #8bc34a;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    opacity: 0.9;
+}
+
+.join-team-button:hover {
+    background-color: #8bc34a; /* New background color */
+    color: #fff; /* New text color */
+    border: 1px solid #8bc34a;
+    box-shadow: #000;
+    opacity: 1;
+}
+
+.leave-team-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    padding: 10px 20px;
+    background-color: #CD5C5C;
+    color: #fff;
+    border: 1px solid #CD5C5C;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    opacity: 0.9;
+}
+
+.leave-team-button:hover {
+    background-color: #CD5C5C; /* New background color */
+    color: #fff; /* New text color */
+    border: 1px solid #CD5C5C;
+    box-shadow: #000;
+    opacity: 1;
+}
+
+.search-projects {
+    height: 100%;
 }
