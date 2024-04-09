@@ -63,59 +63,52 @@ function SettingsPage({ themeMode }) {
                 console.log("Unassigned projects:", unassignedProjects);
             })
             .catch(error => console.error('Error fetching projects:', error));
-    }, [url]);
+    }, [projectID, url]);
 
     const handleChange = (event) => {
         setSelectedProject(event.target.value);
     };
     
-    const handleJoinTeam = () => {
-        const updatedData = { pid: pid, project_id: selectedProject };
-        const requestUrl = `${url}user/${pid}`;
-        console.log("updated data: ", updatedData);
-        console.log("request url: ", requestUrl);
+    const handleJoinTeam = async () => {
+        if (projectID != '-1') { // Assuming '-1' indicates not part of a team, adjust as needed
+            alert('You are already part of a team. You must leave the team before joining another team.');
+            return; // Exit the function to prevent further execution
+        }
 
-        fetch(requestUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData),
-        })
-        .then(response => {
-            console.log("stringfy json body: ", JSON.stringify(updatedData));
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Success:', data);
-            // Handle successful join here
-            // Update UI with new project information
-            fetch(url + "users/1") // Fetch updated user data
-                .then(response => response.json())
-                .then(userData => {
-                    console.log("Updated user data:", userData);
-                    setUserName(userData.name);
-                    setProjectID(userData.project_id);
-                })
-                .catch(error => console.error('Error fetching updated user data:', error));
+        try {
+            const updatedData = { pid: pid, project_id: selectedProject };
+            const requestUrl = `${url}user/${pid}`;
+            console.log("Updated data:", updatedData);
+            console.log("Request URL:", requestUrl);
+    
+            const response = await fetch(requestUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData),
+            });
+    
+            console.log("Update response:", response);
             
-            fetch(url + "projects/" + selectedProject) // Fetch updated project details
-                .then(response => response.json())
-                .then(projectData => {
-                    console.log("Updated project data:", projectData);
-                    setProjectInfo(projectData); // Update project info state
-                })
-                .catch(error => console.error('Error fetching updated project data:', error));
-        })
-        .catch(error => {
-            console.error('Error joining team:', error);
-        });
+            // Fetch updated user data
+            const userDataResponse = await fetch(url + "users/1");
+            const userData = await userDataResponse.json();
+            setUserName(userData.name);
+            setProjectID(userData.project_id);
+    
+            // Fetch updated project details
+            const projectDataResponse = await fetch(url + "projects/" + selectedProject);
+            const projectData = await projectDataResponse.json();
+            setProjectInfo(projectData);
+    
+        } catch (error) {
+            console.error('Error in handleJoinTeam:', error);
+        }
     };
+    
 
     const handleLeaveTeam = () => {
         // Confirmation dialog
-        const isConfirmed = window.confirm('Are you sure you want to leave the team? This action cannot be undone.');
+        const isConfirmed = window.confirm('Are you sure you want to leave the team? You are only able to join currently open projects.');
     
         // Proceed only if the user confirms
         if (isConfirmed) {
@@ -129,19 +122,19 @@ function SettingsPage({ themeMode }) {
                 body: JSON.stringify(updatedData),
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
+                // if (!response.ok) {
+                //     throw new Error('Network response was not ok');
+                // }
+                // return response.text();
             })
             .then(() => {
                 setProjectID(-1);
                 setProjectInfo({});
             })
-            .catch(error => {
-                console.error('Error leaving team:', error);
-                alert('Error switching project. Please try again.');
-            });
+            // .catch(error => {
+            //     console.error('Error leaving team:', error);
+            //     alert('Error switching project. Please try again.');
+            // });
         }
     };
 

@@ -9,12 +9,18 @@ const columns = [
   { 
     field: 'pid', 
     headerName: 'Email', 
-    width: 200,
+    width: 150,
     renderCell: (params) => (
       <a href={`mailto:${params.value}@vt.edu`} style={{ textDecoration: 'none' }}>
         {`${params.value}@vt.edu`}
       </a>
     ),
+  },
+  { 
+    field: 'isAdmin', 
+    headerName: 'Role', 
+    width: 80,
+    renderCell: (params) => (params.value ? 'Admin' : 'User'),
   },
   { 
     field: 'project_id', 
@@ -27,12 +33,6 @@ const columns = [
     headerName: 'Team Name',
     width: 200,
     renderCell: (params) => params.value || 'No Team', // Render the team name
-  },
-  { 
-    field: 'isAdmin', 
-    headerName: 'Role', 
-    width: 200,
-    renderCell: (params) => (params.value ? 'Admin' : 'User'),
   },
 ];
 
@@ -189,7 +189,6 @@ export default function UsersTable({ themeMode }) {
       fetchData();
     }
   };
-  
 
   useEffect(() => {
     console.log('Current Selection:', selected);
