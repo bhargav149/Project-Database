@@ -210,6 +210,7 @@ function App() {
       }
     })
     .catch(err => console.error(err));
+    fetchProjects();
   };
   
   const showToastWithFadeOut = (message) => {
@@ -663,7 +664,7 @@ fetchAdminData(user)
         </button>
 
         { settingsView ? (
-        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'}/>
+        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data}/>
       ) :
       tableView ? (
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'}/>

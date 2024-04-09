@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ViewProjectModal.css';
-import { X } from 'lucide-react';
+import { X, Mail } from 'lucide-react';
 
 function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes, pid }) {
   const [selectedProject, setSelectedProject] = useState(project);
@@ -132,6 +132,9 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
           switchUserProject(selectedProject.id)
           onClose()
         }}>Join Team</button>) : <></>}
+        <a href={`mailto:${selectedProject.team_members}?subject=Project%20${encodeURIComponent(project.title)}%20Discussion`} className="email-icon-container">
+          <Mail size={24} style={{ cursor: 'pointer' }} />
+        </a>
         </div>
 
       </div>

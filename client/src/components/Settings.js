@@ -4,10 +4,10 @@ import UsersTable from './UsersTable';
 import { createTheme, Button } from '@mui/material/styles';
 import { FormControl, InputLabel, NativeSelect } from '@mui/material';
 import EditProjectModal from './EditProjectModal';
-import { FilePenLine } from 'lucide-react';
+import { FilePenLine, Info } from 'lucide-react';
+import { Tooltip } from '@mui/material';
 
-
-function SettingsPage({ themeMode }) {
+function SettingsPage({ themeMode, data }) {
     const [userName, setUserName] = useState('');
     const [projectID, setProjectID] = useState('');
     const [projectInfo, setProjectInfo] = useState({});
@@ -195,7 +195,11 @@ function SettingsPage({ themeMode }) {
                                         ))}
                                     </NativeSelect>
                                     </FormControl>
-
+                                    <Tooltip title="Can't find what you are looking for? Try refreshing the page">
+                                        <span>
+                                            <Info size={24} />
+                                        </span>
+                                    </Tooltip>
                                     <button 
                                         onClick={handleJoinTeam} 
                                         className="join-team-button"
