@@ -217,6 +217,7 @@ useEffect(() => {
 
     const handleUpload = async (fileParam) => {
       const uploadFile = fileParam || file;
+      console.log(uploadFile instanceof Blob);
       const formData = new FormData();
       const uniqueFilename = `${Date.now()}_${uploadFile.name}`; // Generate unique filename
       formData.append('file', uploadFile, uniqueFilename);
@@ -424,8 +425,8 @@ return (
         <img src={previewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '400px' }} />
       )}
     </div>
-    <button onClick={handleUpload}>Upload File</button>
-      <div>
+    {/* <button onClick={handleUpload}>Upload File</button> */}
+      {/* <div>
         {uploadedFiles.map((file, index) => (
               <div key={index}>
                 {file.filetype.startsWith('image') ? (
@@ -438,7 +439,7 @@ return (
                 <button onClick={() => handleDelete(index)}><i className="fas fa-trash-alt"></i></button>
               </div>
             ))}
-      </div>
+      </div> */}
   </div>
       <div className="modal-actions">
         <button onClick={handleSave}>Save</button>
