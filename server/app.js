@@ -41,7 +41,8 @@ import {
     getProjectByTitle,
     getUserByPID,
     getProjectWithSemesters,
-    updateProjectMembers
+    updateProjectMembers,
+    getName
 } from './database.js'
 
 const app = express()
@@ -198,7 +199,7 @@ app.get(`${url}/user/:pid`, async (req, res) => {
     try {
         const project_id = await getProjectByPID(req.params.pid)
         if (!project_id) {
-            await createUser(req.params.pid, "None", -1);
+            await createUser(req.params.pid, "", -1);
             return res.json({ project_id: -1 });
         }
         res.json(project_id)
@@ -432,6 +433,19 @@ app.delete(`${url}/notes/:noteId`, async (req, res) => {
         res.status(500).send('Error deleting project note');
     }
 });
+
+app.get(`${url}/name/:pid`, async (req,res) => {
+    try{
+        let name = await getName(req.params.pid)
+        if(!name){
+            name=''
+        }
+        res.json(name)
+    }
+    catch(error){
+        res.status(500).send('Error getting user\'s name');
+    }
+})
 
 app.use((err, req, res, next) => {
     // console.error(err.stack);

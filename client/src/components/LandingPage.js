@@ -54,21 +54,25 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('k3h0j8');
+  const [user, setUser] = React.useState('pid1');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
   const [userRootProject, setUserRootProject] = useState(-1);
 
 
-  // useEffect(() => {
-  //   async function getCurrentUser() {
-  //     await fetch("/api/currentUser")
-  //       .then((res) => res.json())
-  //       .then((data) => setUser(data.user));
-  //   }
-  //   getCurrentUser();
-  // }, []);
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
+  async function getCurrentUser() {
+    await fetch("bravesouls-projectdb.discovery.cs.vt.edu/api/currentUser")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("CAS data", data)
+        setUser(data.user)
+      });
+  }
 
 
   useEffect(() => {
@@ -742,6 +746,7 @@ fetchAdminData(user)
           isOpen={isViewModalOpen}
           onClose={() => {
             setIsViewModalOpen(false)
+            showToastWithFadeOut("Project joined")
             fetchProjects()
           }}
           theme={isDarkMode ? 'dark' : 'light'}
@@ -751,7 +756,7 @@ fetchAdminData(user)
         />
       )}
   
-      <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} />
+      <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={false} />
     </div>
     
   );  

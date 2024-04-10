@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './ViewProjectModal.css';
 import { X, Mail } from 'lucide-react';
+import Toast from './Toast';
 
 function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes, pid }) {
   const [selectedProject, setSelectedProject] = useState(project);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastFadeOut, setToastFadeOut] = useState(false);
   const [userProject, setUserProject] = React.useState(null);
   const [userRootProject, setUserRootProject] = useState(-1);
+  const [name, setName] = useState('')
+  const [error,setError] = useState(false)
   
 
   useEffect(() => {
@@ -14,6 +20,8 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
 
   useEffect(() => {
     getUserProject();
+    getName();
+    console.log("Name: ",name, name!=='')
   });
 
   if (!isOpen) return null;
@@ -54,6 +62,17 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
     });
   }
 
+  const getName =() => {
+    fetch(url+"name/"+pid)
+    .then(res => res.json())
+    .then(data => {
+      setName(data.name);
+    })
+    .catch(error => {
+      console.error("Error fetching user name:", error);
+    });
+  }
+
   const getUserRootProject =() => {
     fetch(url+"projects/"+userProject)
     .then(res => res.json())
@@ -79,6 +98,11 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
   }
 
   const switchUserProject = (project_id) => {
+    if(name==='' || name==='None') {
+      console.log("Name not set")
+      showToastWithFadeOut("Error: please set name to join project")
+      return
+    }
     fetch(url+"user/"+pid, {
       method: "PUT",
       headers: {
@@ -89,7 +113,22 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
       }),
     })
     .catch(err => console.error(err));
+    showToastWithFadeOut("Project joined")
   }
+
+  const showToastWithFadeOut = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setToastFadeOut(false); // Reset fade-out animation
+  
+    setTimeout(() => {
+      setToastFadeOut(true); // Start fade-out animation
+      setTimeout(() => {
+        setShowToast(false);
+        setToastFadeOut(false); // Ensure the fade-out state is reset for the next toast
+      }, 700); // This duration should match the CSS animation duration for fading out
+    }, 10000); // Time the toast is visible before starting to fade out
+  };
 
 
   return (
@@ -127,10 +166,12 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
         <p><strong>Members:</strong> {selectedProject.team_members}</p>
         <p><strong>Status:</strong> {selectedProject.status}</p>
         <div className="modal-actions">
-        {selectedProject.status==="Unassigned" && selectedProject.id !== userProject? (<button onClick={(event) => {
+        {selectedProject.status==="Unassigned" && selectedProject.id !== userProject ? (<button onClick={(event) => {
           // event.stopPropagation();
           switchUserProject(selectedProject.id)
-          onClose()
+          if(name!=='' && name!=='None'){
+            onClose()
+          }
         }}>Join Team</button>) : <></>}
         <a href={`mailto:${selectedProject.team_members}?subject=Project%20${encodeURIComponent(project.title)}%20Discussion`} className="email-icon-container">
           <Mail size={24} style={{ cursor: 'pointer' }} />
@@ -138,6 +179,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
         </div>
 
       </div>
+      <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={true}/>
     </div>
   );
 }

@@ -81,7 +81,7 @@ async function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS user (
         id INT AUTO_INCREMENT PRIMARY KEY,
         pid VARCHAR(255) NOT NULL,
-        name VARCHAR(255) DEFAULT 'None',
+        name VARCHAR(255) DEFAULT '',
         project_id INT DEFAULT -1
     );`;
     await pool.query(createUserTableSql);
@@ -649,5 +649,12 @@ export async function switchProject(pid, project_id) {
         UPDATE user SET project_id = ?
         WHERE pid = ?
     `, [project_id, pid]);
+}
+
+export async function getName(pid) {
+    const [rows] = await pool.query(`SELECT name from user
+    WHERE pid = ?
+    `, [pid])
+    return rows[0]
 }
 

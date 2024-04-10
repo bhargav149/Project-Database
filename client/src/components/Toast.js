@@ -1,8 +1,8 @@
 import React from 'react';
 import './Toast.css';
-import { Check } from 'lucide-react';
+import { Check,X } from 'lucide-react';
 
-function Toast({ show, message, fadeOut }) {
+function Toast({ show, message, fadeOut, error }) {
     if (!show) {
       return null;
     }
@@ -11,7 +11,8 @@ function Toast({ show, message, fadeOut }) {
   
     return (
       <div className={toastClassNames}>
-        <Check className="toast-icon" size={24} color="#4CAF50" /> {/* Checkmark icon */}
+        {!error? (<Check className="toast-icon" size={24} color="#4CAF50" /> ) : (<X className="toast-icon" size={24} color="red" />)}
+        {/* <Check className="toast-icon" size={24} color="#4CAF50" /> Checkmark icon */}
         <span className="toast-message">{message}</span>
         {/* <button className="toast-view-button">View</button> */}
       </div>
