@@ -238,6 +238,11 @@ async function initializeDatabase() {
             ('George', 'user7', 4),
             ('Hannah', 'user8', 4);
         `);
+
+        await pool.query(`
+            INSERT INTO user (pid, project_id) VALUES
+            ('emptyNameUser', -1);
+        `);
         // Insert admins linked to teams
         await pool.query(`
             INSERT INTO admin (pid) VALUES

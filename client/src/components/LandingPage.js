@@ -54,25 +54,25 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('pid1');
+  const [user, setUser] = React.useState('emptyNameUser');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
   const [userRootProject, setUserRootProject] = useState(-1);
 
 
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
+  // useEffect(() => {
+  //   getCurrentUser();
+  // }, []);
 
-  async function getCurrentUser() {
-    await fetch("bravesouls-projectdb.discovery.cs.vt.edu/api/currentUser")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("CAS data", data)
-        setUser(data.user)
-      });
-  }
+  // async function getCurrentUser() {
+  //   await fetch("bravesouls-projectdb.discovery.cs.vt.edu/api/currentUser")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log("CAS data", data)
+  //       setUser(data.user)
+  //     });
+  // }
 
 
   useEffect(() => {
@@ -553,18 +553,18 @@ const deleteRootProject = (id, deletedChildProjects) => {
     }
 };
 
-fetchAdminData(user)
-    .then(admin => {
-        setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
-        // console.log('Is admin:', isAdmin);
-        // console.log(user)
-        // You can use the value of 'isAdmin' in your application logic
-    })
-    .catch(error => {
-        setIsAdmin(false)
-        console.error('Error:', error.message);
-        // Handle error appropriately
-    });
+// fetchAdminData(user)
+//     .then(admin => {
+//         setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
+//         // console.log('Is admin:', isAdmin);
+//         // console.log(user)
+//         // You can use the value of 'isAdmin' in your application logic
+//     })
+//     .catch(error => {
+//         setIsAdmin(false)
+//         console.error('Error:', error.message);
+//         // Handle error appropriately
+//     });
 
   const revertToPreviousView = () => {
     setSettingsView(false); // Assuming you want to leave settings view when undo is clicked
@@ -746,7 +746,6 @@ fetchAdminData(user)
           isOpen={isViewModalOpen}
           onClose={() => {
             setIsViewModalOpen(false)
-            showToastWithFadeOut("Project joined")
             fetchProjects()
           }}
           theme={isDarkMode ? 'dark' : 'light'}
