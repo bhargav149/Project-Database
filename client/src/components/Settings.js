@@ -83,6 +83,11 @@ function SettingsPage({ themeMode, data }) {
             return; // Exit the function to prevent further execution
         }
 
+        if (selectedProject === '') { // Check if the default option is selected
+            alert('Please select a project to join.');
+            return;
+        }
+
         try {
             const updatedData = { pid: pid, project_id: selectedProject };
             const requestUrl = `${url}user/${pid}`;
@@ -205,6 +210,7 @@ function SettingsPage({ themeMode, data }) {
                                             }
                                         }}
                                     >
+                                        <option value="" disabled>Select a project to join</option>
                                         {projects.map((project) => (
                                         <option key={project.id} value={project.id}>
                                             {project.title} - {project.team_name.length > 0 ? project.team_name : "No team assigned"}                                        </option>
