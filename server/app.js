@@ -140,7 +140,11 @@ app.get(url+"/projecttitle/:title", async (req,res) => {
 app.post(url+"/projects", async (req, res, next) => {
     const {title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id} = req.body;
     try {
-        const project = await createProject(title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id);
+        let members = team_members
+        if(team_members==='' || members===null) {
+            members='None'
+        }
+        const project = await createProject(title, contents, stack, team_name, members, status, semesters, continuation_of_project_id);
         res.status(201).json(project);
     } catch (err) {
         console.error("Error creating project:", err);
@@ -231,7 +235,10 @@ app.put(`${url}/user/:pid`, async(req,res) => {
             }
             console.log("string stuff", index, prefix.length)
 
-            const removedMembers = oldMembers.slice(0, index - prefix.length) + oldMembers.slice(index + suffix + user.name.length);
+            let removedMembers = oldMembers.slice(0, index - prefix.length) + oldMembers.slice(index + suffix + user.name.length);
+            if(removedMembers==='' || removedMembers==null){
+                removedMembers='None'
+            }
             await updateProjectMembers(oldProjectId.project_id,removedMembers); 
             console.log("Updated old members")
         }
@@ -242,7 +249,7 @@ app.put(`${url}/user/:pid`, async(req,res) => {
         console.log("REQ PARAM AND PROJECT ID: ", req.body.project_id, req.params.pid);
         const project = await getProjectWithSemesters(req.body.project_id)
         let newMembers = project.team_members+", "+user.name
-        if(project.team_members==''){
+        if(project.team_members=='None'){
             newMembers = user.name
         }
         await updateProjectMembers(req.body.project_id,newMembers); 

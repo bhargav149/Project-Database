@@ -54,7 +54,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('k3h0j8');
+  const [user, setUser] = React.useState('atink');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -66,7 +66,7 @@ function App() {
   // }, []);
 
   // async function getCurrentUser() {
-  //   await fetch("bravesouls-projectdb.discovery.cs.vt.edu/api/currentUser")
+  //   await fetch("/api/currentUser")
   //     .then((res) => res.json())
   //     .then((data) => {
   //       console.log("CAS data", data)
@@ -555,18 +555,18 @@ const deleteRootProject = (id, deletedChildProjects) => {
     }
 };
 
-// fetchAdminData(user)
-//     .then(admin => {
-//         setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
-//         // console.log('Is admin:', isAdmin);
-//         // console.log(user)
-//         // You can use the value of 'isAdmin' in your application logic
-//     })
-//     .catch(error => {
-//         setIsAdmin(false)
-//         console.error('Error:', error.message);
-//         // Handle error appropriately
-//     });
+fetchAdminData(user)
+    .then(admin => {
+        setIsAdmin(admin !== null && admin !== undefined); // Check if admin object exists
+        // console.log('Is admin:', isAdmin);
+        // console.log(user)
+        // You can use the value of 'isAdmin' in your application logic
+    })
+    .catch(error => {
+        setIsAdmin(false)
+        console.error('Error:', error.message);
+        // Handle error appropriately
+    });
 
   const revertToPreviousView = () => {
     setSettingsView(false); // Assuming you want to leave settings view when undo is clicked
