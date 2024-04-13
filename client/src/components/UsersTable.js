@@ -11,7 +11,13 @@ const columns = [
     headerName: 'Email', 
     width: 150,
     renderCell: (params) => (
-      <a href={`mailto:${params.value}@vt.edu`} style={{ textDecoration: 'none' }}>
+      <a 
+        href={`mailto:${params.value}@vt.edu`}
+        style={{ 
+          textDecoration: 'none', 
+          color: 'lightblue', // Use secondary text color from theme
+        }}
+      >
         {`${params.value}@vt.edu`}
       </a>
     ),
@@ -207,7 +213,8 @@ export default function UsersTable({ themeMode }) {
               // Customizes the border color
               root: {
                 borderColor: 'black', // Apply black border for the whole DataGrid
-                backgroundColor: themeMode === 'dark' ? '#312F2F' : '#F6E8EA',
+                backgroundColor: themeMode === 'dark' ? '#312F2F' : '#444444',
+                color: '#F6E8EA',
                 '.MuiDataGrid-cell': {
                   borderColor: 'black', // Apply black border for cells
                 },

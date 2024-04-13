@@ -23,7 +23,7 @@
     background-color: #F6E8EA; /* Light grey background */
     border-right: 1px solid #F6E8EA; /* Separator line */
     border-radius: 15px 0 0 15px; /* Rounded left edges */
-    background-color: #222222;
+    background-color: rgb(34,32,31);
 }
 
 /* Navigation link styling */
@@ -58,7 +58,7 @@
     flex-direction: column;
     height: 100%;
     flex-grow: 1;
-    background-color: rgb(34,32,31); /* White background */
+    background-color: #222222; /* White background */
     text-align: left;
     border-radius: 0 15px 15px 0; /* Rounded right edges */
     color: rgb(34,32,31);
@@ -143,10 +143,17 @@
     margin: 10px 20px 20px 20px;
 }
 
+.top-section h2, .bottom-section h2 {
+    font-weight: 500;
+}
+
+.top-section strong, .bottom-section strong {
+    font-weight: 400;
+}
 .profile-settings, .search-projects, .bottom-section {
     border: 1px solid #373938;
     border-radius: 15px; /* Feel free to adjust the styling */
-    background-color: #F6E8EA; /* Adjust background colors as needed */
+    background-color: #444444; /* Adjust background colors as needed */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional shadow for depth */
     padding-left: 20px;
     padding-bottom: 20px;
@@ -154,6 +161,8 @@
     position: relative;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     overflow: auto;
+    color: #F6E8EA;
+    font-weight: 130;
 }
 
 .join-team-button {

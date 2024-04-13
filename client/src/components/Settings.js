@@ -189,6 +189,18 @@ function SettingsPage({ themeMode, data }) {
                                         name: 'project',
                                         id: 'project-select',
                                         }}
+                                        sx={{ 
+                                            color: '#F6E8EA', // Text color
+                                            '& .MuiNativeSelect-icon': { // Dropdown icon color
+                                                color: '#F6E8EA',
+                                            },
+                                            '&::before': { // Underline color when not focused
+                                                borderColor: '#F6E8EA',
+                                            },
+                                            '&::after': { // Underline color when focused
+                                                borderColor: '#F6E8EA',
+                                            }
+                                        }}
                                     >
                                         {projects.map((project) => (
                                         <option key={project.id} value={project.id}>
@@ -199,7 +211,7 @@ function SettingsPage({ themeMode, data }) {
                                     </FormControl>
                                     <Tooltip title="Can't find what you are looking for? Try refreshing the page.">
                                         <span>
-                                            <Info size={24} style={{color:'blue'}}/>
+                                            <Info size={24} style={{color:'lightblue', marginTop: '4px', marginLeft: '4px'}}/>
                                         </span>
                                     </Tooltip>
                                     <button 
