@@ -151,13 +151,15 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
           ))}
         </div>
         <div>
-          <strong>Note:</strong>
+          <strong>Note: </strong>
           {filteredNotes.length > 0 ? (
             filteredNotes.map((note, index) => (
-              <p key={index}>{note.note}</p>
+              <span key={index}>
+                {note.note}{index < filteredNotes.length - 1 ? ', ' : ''}
+              </span>
             ))
           ) : (
-            <p>No notes for this project.</p>
+            <span>No notes for this project.</span>
           )}
         </div>
         <p><strong>Description:</strong> {selectedProject.contents}</p>
