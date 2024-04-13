@@ -172,7 +172,8 @@ app.put(url+"/projects/:id", async (req, res) => {
         res.json(updatedProject);
     } catch (error) {
         console.error('Error updating project:', error);
-        res.status(500).send('Something went wrong');
+        if (error.sqlMessage) console.error('SQL Error:', error.sqlMessage); // Log SQL error message if available
+        res.status(500).send('Something went wrong: ' + error.message);
     }
 });
 

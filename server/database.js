@@ -100,8 +100,8 @@ async function initializeDatabase() {
     const createTeamTableSql = `
     CREATE TABLE IF NOT EXISTS team (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        team_name VARCHAR(255) NOT NULL,
-        team_members VARCHAR(255) NOT NULL,
+        team_name VARCHAR(255) NULL,
+        team_members VARCHAR(255) NULL,
         project_id INT DEFAULT -1
     );`;
 

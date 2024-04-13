@@ -207,8 +207,7 @@ function SettingsPage({ themeMode, data }) {
                                     >
                                         {projects.map((project) => (
                                         <option key={project.id} value={project.id}>
-                                            {project.title}
-                                        </option>
+                                            {project.title} - {project.team_name.length > 0 ? project.team_name : "No team assigned"}                                        </option>
                                         ))}
                                     </NativeSelect>
                                     </FormControl>

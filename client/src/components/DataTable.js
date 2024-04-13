@@ -49,7 +49,7 @@ export default function DataTable({ themeMode, deleteProject, saveEdit, data }) 
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [data]);
 
   const showToastWithFadeOut = (message, error = false) => {
     if (showToast) {
@@ -76,10 +76,8 @@ export default function DataTable({ themeMode, deleteProject, saveEdit, data }) 
   const parseSemester = (semester) => {
   const match = semester.match(/(\w+) (\d+)/);
   if (!match) {
-    console.error('Failed to parse semester:', semester);
     return { term: 'Fall', year: 0 }; // Consider throwing an error or handling this case differently
   }
-  console.log(`Parsed ${semester}: Term=${match[1]}, Year=${match[2]}`); // Debug output
   return { term: match[1], year: parseInt(match[2]) };
 };
 
@@ -89,11 +87,9 @@ const compareSemesters = (semesterA, semesterB) => {
   const termOrder = { 'Spring': 0, 'Fall': 1 };
 
   const yearComparison = yearB - yearA;
-  console.log(`Comparing years: ${yearA} vs ${yearB}, Result: ${yearComparison}`); // Debug output
   if (yearComparison !== 0) {
     return -yearComparison;
   }
-  console.log(`Comparing terms: ${termA} vs ${termB}, Result: ${termOrder[termA] - termOrder[termB]}`); // Debug output
   return termOrder[termA] - termOrder[termB];
 };
   
@@ -105,16 +101,10 @@ const compareSemesters = (semesterA, semesterB) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-  
-      console.log('Data before sort:', data.map(p => ({ id: p.id, title: p.title, semester: p.semesters })));
-  
       const sortedData = data.sort((a, b) => {
         const result = compareSemesters(b.semesters, a.semesters);
-        console.log(`Comparing ${a.title} (${a.semesters}) with ${b.title} (${b.semesters}): ${result}`);
         return result;
       });
-  
-      console.log('Data after sort:', sortedData.map(p => ({ id: p.id, title: p.title, semester: p.semesters })));
   
       setProjects([...sortedData]); // Set state with a new array to ensure re-render
     } catch (error) {
@@ -175,13 +165,15 @@ const compareSemesters = (semesterA, semesterB) => {
         semesters: semesters || [],
         continuation_of_project_id
       };
-  
+
+      console.log(`Updating project (ID: ${projectId}): `, requestBody); // Log the request body
       const response = await fetch(url + `projects/${projectId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
       });
       if (!response.ok) {
+        console.log(`Failed to update project (ID: ${projectId}):`);
         setToastError(true);
         showToastWithFadeOut("Error: : HTTP error occurred while updating the project")
       }
@@ -194,24 +186,30 @@ const compareSemesters = (semesterA, semesterB) => {
 
   // Function to delete selected project
   const deleteSelectedProject = async () => {
-    await Promise.all(selected.map(async (projectId) => {
-      try {
-        const response = await fetch(url + `projects/${projectId}`, {
-          method: 'DELETE',
-        });
-        if (!response.ok) {
-          throw new Error('HTTP error occurred while deleting the project');
+
+    const isConfirmed = window.confirm('Are you sure you want to permanently delete the selected project(s)? You cannot undo this action.');
+    
+    // Proceed only if the user confirms
+    if (isConfirmed) {
+      await Promise.all(selected.map(async (projectId) => {
+        try {
+          const response = await fetch(url + `projects/${projectId}`, {
+            method: 'DELETE',
+          });
+          if (!response.ok) {
+            throw new Error('HTTP error occurred while deleting the project');
+          }
+        } catch (error) {
+          console.error('Error deleting project:', error);
+          setToastError(true);
+          showToastWithFadeOut("Error: Failed to delete selected project");
+          return; // Early return to skip further execution in case of error
         }
-      } catch (error) {
-        console.error('Error deleting project:', error);
-        setToastError(true);
-        showToastWithFadeOut("Error: Failed to delete selected project");
-        return; // Early return to skip further execution in case of error
-      }
-    }));
-    setToastError(false);
-    showToastWithFadeOut("Successfully deleted selected projects");
-    fetchProjects(); // Refresh the projects list after all deletions are processed
+      }));
+      setToastError(false);
+      showToastWithFadeOut("Successfully deleted selected projects");
+      fetchProjects(); // Refresh the projects list after all deletions are processed
+    }
   };
   
   return (
@@ -270,7 +268,6 @@ const compareSemesters = (semesterA, semesterB) => {
             rowsPerPageOptions={[5, 10, 20]}
             checkboxSelection={true}
             onRowSelectionModelChange={(newRowSelectionModel) => {
-              console.log('New Row Selection Model:', newRowSelectionModel);
               setSelected(newRowSelectionModel);
             }}
             selected={selected}
