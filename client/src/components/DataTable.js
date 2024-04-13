@@ -201,7 +201,7 @@ export default function DataTable({ themeMode, deleteProject, saveEdit, data }) 
   
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '80vh' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '80vh', marginTop: '20px' }}>
         <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {/* Status buttons on the left */}

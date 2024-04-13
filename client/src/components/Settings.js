@@ -277,7 +277,6 @@ function SettingsPage({ themeMode, data }) {
             case 'Users':
                 return (
                     <>
-                        <h2 style={{ marginLeft: '20px' }} >Manage Users</h2>
                         <UsersTable themeMode="light" />
                     </>
                 );

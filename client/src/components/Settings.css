@@ -23,7 +23,7 @@
     background-color: #F6E8EA; /* Light grey background */
     border-right: 1px solid #F6E8EA; /* Separator line */
     border-radius: 15px 0 0 15px; /* Rounded left edges */
-    background-color: rgb(34,32,31);
+    background-color: #222222;
 }
 
 /* Navigation link styling */
@@ -42,6 +42,7 @@
 .navLink:hover {
     background-color: #F6E8EA; /* Lighter grey on hover */
     color: rgb(34,32,31);
+    /* 040D12 */
 }
 
 /* Active navigation link styling */
@@ -57,13 +58,14 @@
     flex-direction: column;
     height: 100%;
     flex-grow: 1;
-    background-color: #F6E8EA; /* White background */
+    background-color: rgb(34,32,31); /* White background */
     text-align: left;
     border-radius: 0 15px 15px 0; /* Rounded right edges */
     color: rgb(34,32,31);
     opacity: 0.95;
     min-width: 40vw;
     overflow-y: auto;
+    font-size: 1.2rem;
 }
 
 .settingsContainer {
@@ -144,7 +146,7 @@
 .profile-settings, .search-projects, .bottom-section {
     border: 1px solid #373938;
     border-radius: 15px; /* Feel free to adjust the styling */
-    background-color: #fff; /* Adjust background colors as needed */
+    background-color: #F6E8EA; /* Adjust background colors as needed */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional shadow for depth */
     padding-left: 20px;
     padding-bottom: 20px;

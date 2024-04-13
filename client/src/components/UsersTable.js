@@ -207,6 +207,7 @@ export default function UsersTable({ themeMode }) {
               // Customizes the border color
               root: {
                 borderColor: 'black', // Apply black border for the whole DataGrid
+                backgroundColor: themeMode === 'dark' ? '#312F2F' : '#F6E8EA',
                 '.MuiDataGrid-cell': {
                   borderColor: 'black', // Apply black border for cells
                 },
@@ -222,21 +223,22 @@ export default function UsersTable({ themeMode }) {
   );
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ display: 'flex', flexDirection: 'column', marginTop: '20px', marginLeft: '20px' }}>
-      <div style={{ display: 'flex', marginBottom: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', marginTop: '30px', marginLeft: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+        <div>
           <Button 
             variant="contained" 
             onClick={makeAdmin} 
             sx={{ 
               marginRight: '10px',
-              border: '1px solid white',
-              backgroundColor: 'white',
-                color: 'black',
-                border: '1px solid black',
+              backgroundColor: '#64b5f6',
+              color: 'black',
+              border: '1px solid black',
               '&:hover': { 
-                backgroundColor: '#373938',
+                backgroundColor: '#64b5f6',
                 color: 'white',
-              } 
+                border: '1px solid #64b5f6',
+              }
             }}
           >
             Set Admin
@@ -246,26 +248,27 @@ export default function UsersTable({ themeMode }) {
             onClick={removeAdmin} 
             sx={{ 
               marginRight: '10px',
-              border: '1px solid white',
-              backgroundColor: 'white',
-                color: 'black',
-                border: '1px solid black',
+              backgroundColor: '#64b5f6',
+              color: 'black',
+              border: '1px solid black',
               '&:hover': { 
-                backgroundColor: '#373938',
+                backgroundColor: '#64b5f6',
                 color: 'white',
+                border: '1px solid #64b5f6',
               } 
             }}
           >
             Remove Admin
           </Button>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '20px' }}>
           <Button
             variant="contained" 
             onClick={handleDeleteUser} 
             sx={{
-              border: '1px solid white',
-              backgroundColor: 'white',
-                color: 'black',
-                border: '1px solid black',
+              backgroundColor: '#CD5C5C',
+              color: 'black',
+              border: '1px solid black',
               '&:hover': { 
                 backgroundColor: '#CD5C5C',
                 color: 'white',
@@ -275,6 +278,7 @@ export default function UsersTable({ themeMode }) {
           >
             Remove User
           </Button>
+        </div>
         </div>
         <div style={{ height: '85%', width: '98%', marginTop: '20px' }}>
           <DataGrid
