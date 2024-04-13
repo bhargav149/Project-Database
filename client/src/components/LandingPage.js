@@ -54,8 +54,8 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('emptyNameUser');
-  const [isAdmin,setIsAdmin]=useState(false);
+  const [user, setUser] = React.useState('k3h0j8');
+  const [isAdmin,setIsAdmin]=useState(true);
 
   const [userProject, setUserProject] = React.useState(null);
   const [userRootProject, setUserRootProject] = useState(-1);
@@ -476,15 +476,17 @@ const deleteRootProject = (id, deletedChildProjects) => {
   
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
-    // Here you would also update the CSS classes or variables to apply the theme
+    fetchProjects();
   };
   
   const toggleView = () => {
     setTableView(!tableView);
+    fetchProjects();
   };
 
   const toggleSettingsView = () => {
     setSettingsView(!settingsView);
+    fetchProjects();
   };
 
   // const options = [
@@ -671,8 +673,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
         <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data}/>
       ) :
       tableView ? (
-          <DataTable themeMode={isDarkMode ? 'dark' : 'light'}/>
-        ) : (
+          <DataTable themeMode={isDarkMode ? 'dark' : 'light'} data={data} />) : (
           <div className="cards-container">
             {filteredData.map((project, i) => (
               <div key={i} className="card" onClick={() => viewProjectDetails(project)}>

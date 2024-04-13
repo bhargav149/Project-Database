@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Settings.css';
 import UsersTable from './UsersTable';
+import DataTable from './DataTable';
 import { createTheme, Button } from '@mui/material/styles';
 import { FormControl, InputLabel, NativeSelect } from '@mui/material';
 import EditProjectModal from './EditProjectModal';
@@ -196,7 +197,7 @@ function SettingsPage({ themeMode, data }) {
                                         ))}
                                     </NativeSelect>
                                     </FormControl>
-                                    <Tooltip title="Can't find what you are looking for? Try refreshing the page">
+                                    <Tooltip title="Can't find what you are looking for? Try refreshing the page.">
                                         <span>
                                             <Info size={24} style={{color:'blue'}}/>
                                         </span>
@@ -273,17 +274,6 @@ function SettingsPage({ themeMode, data }) {
                         )}
                     </>
                 );
-            case 'Teams':
-                return (
-                    <>
-                        <div style={{ marginLeft: '20px' }}>
-                            <h2>Manage Teams</h2>
-                            <div>Team ID: {projectID}</div>
-                        </div>
-                    </>
-                );
-            // case 'Users':
-            //     return renderUsersTable();
             case 'Users':
                 return (
                     <>
@@ -300,7 +290,6 @@ function SettingsPage({ themeMode, data }) {
         <div className={`settings-container ${themeMode}`}>
             <div className="sidebar">
                 <div className={`navLink ${activeTab === 'Profile' ? 'active' : ''}`} onClick={() => setActiveTab('Profile')}>Settings</div>
-                <div className={`navLink ${activeTab === 'Teams' ? 'active' : ''}`} onClick={() => setActiveTab('Teams')}>Teams</div>
                 <div className={`navLink ${activeTab === 'Users' ? 'active' : ''}`} onClick={() => setActiveTab('Users')}>Users</div>
             </div>
             <div className="mainContent">
