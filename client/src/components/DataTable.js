@@ -51,10 +51,6 @@ export default function DataTable({ themeMode, deleteProject, saveEdit, data }) 
     fetchProjects();
   }, []);
 
-  useEffect(() => {
-    setProjects(data);
-  }, [data]);
-
   const showToastWithFadeOut = (message, error = false) => {
     if (showToast) {
       // If a toast is currently shown, hide it immediately
@@ -77,6 +73,31 @@ export default function DataTable({ themeMode, deleteProject, saveEdit, data }) 
     }, 10000);
   };
 
+  const parseSemester = (semester) => {
+  const match = semester.match(/(\w+) (\d+)/);
+  if (!match) {
+    console.error('Failed to parse semester:', semester);
+    return { term: 'Fall', year: 0 }; // Consider throwing an error or handling this case differently
+  }
+  console.log(`Parsed ${semester}: Term=${match[1]}, Year=${match[2]}`); // Debug output
+  return { term: match[1], year: parseInt(match[2]) };
+};
+
+const compareSemesters = (semesterA, semesterB) => {
+  const { term: termA, year: yearA } = parseSemester(semesterA);
+  const { term: termB, year: yearB } = parseSemester(semesterB);
+  const termOrder = { 'Spring': 0, 'Fall': 1 };
+
+  const yearComparison = yearB - yearA;
+  console.log(`Comparing years: ${yearA} vs ${yearB}, Result: ${yearComparison}`); // Debug output
+  if (yearComparison !== 0) {
+    return -yearComparison;
+  }
+  console.log(`Comparing terms: ${termA} vs ${termB}, Result: ${termOrder[termA] - termOrder[termB]}`); // Debug output
+  return termOrder[termA] - termOrder[termB];
+};
+  
+  // Modify fetchProjects to include debug for sorting
   const fetchProjects = async () => {
     try {
       const response = await fetch(url + "projects");
@@ -84,30 +105,24 @@ export default function DataTable({ themeMode, deleteProject, saveEdit, data }) 
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setProjects(data.sort((a, b) => {
-        const titleComparison = a.title.localeCompare(b.title);
-        if (titleComparison !== 0) {
-          return titleComparison;
-        }
-        return compareSemesters(a.semesters, b.semesters);
-      }));
+  
+      console.log('Data before sort:', data.map(p => ({ id: p.id, title: p.title, semester: p.semesters })));
+  
+      const sortedData = data.sort((a, b) => {
+        const result = compareSemesters(b.semesters, a.semesters);
+        console.log(`Comparing ${a.title} (${a.semesters}) with ${b.title} (${b.semesters}): ${result}`);
+        return result;
+      });
+  
+      console.log('Data after sort:', sortedData.map(p => ({ id: p.id, title: p.title, semester: p.semesters })));
+  
+      setProjects([...sortedData]); // Set state with a new array to ensure re-render
     } catch (error) {
       console.error("Failed to fetch projects", error);
     }
   };
   
 
-  const compareSemesters = (semesterA, semesterB) => {
-    const [, termA, yearA] = semesterA.match(/(\w+) (\d+)/);
-    const [, termB, yearB] = semesterB.match(/(\w+) (\d+)/);
-    const termOrder = { 'Spring': 0, 'Fall': 1 };
-
-    const termComparison = termOrder[termA] - termOrder[termB];
-    if (termComparison !== 0) {
-      return termComparison;
-    }
-    return parseInt(yearA) - parseInt(yearB);
-  };
   // Use the themeMode prop to dynamically create the theme
   const theme = React.useMemo(
     () =>

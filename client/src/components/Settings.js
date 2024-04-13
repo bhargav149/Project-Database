@@ -172,7 +172,10 @@ function SettingsPage({ themeMode, data }) {
                         {/* User Profile & Search Projects */}
                         <div className="leftSection">
                             <div className="profile-settings">
-                                <h2>Profile Information</h2>
+                                <div className="title-container">
+                                    <h2>Profile Information</h2>
+                                    <hr />
+                                </div>
                                 <p><strong>Name: </strong> {userName}</p>
                                 <p><strong>Project: </strong> {projectInfo.title}</p>
                                 <p><strong>Team: </strong> {projectInfo.team_name}</p>
@@ -227,7 +230,10 @@ function SettingsPage({ themeMode, data }) {
                         {/* Project Overview */}
                         {projectID !== -1 ? (
                         <div className="project-overview">
-                            <h2>Project Overview</h2>
+                            <div className="title-container">
+                                <h2>Project Overview</h2>
+                                <hr></hr>
+                            </div>
                             <p><strong>Name:</strong> {projectInfo.title}</p>
                             <p><strong>Description:</strong> {projectInfo.contents}</p>
                             <p><strong>Stack:</strong> {projectInfo.stack}</p>

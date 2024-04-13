@@ -147,6 +147,19 @@
     font-weight: 500;
 }
 
+.title-container {
+    display: inline-block;
+    position: relative;
+}
+
+.title-container hr {
+    width: 100%;
+}
+
+.title-container h2 {
+    margin-bottom: 0;
+}
+
 .top-section strong, .bottom-section strong {
     font-weight: 400;
 }
