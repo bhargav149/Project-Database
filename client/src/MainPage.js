@@ -50,7 +50,7 @@ function MainPage() {
   }, [getName, name, user])
 
     return (
-        <div className="home-auth">
+        <div>
           {!user ? (
               // replace with login component when finished
               <Home/>

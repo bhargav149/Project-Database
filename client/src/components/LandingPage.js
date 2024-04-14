@@ -59,6 +59,7 @@ function App() {
 
   const [userProject, setUserProject] = React.useState(null);
   const [userRootProject, setUserRootProject] = useState(-1);
+  const [toastError, setToastError] = React.useState(false)
 
 
   // useEffect(() => {
@@ -210,7 +211,7 @@ function App() {
         showToastWithFadeOut("Successfully added project.");
         setShowAddProjectForm(false);
       } else {
-        showToastWithFadeOut("Project title already exists; please choose a different name or continue an existing project");
+        showErrorToastWithFadeOut("Project title already exists; please choose a different name or continue an existing project");
       }
     })
     .catch(err => console.error(err));
@@ -221,6 +222,22 @@ function App() {
     setToastMessage(message);
     setShowToast(true);
     setToastFadeOut(false); // Reset fade-out animation
+    setToastError(false)
+  
+    setTimeout(() => {
+      setToastFadeOut(true); // Start fade-out animation
+      setTimeout(() => {
+        setShowToast(false);
+        setToastFadeOut(false); // Ensure the fade-out state is reset for the next toast
+      }, 700); // This duration should match the CSS animation duration for fading out
+    }, 10000); // Time the toast is visible before starting to fade out
+  };
+
+  const showErrorToastWithFadeOut = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setToastFadeOut(false); // Reset fade-out animation
+    setToastError(true)
   
     setTimeout(() => {
       setToastFadeOut(true); // Start fade-out animation
@@ -756,7 +773,7 @@ fetchAdminData(user)
         />
       )}
   
-      <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={false} />
+      <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={toastError} />
     </div>
     
   );  
