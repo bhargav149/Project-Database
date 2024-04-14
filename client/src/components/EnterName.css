@@ -1,0 +1,70 @@
+body {
+    background: linear-gradient(135deg, #312F2F, #312F2F); /* Unified dark gray gradient */
+    color: #FFFFFF;
+    /* font-family: 'Courier New', monospace; */
+    font-weight: bold;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+
+.container {
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    border-radius: 10px;
+    padding: 20px;
+    background: rgba(49, 47, 47, 0.1); /* Semi-transparent dark gray for container */
+    margin-top: 60px; /* Adjusted to account for the header */
+}
+
+.name-form label {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #F6E8EA; /* Light pink for contrast and visibility */
+}
+
+.name-form input[type="text"], .name-form button {
+    padding: 10px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.name-form input[type="text"] {
+    width: 300px;
+    border: 2px solid #FFFFFF; /* White border to remain consistent */
+    background-color: #FFFFFF; /* White background to ensure text visibility */
+    color: #000000; /* Black text for maximum contrast */
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    /* font-family: 'Courier New', monospace; */
+    font-weight: bold;
+}
+
+.name-form input[type="text"]:hover, .name-form button:hover {
+    box-shadow: 0 0 12px 0 #FFFFFF; /* White glow effect on hover */
+}
+
+.name-form button {
+    width: 280px;
+    background-color: #660000; /* Dark red button background */
+    color: #FFFFFF; /* White text on buttons for readability */
+    cursor: pointer;
+    border: 2px solid #660000; /* Matching border color */
+    /* font-family: 'Courier New', monospace; */
+    font-weight: bold;
+}
+
+.name-form button:hover {
+    background-color: #FFFFFF; /* White background on hover */
+    color: #660000; /* Dark red text on hover */
+}

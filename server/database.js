@@ -663,3 +663,16 @@ export async function getName(pid) {
     return rows[0]
 }
 
+export async function setName(pid, newName) {
+    console.log('setting name')
+    const result = await pool.query(`
+        UPDATE user
+        SET name = ?
+        WHERE pid = ?
+    `, [newName, pid]);
+    console.log("updated in db")
+    const [rows] = await pool.query(`SELECT name from user
+    WHERE pid = ?
+    `, [pid])
+    console.log("Found ", rows)
+}

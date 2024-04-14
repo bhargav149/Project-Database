@@ -77,7 +77,7 @@ docker compose down -v
 -FILES TO MODIFY BEFORE DEPLOYMENT: 
     - server/database.js(look at lines 10-40)
     - server/app.js(lines 28/29)
-    - client/src/components/LandingPage.js(lines 49/50)
+    - client/src/components/LandingPage.js(lines 49/50, 64-75)
     - client/src/AppRoutes.js(line 14)
     - client/src/components/EditProjectModal.js(lines 20/21)
     - client/src/components/DataTable.js(lines 37/38)
@@ -85,6 +85,8 @@ docker compose down -v
     - client/src/components/UserTable.js(lines 40-41)
     - client/src/components/AddProjectForm.js(lines 33-34)
     - client/src/components/ViewProjectModal.js(lines 17-18)
+    - client/src/MainPage.js(lines 11-12, 36/37)
+    - client/src/components/EnterName.js(7-8)
     - all of these files will have comments telling you what to change
 
 

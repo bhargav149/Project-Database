@@ -42,7 +42,8 @@ import {
     getUserByPID,
     getProjectWithSemesters,
     updateProjectMembers,
-    getName
+    getName,
+    setName
 } from './database.js'
 
 const app = express()
@@ -443,15 +444,30 @@ app.delete(`${url}/notes/:noteId`, async (req, res) => {
 });
 
 app.get(`${url}/name/:pid`, async (req,res) => {
+    console.log("Getting name for", req.params.pid)
     try{
         let name = await getName(req.params.pid)
         if(!name){
             name=''
         }
+        console.log("Found name", name)
         res.json(name)
     }
     catch(error){
         res.status(500).send('Error getting user\'s name');
+    }
+})
+
+app.post(`${url}/name`, async (req,res) => {
+    console.log('name', req.body.name)
+    console.log('pid', req.body.pid)
+    try{
+        await setName(req.body.pid, req.body.name)
+        res.status(200).send('Name set successfully')
+    }
+    catch(error) {
+        console.log("Error")
+        res.status(500).send('Error setting user\'s name');
     }
 })
 
