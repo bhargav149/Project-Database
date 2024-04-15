@@ -55,7 +55,8 @@ async function initializeDatabase() {
         team_members TEXT NOT NULL,
         created TIMESTAMP NOT NULL DEFAULT NOW(),
         status ENUM('Completed', 'In-Progress', 'Suspended', 'Unassigned') NOT NULL DEFAULT 'Unassigned',
-        continuation_of_project_id INT DEFAULT -1
+        continuation_of_project_id INT DEFAULT -1,
+        summary VARCHAR(255) NOT NULL DEFAULT ''
     );
     `;
 
@@ -405,14 +406,14 @@ export async function deleteProject(id) {
     return result;
 }
 
-export async function updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id) {
+export async function updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary) {
     const query = `
         UPDATE projects 
-        SET title = ?, contents = ?, stack = ?, team_name = ?, team_members = ?, status = ?, continuation_of_project_id = ?
+        SET title = ?, contents = ?, stack = ?, team_name = ?, team_members = ?, status = ?, continuation_of_project_id = ?, summary = ?
         WHERE id = ?
     `;
 
-    await pool.query(query, [title, contents, stack, team_name, team_members, status, continuation_of_project_id, id]);
+    await pool.query(query, [title, contents, stack, team_name, team_members, status, continuation_of_project_id, summary, id]);
     await updateProjectSemesters(id, semesters);
     return getProjectWithSemesters(id);
 }

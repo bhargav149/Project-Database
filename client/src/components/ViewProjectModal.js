@@ -166,6 +166,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
         <p><strong>Stack:</strong> {selectedProject.stack}</p>
         <p><strong>Team:</strong> {selectedProject.team_name}</p>
         <p><strong>Members:</strong> {selectedProject.team_members}</p>
+        {relatedProjects.length>1 ? (<p><strong>Semester Summary:</strong> {selectedProject.summary}</p>) : (<></>)}
         <p><strong>Status:</strong> {selectedProject.status}</p>
         <div className="modal-actions">
         {selectedProject.status==="Unassigned" && selectedProject.id !== userProject ? (<button onClick={(event) => {

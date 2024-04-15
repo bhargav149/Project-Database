@@ -12,6 +12,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, 
     team_name: '',
     team_members: '',
     status: '',
+    summary: ''
   });
 
   
@@ -59,6 +60,7 @@ useEffect(() => {
           team_name: project.team_name || '',
           team_members: project.team_members || '',
           status: project.status || '',
+          summary: project.summary || ''
         });
       }
     }, [project, isOpen]);
@@ -140,13 +142,6 @@ useEffect(() => {
         [name]: value
       }));
     };
-
-
-
-
-
-
-
 
     // Prevent default behavior for drag events to allow for drop handling
     const handleDrag = (e) => {
@@ -372,6 +367,15 @@ return (
         value={selectedProject.team_members}
         onChange={handleChange}
       />
+      {sortedRelatedProjects.length>1 ? (<>   
+      <label htmlFor="summary" className="modal-label">Semester Summary</label>
+      <textarea
+        id="summary"
+        name="summary"
+        className="modal-textarea"
+        value={selectedProject.summary}
+        onChange={handleChange}
+      /></>) : (<></>)}
       <label htmlFor="status" className="modal-label">Status</label>
       <div className="modal-status-buttons">
         {statuses.map((status) => (
@@ -385,6 +389,7 @@ return (
         ))}
       </div>
     <div>
+
     
     <div className="file-list">
       {uploadedFiles.map((file, index) => (
@@ -528,6 +533,16 @@ return (
         disabled={true}
 
       />
+            {sortedRelatedProjects.length>1 ? (<>   
+      <label htmlFor="summary" className="modal-label">Semester Summary</label>
+      <textarea
+        id="summary"
+        name="summary"
+        className="modal-textarea"
+        value={selectedProject.summary}
+        onChange={handleChange}
+        disabled={true}
+      /></>) : (<></>)}
       <label htmlFor="status" className="modal-label">Status</label>
       <div className="modal-status-buttons">
         {statuses.map((status) => (
