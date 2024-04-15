@@ -54,7 +54,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('atink');
+  const [user, setUser] = React.useState('pid1');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -712,6 +712,8 @@ fetchAdminData(user)
                 <p><strong>Team:</strong> {getAllTeamsForProjectSortedBySemester(project.id).join(', ')}</p>
                 {/* <p><strong>Team Members:</strong> {project.team_members}</p> */}
                 <p><strong>Semester:</strong> {getAllSemestersForProject(project.id).join(', ')}</p>
+                <p><strong>Repository Link:</strong> {project.repository}</p>
+                <p><strong>Trello Link:</strong> {project.trello}</p>
                 <button className="status-button suspended">Completed</button>
                 
                 <div className="indicator-container">

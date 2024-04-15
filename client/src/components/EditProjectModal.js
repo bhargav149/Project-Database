@@ -382,6 +382,22 @@ return (
         value={selectedProject.summary}
         onChange={handleChange}
       /></>) : (<></>)}
+      <label htmlFor="repository" className="modal-label">Repository Link</label>
+      <input
+        id="repository"
+        name="repository"
+        className="modal-input"
+        value={selectedProject.repository}
+        onChange={handleChange}
+      />
+      <label htmlFor="trello" className="modal-label">Trello Link</label>
+      <input
+        id="trello"
+        name="trello"
+        className="modal-input"
+        value={selectedProject.trello}
+        onChange={handleChange}
+      />
       <label htmlFor="status" className="modal-label">Status</label>
       <div className="modal-status-buttons">
         {statuses.map((status) => (
@@ -549,6 +565,25 @@ return (
         onChange={handleChange}
         disabled={true}
       /></>) : (<></>)}
+            <label htmlFor="repository" className="modal-label">Repository Link</label>
+      <input
+        id="repository"
+        name="repository"
+        className="modal-input"
+        value={selectedProject.repository}
+        onChange={handleChange}
+        disabled={true}
+      />
+      <label htmlFor="trello" className="modal-label">Trello Link</label>
+      <input
+        id="trello"
+        name="trello"
+        className="modal-input"
+        value={selectedProject.trello}
+        onChange={handleChange}
+        disabled={true}
+
+      />
       <label htmlFor="status" className="modal-label">Status</label>
       <div className="modal-status-buttons">
         {statuses.map((status) => (

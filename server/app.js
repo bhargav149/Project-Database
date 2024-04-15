@@ -171,10 +171,10 @@ app.delete(url+"/projects/:id", async (req, res) => {
 
 app.put(url+"/projects/:id", async (req, res) => {
     const { id } = req.params;
-    const { title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary } = req.body; // Assume `semesters` is provided as an array
+    const { title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary, repository, trello } = req.body; // Assume `semesters` is provided as an array
     console.log("editing:",req.body)
     try {
-        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary); // Pass `semesters` to your function
+        const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary, repository, trello); // Pass `semesters` to your function
         res.json(updatedProject);
     } catch (error) {
         console.error('Error updating project:', error);
