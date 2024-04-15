@@ -21,7 +21,13 @@ const MenuProps = {
 
 function sortSemesters(semesters) {
   return semesters.sort((a, b) => {
+    if(a==null || a.semesters==null) {
+      return 1
+    }
     const [semesterA, yearA] = a.split(' ');
+    if(b==null || b.semesters==null) {
+      return -1
+    }
     const [semesterB, yearB] = b.split(' ');
 
     const semesterOrder = { 'Spring': 1, 'Fall': 2 };

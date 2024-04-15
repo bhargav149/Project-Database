@@ -43,7 +43,8 @@ import {
     getProjectWithSemesters,
     updateProjectMembers,
     getName,
-    setName
+    setName,
+    getSemester
 } from './database.js'
 
 const app = express()
@@ -171,7 +172,7 @@ app.delete(url+"/projects/:id", async (req, res) => {
 app.put(url+"/projects/:id", async (req, res) => {
     const { id } = req.params;
     const { title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary } = req.body; // Assume `semesters` is provided as an array
-
+    console.log("editing:",req.body)
     try {
         const updatedProject = await updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary); // Pass `semesters` to your function
         res.json(updatedProject);
@@ -468,6 +469,17 @@ app.post(`${url}/name`, async (req,res) => {
     catch(error) {
         console.log("Error")
         res.status(500).send('Error setting user\'s name');
+    }
+})
+
+app.get(`${url}/semester/:id`, async (req,res) => {
+    try{
+        let semester = await getSemester(req.params.id)
+        console.log("Found semester", semester)
+        res.json(semester)
+    }
+    catch(error){
+        res.status(500).send('Error getting project\'s semester');
     }
 })
 

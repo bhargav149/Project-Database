@@ -397,6 +397,16 @@ export async function getProjectWithSemesters(projectId) {
     return { ...project, semesters };
 }
 
+export async function getSemester(projectId) {
+    const [semesterRows] = await pool.query(`
+    SELECT semester
+    FROM project_semesters
+    WHERE project_id = ?
+    `, [projectId]);
+    return semesterRows[0]
+
+}
+
 
 export async function deleteProject(id) {
     const [result] = await pool.query(`
@@ -448,7 +458,7 @@ export async function getProjectSemesters(project_id) {
 async function updateProjectSemesters(projectId, semesters) {
     // Ensure semesters is always an array
     const semestersArray = Array.isArray(semesters) ? semesters : [semesters].filter(Boolean);
-
+    console.log("semesters array", semestersArray, projectId)
     await pool.query(`
         DELETE FROM project_semesters
         WHERE project_id = ?

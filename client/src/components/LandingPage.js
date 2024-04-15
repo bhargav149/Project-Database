@@ -536,14 +536,22 @@ const deleteRootProject = (id, deletedChildProjects) => {
     const teamSemesterMap = new Map();
   
     const sortSemesters = (a, b) => {
+      // console.log("Semesters",a.semesters,b.semesters)
+      if(a==null||a.semesters==null) {
+        return 0
+      }
       const [termA, yearA] = a.split(' ');
+      if(b==null || b.semesters==null) {
+        return -1
+      }
       const [termB, yearB] = b.split(' ');
       const yearDiff = parseInt(yearA) - parseInt(yearB);
       if (yearDiff !== 0) return yearDiff;
       const termsOrder = ['Spring', 'Summer', 'Fall', 'Winter'];
       return termsOrder.indexOf(termA) - termsOrder.indexOf(termB);
     };
-
+    console.log("Project id", projectId)
+    console.log("All projects", projectAndContinuations)
     projectAndContinuations.forEach(project => {
       const semesters = Array.isArray(project.semesters) ? project.semesters : [project.semesters];
       const earliestSemester = semesters.sort(sortSemesters)[0];
@@ -597,7 +605,11 @@ fetchAdminData(user)
   
     // Sort projects by semester and year
     const sortedProjects = relatedProjects.sort((a, b) => {
+      console.log("Semesters",a.semesters,b.semesters)
       const [termA, yearA] = a.semesters.split(' ');
+      if(b.semesters==null) {
+        return -1
+      }
       const [termB, yearB] = b.semesters.split(' ');
       const yearDiff = yearA - yearB;
       if (yearDiff !== 0) return yearDiff; // Sort by year first

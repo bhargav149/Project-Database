@@ -87,6 +87,7 @@ docker compose down -v
     - client/src/components/ViewProjectModal.js(lines 17-18)
     - client/src/MainPage.js(lines 11-12, 36/37)
     - client/src/components/EnterName.js(7-8)
+    - client/src/components/Settings.js(29-30)
     - all of these files will have comments telling you what to change
 
 

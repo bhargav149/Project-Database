@@ -28,6 +28,7 @@ function SettingsPage({ themeMode, data }) {
     //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
     const url = "http://localhost:8080/";
     // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+    const [semester, setSemester] = useState(null);
 
     useEffect(() => {
         console.log("Fetching user data...");
@@ -47,20 +48,29 @@ function SettingsPage({ themeMode, data }) {
                 console.log("Project data:", projectData);
                 // Assuming projectData is an array and we need the first item
                 if (projectData.length > 0) {
-                    setProjectInfo(projectData[0]); // Adjust according to actual data structure
+                    const { created, ...projectInfoWithoutCreated } = projectData[0]; // Destructure the object and exclude the "created" field
+                    setProjectInfo(projectInfoWithoutCreated); // Adjust according to actual data structure
+    
+                    console.log("Fetching semester data for project ID:", projectInfoWithoutCreated.id);
+                    return fetch(url + "semester/" + projectInfoWithoutCreated.id);
                 } else {
                     console.log("Project data is empty or not structured as expected.");
                 }
             })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Semester data:", data);
+                setSemester(data.semester);
+            })
             .catch(error => console.error('There was an error:', error));
-
+    
         fetch(url + "users")
             .then(response => response.json())
             .then(data => {
                 setUsers(data); // Store users data in state
             })
             .catch(error => console.error('Error fetching users:', error));
-
+    
         fetch(url + "projects")
             .then(response => response.json())
             .then(data => {
@@ -72,7 +82,7 @@ function SettingsPage({ themeMode, data }) {
             })
             .catch(error => console.error('Error fetching projects:', error));
     }, [projectID, url]);
-
+    
     const handleChange = (event) => {
         setSelectedProject(event.target.value);
     };
@@ -167,6 +177,30 @@ function SettingsPage({ themeMode, data }) {
         .then(data => console.log('Success:', data))
         .catch(error => console.error('Error updating profile:', error));
     };
+
+    const saveEdit = async (updatedProject) => {
+        // console.log(`Saving project with updated status: `, updatedProject);
+        try {
+            const updatedProjectInfo = {
+                ...updatedProject, // Spread existing projectInfo object
+                semesters: semester // Add semesters field with its value
+              };
+          const response = await fetch(url + `projects/${updatedProject.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedProjectInfo),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to update project");
+          }
+          setIsEditModalOpen(false)
+          setProjectInfo(updatedProject)
+        } catch (error) {
+          console.error(error);
+        }
+      };
     // Render content based on active tab
     const renderContent = () => {
         switch (activeTab) {
@@ -281,12 +315,7 @@ function SettingsPage({ themeMode, data }) {
                         <EditProjectModal
                             project={projectInfo} // Assuming projectInfo holds the current project's data
                             isOpen={isEditModalOpen}
-                            onSave={(updatedProject) => {
-                            // Handle the project update logic here.
-                            // This could involve updating the projectInfo state,
-                            // calling an API to save the updated project, and then closing the modal.
-                            setIsEditModalOpen(false);
-                            }}
+                            onSave={saveEdit}
                             onCancel={() => setIsEditModalOpen(false)}
                             relatedProjects={[]} // Pass related projects if applicable
                             isAdmin={true} // Adjust based on your logic to determine if the user is an admin

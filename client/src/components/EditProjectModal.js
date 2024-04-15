@@ -73,6 +73,9 @@ useEffect(() => {
 
   // Function to split semester strings and return an object { term, year }
   const parseSemester = (semester) => {
+    if(semester==null){
+      return {}
+    }
     const [term, year] = semester.split(' ');
     return { term, year: parseInt(year, 10) };
   };
@@ -83,6 +86,9 @@ useEffect(() => {
   // Compare function for semesters
   const compareSemesters = (a, b) => {
     const semesterA = parseSemester(a.semesters);
+    if(b==null || b.semesters==null) {
+      return -1
+    }
     const semesterB = parseSemester(b.semesters);
     const yearComparison = semesterA.year - semesterB.year;
     if (yearComparison !== 0) return yearComparison;
