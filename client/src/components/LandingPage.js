@@ -276,7 +276,7 @@ function App() {
         .then(() => deleteRootProject(id, true)) // Pass true to indicate child projects were also deleted
         .catch(err => {
           console.error('Failed to delete child projects:', err);
-          showToastWithFadeOut("An error occurred while deleting related projects.", true);
+          showErrorToastWithFadeOut("An error occurred while deleting related projects.", true);
         });
     } else {
       // If there are no child projects, directly delete the root project.
@@ -301,7 +301,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
     })
     .catch(err => {
         console.error('Error:', err);
-        showToastWithFadeOut("An error occurred while deleting the project.", true);
+        showErrorToastWithFadeOut("An error occurred while deleting the project.", true);
     });
 };
 
@@ -355,7 +355,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
       showToastWithFadeOut("Project successfully updated.");
     } catch (error) {
       console.error(error);
-      showToastWithFadeOut("An error occurred while updating the project.", true);
+      showErrorToastWithFadeOut("An error occurred while updating the project.", true);
     }
   };
 
@@ -712,8 +712,8 @@ fetchAdminData(user)
                 <p><strong>Team:</strong> {getAllTeamsForProjectSortedBySemester(project.id).join(', ')}</p>
                 {/* <p><strong>Team Members:</strong> {project.team_members}</p> */}
                 <p><strong>Semester:</strong> {getAllSemestersForProject(project.id).join(', ')}</p>
-                {/* <p><strong>Repository Link:</strong> {project.repository}</p> */}
-                {/* <p><strong>Trello Link:</strong> {project.trello}</p> */}
+                <p><strong>Repository Link:</strong> {project.repository}</p>
+                <p><strong>Production URL:</strong> {project.production_url}</p>
                 <button className="status-button suspended">Completed</button>
                 
                 <div className="indicator-container">

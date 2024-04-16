@@ -73,6 +73,22 @@ export default function DataTable({ themeMode, deleteProject, saveEdit, data }) 
     }, 10000);
   };
 
+  const showErrorToastWithFadeOut = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setToastFadeOut(false); // Reset fade-out animation
+    setToastError(true)
+  
+    setTimeout(() => {
+      setToastFadeOut(true); // Start fade-out animation
+      setTimeout(() => {
+        setShowToast(false);
+        setToastFadeOut(false); // Ensure the fade-out state is reset for the next toast
+      }, 700); // This duration should match the CSS animation duration for fading out
+    }, 10000); // Time the toast is visible before starting to fade out
+  };
+
+
   const parseSemester = (semester) => {
   const match = semester.match(/(\w+) (\d+)/);
   if (!match) {
@@ -145,6 +161,7 @@ const compareSemesters = (semesterA, semesterB) => {
   // Function to update project status
   const updateStatus = async (newStatus) => {
     // Use Promise.all to wait for all updates to finish before refreshing
+    let error=false;
     await Promise.all(selected.map(async (projectId) => {
       const projectToUpdate = projects.find(p => p.id === projectId);
       if (!projectToUpdate) {
@@ -153,8 +170,7 @@ const compareSemesters = (semesterA, semesterB) => {
         showToastWithFadeOut("Error: Project not found in local data")
         return;
       }
-  
-      const { title, contents, stack, team_name, team_members, semesters, continuation_of_project_id, summary, repository, trello } = projectToUpdate;
+      const { title, contents, stack, team_name, team_members, semesters, continuation_of_project_id, summary, repository, production_url } = projectToUpdate;
       const requestBody = {
         title,
         contents,
@@ -166,11 +182,15 @@ const compareSemesters = (semesterA, semesterB) => {
         continuation_of_project_id,
         summary,
         repository,
-        trello
+        production_url
       };
 
       console.log(`Updating project (ID: ${projectId}): `, requestBody); // Log the request body
-      const response = await fetch(url + `projects/${projectId}`, {
+      if(newStatus==='Completed' && (title==='' || contents===''|| stack===''|| team_name===''|| team_members===''|| repository===''|| production_url==='')){
+        error=true;
+      }
+      else{
+        const response = await fetch(url + `projects/${projectId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
@@ -180,9 +200,15 @@ const compareSemesters = (semesterA, semesterB) => {
         setToastError(true);
         showToastWithFadeOut("Error: : HTTP error occurred while updating the project")
       }
+    }
     }));
-    setToastError(false);
-    showToastWithFadeOut("Successfully updated selected project status");
+    setToastError(error);
+    if(error){
+      showErrorToastWithFadeOut("Some project(s) could not be marked as complete - links missing");
+    }
+    else{
+      showToastWithFadeOut("Successfully updated selected project status");
+    }
     fetchProjects(); // Only refresh after all updates are complete
   };
   

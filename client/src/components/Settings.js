@@ -281,7 +281,8 @@ function SettingsPage({ themeMode, data }) {
                             <p><strong>Team:</strong> {projectInfo.team_name}</p>
                             <p><strong>Members:</strong> {projectInfo.team_members}</p>
                             <p><strong>Status:</strong> {projectInfo.status}</p>
-                            <p><strong>Links:</strong></p>
+                            <p><strong>Repository Link:</strong>{projectInfo.repository}</p>
+                            <p><strong>Production URL:</strong>{projectInfo.production_url}</p>
                             <p><strong>Files:</strong></p>
 
                             {projectID !== -1 && (

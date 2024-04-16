@@ -58,7 +58,7 @@ async function initializeDatabase() {
         continuation_of_project_id INT DEFAULT -1,
         summary VARCHAR(255) NOT NULL DEFAULT '',
         repository VARCHAR(255) NOT NULL DEFAULT '',
-        trello VARCHAR(255) NOT NULL DEFAULT ''
+        production_url VARCHAR(255) NOT NULL DEFAULT ''
 
     );
     `;
@@ -419,14 +419,14 @@ export async function deleteProject(id) {
     return result;
 }
 
-export async function updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary, repository, trello) {
+export async function updateProject(id, title, contents, stack, team_name, team_members, status, semesters, continuation_of_project_id, summary, repository, production_url) {
     const query = `
         UPDATE projects 
-        SET title = ?, contents = ?, stack = ?, team_name = ?, team_members = ?, status = ?, continuation_of_project_id = ?, summary = ?, repository = ?, trello = ?
+        SET title = ?, contents = ?, stack = ?, team_name = ?, team_members = ?, status = ?, continuation_of_project_id = ?, summary = ?, repository = ?, production_url = ?
         WHERE id = ?
     `;
 
-    await pool.query(query, [title, contents, stack, team_name, team_members, status, continuation_of_project_id, summary, repository, trello, id]);
+    await pool.query(query, [title, contents, stack, team_name, team_members, status, continuation_of_project_id, summary, repository, production_url, id]);
     await updateProjectSemesters(id, semesters);
     return getProjectWithSemesters(id);
 }

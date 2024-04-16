@@ -2,6 +2,8 @@
   import './EditProjectModal.css';
   import { X, Download, Trash2 } from 'lucide-react';
   import axios from 'axios';
+  import Toast from './Toast';
+
 
 
 function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, isAdmin, projectId, pid, notes}) {
@@ -14,7 +16,7 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, 
     status: '',
     summary: '',
     repository: '',
-    trello: ''
+    production_url: ''
   });
 
   
@@ -25,6 +27,10 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, 
 
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastFadeOut, setToastFadeOut] = useState(false);
 
     const [previewUrl, setPreviewUrl] = useState(null);
     const fileInputRef = React.useRef(null);
@@ -64,14 +70,37 @@ useEffect(() => {
           status: project.status || '',
           summary: project.summary || '',
           repository: project.repository || '',
-          trello: project.trello || '',
+          production_url: project.production_url || '',
 
         });
       }
     }, [project, isOpen]);
 
   const handleStatusChange = (newStatus) => {
-    setSelectedProject(prev => ({ ...prev, status: newStatus }));
+    if(newStatus==="Completed"){
+      if(selectedProject.title!=='' && selectedProject.contents!==''&& selectedProject.stack!==''&& selectedProject.team_name!==''&& selectedProject.team_members!==''&& selectedProject.repository!==''&& selectedProject.production_url!==''){
+        setSelectedProject(prev => ({ ...prev, status: newStatus }));
+      }
+      else{
+        showErrorToastWithFadeOut("Fill in all fields of project to mark as Completed")
+      }
+    }
+    else{
+      setSelectedProject(prev => ({ ...prev, status: newStatus }));
+    }
+  };
+  const showErrorToastWithFadeOut = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setToastFadeOut(false); // Reset fade-out animation
+  
+    setTimeout(() => {
+      setToastFadeOut(true); // Start fade-out animation
+      setTimeout(() => {
+        setShowToast(false);
+        setToastFadeOut(false); // Ensure the fade-out state is reset for the next toast
+      }, 700); // This duration should match the CSS animation duration for fading out
+    }, 10000); // Time the toast is visible before starting to fade out
   };
 
   const statuses = ['Completed', 'In-Progress', 'Suspended', 'Unassigned'];
@@ -395,12 +424,12 @@ return (
         value={selectedProject.repository}
         onChange={handleChange}
       />
-      <label htmlFor="trello" className="modal-label">Trello Link</label>
+      <label htmlFor="production_url" className="modal-label">Production URL</label>
       <input
-        id="trello"
-        name="trello"
+        id="production_url"
+        name="production_url"
         className="modal-input"
-        value={selectedProject.trello}
+        value={selectedProject.production_url}
         onChange={handleChange}
       />
       <label htmlFor="status" className="modal-label">Status</label>
@@ -579,12 +608,12 @@ return (
         onChange={handleChange}
         disabled={true}
       />
-      <label htmlFor="trello" className="modal-label">Trello Link</label>
+      <label htmlFor="production_url" className="modal-label">Production URL</label>
       <input
-        id="trello"
-        name="trello"
+        id="production_url"
+        name="production_url"
         className="modal-input"
-        value={selectedProject.trello}
+        value={selectedProject.production_url}
         onChange={handleChange}
         disabled={true}
 
@@ -643,6 +672,7 @@ return (
         <button onClick={onCancel}>Cancel</button>
       </div>
     </div>)}
+    <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={true} />
   </div>
 );
 }

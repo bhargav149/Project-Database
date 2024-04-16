@@ -168,7 +168,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
         <p><strong>Members:</strong> {selectedProject.team_members}</p>
         {relatedProjects.length>1 ? (<p><strong>Semester Summary:</strong> {selectedProject.summary}</p>) : (<></>)}
         <p><strong>Repository Link:</strong> {selectedProject.repository}</p>
-        <p><strong>Trello Link:</strong> {selectedProject.trello}</p>
+        <p><strong>Production URL:</strong> {selectedProject.production_url}</p>
         <p><strong>Status:</strong> {selectedProject.status}</p>
         <div className="modal-actions">
         {selectedProject.status==="Unassigned" && selectedProject.id !== userProject ? (<button onClick={(event) => {
