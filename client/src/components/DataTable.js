@@ -154,7 +154,7 @@ const compareSemesters = (semesterA, semesterB) => {
         return;
       }
   
-      const { title, contents, stack, team_name, team_members, semesters, continuation_of_project_id } = projectToUpdate;
+      const { title, contents, stack, team_name, team_members, semesters, continuation_of_project_id, summary, repository, trello } = projectToUpdate;
       const requestBody = {
         title,
         contents,
@@ -163,7 +163,10 @@ const compareSemesters = (semesterA, semesterB) => {
         team_members: team_members || [],
         status: newStatus,
         semesters: semesters || [],
-        continuation_of_project_id
+        continuation_of_project_id,
+        summary,
+        repository,
+        trello
       };
 
       console.log(`Updating project (ID: ${projectId}): `, requestBody); // Log the request body

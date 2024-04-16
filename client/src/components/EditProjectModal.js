@@ -12,7 +12,9 @@ function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, 
     team_name: '',
     team_members: '',
     status: '',
-    summary: ''
+    summary: '',
+    repository: '',
+    trello: ''
   });
 
   
@@ -60,7 +62,10 @@ useEffect(() => {
           team_name: project.team_name || '',
           team_members: project.team_members || '',
           status: project.status || '',
-          summary: project.summary || ''
+          summary: project.summary || '',
+          repository: project.repository || '',
+          trello: project.trello || '',
+
         });
       }
     }, [project, isOpen]);
