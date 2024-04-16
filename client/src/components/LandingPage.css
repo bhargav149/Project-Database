@@ -227,8 +227,6 @@
     justify-content: center;
     gap: 20px;
     width: 70%;
-    height: calc(100vh - 160px); /* Adjust based on your header/footer height */
-    padding: 20px; /* Optional: Adds padding inside the container */
 }
 
 .add-project-button, .view-toggle-button, .settings-toggle-button {
