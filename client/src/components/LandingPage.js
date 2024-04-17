@@ -686,20 +686,23 @@ fetchAdminData(user)
       )}
 
       <div className="content">
-        <button onClick={toggleAddProjectForm} className="add-project-button">
-          {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
-        </button>
+        
 
-        <button onClick={toggleView} className="view-toggle-button">
+        {isAdmin ? 
+        (<><button onClick={toggleView} className="view-toggle-button">
           {tableView ? <LayoutGrid size={24}/> : <Table2 size={24}/>}
         </button>
+              <button onClick={toggleAddProjectForm} className="add-project-button">
+              {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
+            </button></>) : (<></>)}
+
 
         <button onClick={toggleSettingsView} className="settings-toggle-button">
           {settingsView ? <Undo2 size={24}/> : <Settings size={24}/>}
         </button>
 
         { settingsView ? (
-        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data}/>
+        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin}/>
       ) :
       tableView ? (
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'} data={data} />) : (
@@ -784,6 +787,7 @@ fetchAdminData(user)
           relatedProjects={relatedProjects}
           notes={notes}
           pid={user}
+          isAdmin={isAdmin}
         />
       )}
   

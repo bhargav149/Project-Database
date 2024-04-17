@@ -8,7 +8,7 @@ import EditProjectModal from './EditProjectModal';
 import { FilePenLine, Info } from 'lucide-react';
 import { Tooltip } from '@mui/material';
 
-function SettingsPage({ themeMode, data }) {
+function SettingsPage({ themeMode, data, isAdmin }) {
     const [userName, setUserName] = useState('');
     const [projectID, setProjectID] = useState('');
     const [projectInfo, setProjectInfo] = useState({});
@@ -342,7 +342,7 @@ function SettingsPage({ themeMode, data }) {
         <div className={`settings-container ${themeMode}`}>
             <div className="sidebar">
                 <div className={`navLink ${activeTab === 'Profile' ? 'active' : ''}`} onClick={() => setActiveTab('Profile')}>Settings</div>
-                <div className={`navLink ${activeTab === 'Users' ? 'active' : ''}`} onClick={() => setActiveTab('Users')}>Users</div>
+                {isAdmin ? (<div className={`navLink ${activeTab === 'Users' ? 'active' : ''}`} onClick={() => setActiveTab('Users')}>Users</div>) : (<></>)}
             </div>
             <div className="mainContent">
                 {renderContent()} {/* Render content based on the active tab */}

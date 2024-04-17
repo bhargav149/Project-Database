@@ -3,7 +3,7 @@ import './ViewProjectModal.css';
 import { X, Mail } from 'lucide-react';
 import Toast from './Toast';
 
-function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes, pid }) {
+function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes, pid, isAdmin }) {
   const [selectedProject, setSelectedProject] = useState(project);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -178,9 +178,10 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
             onClose()
           }
         }}>Join Team</button>) : <></>}
-        <a href={`mailto:${selectedProject.team_members}?subject=Project%20${encodeURIComponent(project.title)}%20Discussion`} className="email-icon-container">
+        {isAdmin ? (<> <a href={`mailto:${selectedProject.team_members}?subject=Project%20${encodeURIComponent(project.title)}%20Discussion`} className="email-icon-container">
           <Mail size={24} style={{ cursor: 'pointer' }} />
-        </a>
+        </a></>) : (<></>)}
+
         </div>
 
       </div>
