@@ -438,27 +438,52 @@ const deleteRootProject = (id, deletedChildProjects) => {
   const handleCategoryChange = (newCategory) => {
     setSelectedCategory(newCategory);
   };
-
+  const compareSemesters = (a,b,order) => {
+    const termOrder = ['Spring', 'Summer', 'Fall', 'Winter']; // Adjust based on your terms
+    console.log("Sem A", a)
+    console.log("Sem B", b)
+      const [termA, yearA] = a.split(' ');
+      const [termB, yearB] = b.split(' ');
+      if (yearA !== yearB) {
+        return order === 'asc' ? yearA - yearB : yearB - yearA;
+      }
+      return order === 'asc' ? termOrder.indexOf(termA) - termOrder.indexOf(termB) : termOrder.indexOf(termB) - termOrder.indexOf(termA);
+  }
+  const getMostRecentContinuation = (projectId) => {
+    const projectAndContinuations = data.filter(p => 
+      p.id === projectId || p.continuation_of_project_id === projectId
+    );  
+    console.log("continuations",projectId,projectAndContinuations)
+    let mostRecentSemester = null;
+    let mostRecent = null;
+    projectAndContinuations.forEach(project => {
+      console.log("project", project)
+      if (!mostRecent || compareSemesters(project.semesters,mostRecentSemester,'asc')>0) {
+        mostRecentSemester = project.semesters;
+        mostRecent = project
+      }
+    });
+    return mostRecent;
+  }
   const handleSort = (criteria, order) => {
     let sortedData = [...data]; // Clone the current data array
   
     if (criteria === 'semester') {
-      const termOrder = ['Spring', 'Summer', 'Fall', 'Winter']; // Adjust based on your terms
       sortedData.sort((a, b) => {
-        const [termA, yearA] = a.semesters.split(' ');
-        const [termB, yearB] = b.semesters.split(' ');
-        if (yearA !== yearB) {
-          return order === 'asc' ? yearA - yearB : yearB - yearA;
-        }
-        return order === 'asc' ? termOrder.indexOf(termA) - termOrder.indexOf(termB) : termOrder.indexOf(termB) - termOrder.indexOf(termA);
+        const semesterA = getMostRecentContinuation(a.id).semesters;
+        const semesterB = getMostRecentContinuation(b.id).semesters;
+        console.log("comparing semesters")
+        return compareSemesters(semesterA, semesterB, order);
       });
     }
     else if (criteria === 'status') {
       // Status sorting logic
       const statusOrder = ['In-Progress', 'Unassigned', 'Suspended', 'Completed'];
       sortedData.sort((a, b) => {
-        let indexA = statusOrder.indexOf(a.status);
-        let indexB = statusOrder.indexOf(b.status);
+        const statusA = getMostRecentContinuation(a.id).status;
+        const statusB = getMostRecentContinuation(b.id).status;
+        let indexA = statusOrder.indexOf(statusA);
+        let indexB = statusOrder.indexOf(statusB);
           return indexA - indexB;
       });
     }
