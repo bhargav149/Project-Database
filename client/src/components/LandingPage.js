@@ -806,7 +806,6 @@ fetchAdminData(user)
           isOpen={isViewModalOpen}
           onClose={() => {
             setIsViewModalOpen(false)
-            fetchProjects()
           }}
           theme={isDarkMode ? 'dark' : 'light'}
           relatedProjects={relatedProjects}
