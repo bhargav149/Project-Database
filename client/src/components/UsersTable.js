@@ -213,13 +213,22 @@ export default function UsersTable({ themeMode }) {
               // Customizes the border color
               root: {
                 borderColor: 'black', // Apply black border for the whole DataGrid
-                backgroundColor: themeMode === 'dark' ? '#312F2F' : '#444444',
+                backgroundColor: themeMode === 'dark' ? '#312F2F' : '#2b2b2b',
                 color: '#F6E8EA',
                 '.MuiDataGrid-cell': {
                   borderColor: 'black', // Apply black border for cells
                 },
                 '.MuiDataGrid-columnHeaders': {
-                  borderColor: 'black', // Apply black border for column headers
+                  borderColor: 'white', // Apply black border for column headers
+                },
+                '& .MuiDataGrid-row': {
+                  // Alternating background colors for odd and even rows
+                  '&:nth-of-type(odd)': {
+                    backgroundColor: themeMode === 'dark' ? '#f7f7f7' : '#2b2b2b', // f7f7f7 color for odd rows in dark mode, lighter in light mode2b2b2b
+                  },
+                  '&:nth-of-type(even)': {
+                    backgroundColor: themeMode === 'dark' ? '#ffffff' : '#202020', // ffffff color for even rows in dark mode, white in light mode
+                  },
                 },
               },
             },

@@ -277,12 +277,12 @@ function SettingsPage({ themeMode, data, isAdmin }) {
                             <p><strong>Description:</strong> {projectInfo.contents}</p>
                             <p><strong>Stack:</strong> {projectInfo.stack}</p>
                             <p><strong>Semester:</strong></p>
-                            <p><strong>Summary:</strong></p>
+                            <p><strong>Summary:</strong> {projectInfo.summary}</p>
                             <p><strong>Team:</strong> {projectInfo.team_name}</p>
                             <p><strong>Members:</strong> {projectInfo.team_members}</p>
                             <p><strong>Status:</strong> {projectInfo.status}</p>
-                            <p><strong>Repository Link:</strong>{projectInfo.repository}</p>
-                            <p><strong>Production URL:</strong>{projectInfo.production_url}</p>
+                            <p><strong>Repository Link:</strong> <a href={`${projectInfo.repository}`} target="_blank" rel="noopener noreferrer" style={{ color: '#64b5f6' }}>{projectInfo.repository}</a></p>
+                            <p><strong>Production URL:</strong> <a href={`${projectInfo.production_url}`} target="_blank" rel="noopener noreferrer" style={{ color: '#64b5f6' }}>{projectInfo.production_url}</a></p>
                             <p><strong>Files:</strong></p>
 
                             {projectID !== -1 && (

@@ -740,8 +740,8 @@ fetchAdminData(user)
                 <p><strong>Team:</strong> {getAllTeamsForProjectSortedBySemester(project.id).join(', ')}</p>
                 {/* <p><strong>Team Members:</strong> {project.team_members}</p> */}
                 <p><strong>Semester:</strong> {getAllSemestersForProject(project.id).join(', ')}</p>
-                <p><strong>Repository Link:</strong> {project.repository}</p>
-                <p><strong>Production URL:</strong> {project.production_url}</p>
+                {/* <p><strong>Repository Link:</strong> {project.repository}</p> */}
+                {/* <p><strong>Production URL:</strong> {project.production_url}</p> */}
                 <button className="status-button suspended">Completed</button>
                 
                 <div className="indicator-container">

@@ -129,34 +129,40 @@ const compareSemesters = (semesterA, semesterB) => {
   };
   
 
-  // Use the themeMode prop to dynamically create the theme
-  const theme = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: themeMode,
-        },
-        components: {
-          MuiDataGrid: {
-            styleOverrides: {
-              root: {
-                borderColor: 'black', // Apply black border for the whole DataGrid
-                backgroundColor: themeMode === 'dark' ? '#312F2F' : 'inherit', // Change to dark color only in dark mode
-                '.MuiDataGrid-cell': {
-                  borderColor: 'black', // Apply black border for cells
-                  backgroundColor: themeMode === 'dark' ? '#312F2F' : 'inherit', // Optionally change cell background in dark mode
+  const theme = React.useMemo(() => {
+    return createTheme({
+      palette: {
+        mode: themeMode,
+      },
+      components: {
+        MuiDataGrid: {
+          styleOverrides: {
+            root: {
+              borderColor: 'black',
+              backgroundColor: themeMode === 'dark' ? '#312F2F' : 'inherit',
+              '& .MuiDataGrid-row': {
+                '&:nth-of-type(odd)': {
+                  backgroundColor: themeMode === 'dark' ? '#2b2b2b' : '#f7f7f7',
                 },
-                '.MuiDataGrid-columnHeaders': {
-                  borderColor: 'black', // Apply black border for column headers
-                  backgroundColor: themeMode === 'dark' ? '#312F2F' : 'inherit', // Optionally change header background in dark mode
+                '&:nth-of-type(even)': {
+                  backgroundColor: themeMode === 'dark' ? '#202020' : '#ffffff',
                 },
+              },
+              '& .MuiDataGrid-cell': {
+                borderColor: 'black',
+                backgroundColor: 'inherit',
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                borderColor: 'white',
+                backgroundColor: 'inherit',
               },
             },
           },
         },
-      }),
-    [themeMode] // React will only recompute the theme when themeMode changes
-  );
+      },
+    });
+  }, [themeMode]);
+  
 
   // Function to update project status
   const updateStatus = async (newStatus) => {
