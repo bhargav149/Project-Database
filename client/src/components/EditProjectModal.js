@@ -6,7 +6,7 @@
 
 
 
-function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, isAdmin, projectId, pid, notes}) {
+function EditProjectModal({ project, isOpen, onSave, onCancel, relatedProjects, isAdmin, projectId, pid, notes, theme}) {
   const [editedProject, setEditedProject] = useState({
     title: '',
     contents: '',
@@ -302,17 +302,16 @@ useEffect(() => {
   const handleNoteChange = (e) => {
     setEditedNote(e.target.value);
 };
-
 return (
   <div className="modal-overlay">
     {isAdmin || projectId===selectedProject.id ?
-    (<div className="modal-card">
+    (<div className={`${theme==='dark' ? 'modal-card' : 'modal-card-light'}`}>
       <div className="modal-header">
         <h2 className="modal-title">Quick Edit</h2>
         <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
       </div>
       <hr></hr>
-      <div className="project-selection-tabs">
+      <div className={`${theme==='dark' ? 'project-selection-tabs' : 'project-selection-tabs-light'}`}>
         {sortedRelatedProjects.map((proj, index) => (
           <button
             key={index}
@@ -471,7 +470,7 @@ return (
       ))}
     </div>
     <div
-      className={`drop-zone ${dragging ? "dragging" : ""}`}
+      className={`${theme==='dark' ? `drop-zone ${dragging ? "dragging" : ""}` : `drop-zone-light ${dragging ? "dragging" : ""}`}`}
       onClick={() => fileInputRef.current.click()}
       onDragOver={handleDrag}
       onDragEnter={handleDragIn}
@@ -502,18 +501,18 @@ return (
             ))}
       </div> */}
   </div>
-      <div className="modal-actions">
+      <div className={`${theme==='dark-theme' ? 'modal-actions' : 'modal-actions-light'}`}>
         <button onClick={handleSave}>Save</button>
         <button onClick={onCancel}>Cancel</button>
       </div>
     </div>) :     
-    (<div className="modal-card">
+    (<div className={`${theme==='dark' ? 'modal-card' : 'modal-card-light'}`}>
       <div className="modal-header">
         <h2 className="modal-title">Quick Edit</h2>
         <X className="modal-close-btn" onClick={onCancel}>Cancel</X>
       </div>
       <hr></hr>
-      <div className="project-selection-tabs">
+      <div className={`${theme==='dark' ? 'project-selection-tabs' : 'project-selection-tabs-light'}`}>
         {sortedRelatedProjects.map((proj, index) => (
           <button
             key={index}

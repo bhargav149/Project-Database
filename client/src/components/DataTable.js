@@ -284,13 +284,20 @@ const compareSemesters = (semesterA, semesterB) => {
             </Button>
           </div>
           {/* Delete button on the far right */}
-          <Button
+          {themeMode === 'dark' ? (<Button
             onClick={deleteSelectedProject}
             variant="contained" 
             sx={{ backgroundColor: '#312F2F', color: 'red', border: '1px solid red', '&:hover': { backgroundColor: '#312F2F', color: 'white' } }}
           >
             Delete Project
-          </Button>
+          </Button>) : (<Button
+            onClick={deleteSelectedProject}
+            variant="contained" 
+            sx={{ backgroundColor: 'red', color: '#312F2F', border: '1px solid red', '&:hover': { backgroundColor: 'red', color: 'white' } }}
+          >
+            Delete Project
+          </Button>)}
+
         </div>
           </div>
           <DataGrid

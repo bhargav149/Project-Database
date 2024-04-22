@@ -161,7 +161,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
           <X className="modal-close-btn" onClick={onClose}></X>
         </div>
         <hr></hr>
-        <div className="project-selection-tabs">
+        <div className={`${themeClass==='dark-theme' ? 'project-selection-tabs' : 'project-selection-tabs-light'}`}>
           {relatedProjects.map((proj, index) => (
             <button
               key={index}

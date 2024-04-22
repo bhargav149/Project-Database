@@ -798,6 +798,7 @@ fetchAdminData(user)
           projectId={userProject}
           pid={user}
           notes={notes}
+          theme={isDarkMode ? 'dark' : 'light'}
         />
       )}
       {isViewModalOpen && editingProject && (
