@@ -44,7 +44,8 @@ import {
     updateProjectMembers,
     getName,
     setName,
-    getSemester
+    getSemester,
+    getEmails
 } from './database.js'
 
 const app = express()
@@ -468,6 +469,20 @@ app.post(`${url}/name`, async (req,res) => {
     }
     catch(error) {
         console.log("Error")
+        res.status(500).send('Error setting user\'s name');
+    }
+})
+
+app.get(`${url}/emails/:id`, async (req,res) => {
+    try{
+        let pids = await getEmails(req.params.id)
+        // let emails = pids.map(pid => pid + "@vt.edu");
+        let emails = pids
+        console.log("Project",req.params.id,emails)
+        res.json(emails)
+    }
+    catch(error) {
+        console.log("Error getting emails")
         res.status(500).send('Error setting user\'s name');
     }
 })

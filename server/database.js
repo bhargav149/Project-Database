@@ -690,3 +690,12 @@ export async function setName(pid, newName) {
     `, [pid])
     console.log("Found ", rows)
 }
+
+export async function getEmails(projectId) {
+    const [result] = await pool.query(`
+        SELECT pid FROM USER
+        WHERE project_id = ?
+    `, [projectId])
+    console.log("Email results:", result)
+    return result
+}
