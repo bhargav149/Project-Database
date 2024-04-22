@@ -138,6 +138,11 @@
     margin: 20px 20px 10px 20px;
 }
 
+.profile-settings-light, .search-projects-light {
+    padding: 0 20px;
+    margin: 20px 20px 10px 20px;
+}
+
 .bottom-section {
     padding: 0 20px;
     margin: 10px 20px 20px 20px;
@@ -175,6 +180,45 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     overflow: auto;
     color: #F6E8EA;
+    font-weight: 130;
+}
+.bottom-section-light {
+    margin-top: 20px; /* Adjust based on your design preference */
+    border: 1px solid #373938;
+    border-radius: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    overflow: auto;
+}
+
+.bottom-section-light {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.bottom-section-light {
+    padding: 0 20px;
+    margin: 10px 20px 20px 20px;
+}
+
+.bottom-section-light h2 {
+    font-weight: 500;
+}
+
+.profile-settings-light, .search-projects-light, .bottom-section-light {
+    border: 1px solid black;
+    border-radius: 15px; /* Feel free to adjust the styling */
+    background-color: #F6E8EA; /* Adjust background colors as needed */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional shadow for depth */
+    padding-left: 20px;
+    padding-bottom: 20px;
+    padding-right: 10px;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    overflow: auto;
+    color: #444444;
     font-weight: 130;
 }
 
@@ -253,5 +297,8 @@
 }
 
 .search-projects {
+    height: 100%;
+}
+.search-projects-light {
     height: 100%;
 }

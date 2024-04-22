@@ -782,8 +782,8 @@ fetchAdminData(user)
       </div>
   
       {showAddProjectForm && (
-        <div className="add-project-card">
-          <AddProjectForm onAdd={addProject} projects={data} />
+          <div className={`${isDarkMode ? 'add-project-card' : 'add-project-card-light'}`}>
+            <AddProjectForm onAdd={addProject} projects={data} theme = {isDarkMode ? 'dark' : 'light'}/>
         </div>
       )}
   

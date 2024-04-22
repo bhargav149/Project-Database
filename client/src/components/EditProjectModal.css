@@ -30,6 +30,14 @@
     line-height: 1.5;
 }
 
+.modal-card h2, .modal-card .modal-close-btn{
+    color: white;
+}
+
+.modal-card .file-list{
+    color:white;
+}
+
 .modal-card input, .modal-card textarea {
     background: #312F2F;
     border: 1px solid #F6E8EA;

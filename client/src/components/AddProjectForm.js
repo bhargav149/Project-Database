@@ -12,7 +12,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
-function AddProjectForm({ onAdd, projects }) {
+function AddProjectForm({ onAdd, projects, theme }) {
     const [title, setTitle] = useState('');
     const [contents, setContents] = useState('');
     const [stack, setStack] = useState([]);
@@ -201,9 +201,9 @@ function AddProjectForm({ onAdd, projects }) {
 
     return (
         <form onSubmit={handleSubmit} className="form-container">
-            <div className="form-group">
+            <div className={`${theme==='dark' ? 'form-group' : 'form-group-light'}`}>
                 <FormControl component="fieldset">
-                    <FormLabel component="legend"><strong>Is this a continued project?</strong></FormLabel>
+                <FormLabel component="legend"><strong style={{ color: theme!=='dark' ?'black' : "#F6E8EA" }}>Is this a continued project?</strong></FormLabel>
                     <RadioGroup
                         row
                         aria-label="isContinuation"
@@ -213,7 +213,7 @@ function AddProjectForm({ onAdd, projects }) {
                         sx={{
                             '.MuiFormControlLabel-label': { 
                                 fontSize: '0.75rem',
-                                color: '#fff'
+                                color: theme==='dark' ? '#fff' : 'black'
                             }
                         }}
                     >
@@ -221,7 +221,7 @@ function AddProjectForm({ onAdd, projects }) {
                         <FormControlLabel value="no" control={<Radio />} label="No" />
                     </RadioGroup>
                 </FormControl><FormControl component="fieldset">
-                    <FormLabel component="legend"><strong>Select Status</strong></FormLabel>
+                    <FormLabel component="legend"><strong style={{ color: theme!=='dark' ?'black' : "#F6E8EA" }}>Select Status</strong></FormLabel>
                     <RadioGroup
                         row
                         aria-label="status"
@@ -231,7 +231,7 @@ function AddProjectForm({ onAdd, projects }) {
                         sx={{
                             '.MuiFormControlLabel-label': { 
                                 fontSize: '0.75rem',
-                                color: '#fff'
+                                color: theme==='dark' ? '#fff' : 'black'
                             }
                         }}
                     >
@@ -245,7 +245,7 @@ function AddProjectForm({ onAdd, projects }) {
             {isContinuation === 'no' && (
                 <div>
                     <div className="form-group">
-                        <label htmlFor="title"><strong>Title:</strong></label>
+                        <label htmlFor="title"><strong style={{ color: theme!=='dark' ?'black' : "#F6E8EA" }}>Title:</strong></label>
                         <input
                             id="title"
                             type="text"
@@ -256,7 +256,7 @@ function AddProjectForm({ onAdd, projects }) {
                         />
                     </div>
                     <div className="form-group">
-                <label htmlFor="contents"><strong>Description:</strong></label>
+                <label htmlFor="contents"><strong style={{ color: theme!=='dark' ?'black' : "#F6E8EA" }}>Description:</strong></label>
                 <input
                     id="contents"
                     type="text"
@@ -267,7 +267,7 @@ function AddProjectForm({ onAdd, projects }) {
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="stack"><strong>Stack:</strong></label>
+                <label htmlFor="stack"><strong style={{ color: theme!=='dark' ?'black' : "#F6E8EA" }}>Stack:</strong></label>
                 <Autocomplete
                 multiple
                 id="stack"
@@ -350,28 +350,28 @@ function AddProjectForm({ onAdd, projects }) {
                 </div>
                 
             )}
-            <label><strong>Semester and Year:</strong></label>
+            <label><strong style={{ color: theme!=='dark' ?'black' : "#F6E8EA" }}>Semester and Year:</strong></label>
             <div className="semester-year-group">
-                <div className="semester-selector">
+                <div className={`${theme==='dark' ? 'semester-selector' : 'semester-selector-light'}`}>
                     {semesters.map((semester) => (
                         <div key={semester}
-                             className={`semester-option ${selectedSemester === semester ? 'selected-semester' : ''}`}
+                             className={`semester-option${theme==='dark' ? '' : '-light'} ${selectedSemester === semester ? 'selected-semester' : ''}`}
                              onClick={() => handleSemesterClick(semester)}>
                             {semester}
                         </div>
                     ))}
                 </div>
-                <div ref={yearSelectorRef} className="year-selector">
+                <div ref={yearSelectorRef} className={`${theme==='dark' ? 'year-selector' : 'year-selector-light'}`}>
                     {years.map((yearOption) => (
                         <div key={yearOption} 
-                             className={`year-option ${year === yearOption ? 'selected-year' : ''}`} 
+                             className={`year-option${theme==='dark' ? '' : '-light'} ${year === yearOption ? 'selected-year' : ''}`} 
                              onClick={() => handleYearClick(yearOption)}>
                             {yearOption}
                         </div>
                     ))}
                 </div>
             </div>
-            <button type="submit">Create New Project</button>
+            <button type= {theme==='dark' ? 'submit' : 'submit-light'}>Create New Project</button>
         </form>
     );
 }

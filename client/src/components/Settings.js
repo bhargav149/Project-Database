@@ -210,7 +210,7 @@ function SettingsPage({ themeMode, data, isAdmin }) {
                     <div className="top-section">
                         {/* User Profile & Search Projects */}
                         <div className="leftSection">
-                            <div className="profile-settings">
+                            <div className={`${themeMode==='dark' ? 'profile-settings' : 'profile-settings-light'}`}>
                                 <div className="title-container">
                                     <h2>Profile Information</h2>
                                     <hr />
@@ -221,7 +221,7 @@ function SettingsPage({ themeMode, data, isAdmin }) {
                             </div>
                         </div>
                         <div className="rightSection">
-                            <div className="search-projects">
+                        <div className={`${themeMode==='dark' ? 'search-projects' : 'search-projects-light'}`}>
                                 <h2>Search Open Projects</h2>
                                 <FormControl>
                                     <NativeSelect
@@ -232,15 +232,15 @@ function SettingsPage({ themeMode, data, isAdmin }) {
                                         id: 'project-select',
                                         }}
                                         sx={{ 
-                                            color: '#F6E8EA', // Text color
+                                            color: themeMode==='dark' ?'#F6E8EA' : "black", // Text color
                                             '& .MuiNativeSelect-icon': { // Dropdown icon color
-                                                color: '#F6E8EA',
+                                                color: themeMode==='dark' ?'#F6E8EA' : "black",
                                             },
                                             '&::before': { // Underline color when not focused
-                                                borderColor: '#F6E8EA',
+                                                borderColor: themeMode==='dark' ?'#F6E8EA' : "black",
                                             },
                                             '&::after': { // Underline color when focused
-                                                borderColor: '#F6E8EA',
+                                                borderColor: themeMode==='dark' ?'#F6E8EA' : "black",
                                             }
                                         }}
                                     >
@@ -265,7 +265,7 @@ function SettingsPage({ themeMode, data, isAdmin }) {
                             </div>
                         </div>
                     </div>
-                    <div className="bottom-section">
+                    <div className={`${themeMode==='dark' ? 'bottom-section' : 'bottom-section-light'}`}>
                         {/* Project Overview */}
                         {projectID !== -1 ? (
                         <div className="project-overview">
@@ -323,6 +323,7 @@ function SettingsPage({ themeMode, data, isAdmin }) {
                             projectId={projectID} // The current project ID
                             pid={pid} // User's PID
                             notes={[]} // Pass notes if applicable
+                            theme={themeMode}
                         />
                         )}
                     </>
