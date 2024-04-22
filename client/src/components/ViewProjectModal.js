@@ -12,7 +12,22 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
   const [userRootProject, setUserRootProject] = useState(-1);
   const [name, setName] = useState('')
   const [error,setError] = useState(false)
+  const [emails,setEmails] = useState(null)
+
+  const url = "http://localhost:8080/";
+  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+
   
+  const getEmails = (projectId) => {
+    fetch(url+"emails/"+projectId)
+    .then(res=>res.json())
+    .then(data => {
+      console.log("data", data)
+      setEmails(data.map(({ pid }) => pid+"@vt.edu"));
+      console.log("Emails",emails)
+    })
+    .catch(err => console.error(err));
+  }
 
   useEffect(() => {
     setSelectedProject(project); // Reset selected project when the main project changes
@@ -24,13 +39,20 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
     console.log("Name: ",name, name!=='')
   });
 
+
+  if(emails===null) {
+    getEmails(project.id)
+  }
+
+  const changeProject =(proj) => {
+    setSelectedProject(proj)
+    getEmails(proj.id)
+  }
+
   if (!isOpen) return null;
   console.log('Notes prop:', notes);
   const themeClass = theme === 'dark' ? 'dark-theme' : 'light-theme';
   const semesterTabs = relatedProjects.map(proj => proj.semesters);
-
-  const url = "http://localhost:8080/";
-  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
 
   const getAllSemesters = () => {
@@ -144,7 +166,9 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
             <button
               key={index}
               className={`semester-tab ${selectedProject.id === proj.id ? 'active' : ''}`}
-              onClick={() => setSelectedProject(proj)}
+              onClick={() => {
+                changeProject(proj)
+              }}
             >
               {proj.semesters}
             </button>
@@ -178,7 +202,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
             onClose()
           }
         }}>Join Team</button>) : <></>}
-        {isAdmin ? (<> <a href={`mailto:${selectedProject.team_members}?subject=Project%20${encodeURIComponent(project.title)}%20Discussion`} className="email-icon-container">
+        {isAdmin ? (<> <a href={`mailto:${emails}?subject=Project%20${encodeURIComponent(project.title)}%20Discussion`} className="email-icon-container">
           <Mail size={24} style={{ cursor: 'pointer' }} />
         </a></>) : (<></>)}
 
