@@ -309,7 +309,6 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
                             <p><strong>Name:</strong> {projectInfo.title}</p>
                             <p><strong>Description:</strong> {projectInfo.contents}</p>
                             <p><strong>Stack:</strong> {projectInfo.stack}</p>
-                            <p><strong>Semester:</strong></p>
                             {!isRootProject ? <p><strong>Summary:</strong> {projectInfo.summary}</p> : <></>}
                             <p><strong>Team:</strong> {projectInfo.team_name}</p>
                             <p><strong>Members:</strong> {projectInfo.team_members}</p>
