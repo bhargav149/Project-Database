@@ -45,7 +45,8 @@ import {
     getName,
     setName,
     getSemester,
-    getEmails
+    getEmails,
+    updateUserByPid
 } from './database.js'
 
 const app = express()
@@ -243,7 +244,7 @@ app.put(`${url}/user/:pid`, async(req,res) => {
                 removedMembers='None'
             }
             await updateProjectMembers(oldProjectId.project_id,removedMembers); 
-            console.log("Updated old members")
+            console.log("Updated old members ", removedMembers)
         }
 
 
@@ -257,6 +258,7 @@ app.put(`${url}/user/:pid`, async(req,res) => {
         }
         await updateProjectMembers(req.body.project_id,newMembers); 
         const newProject = await getProjectWithSemesters(req.body.project_id)
+        console.log("New members ", newMembers)
         res.status(200).send('Project switched successfully',newProject);
     }catch (error) {
         res.status(500).send('Error switching project');
@@ -275,6 +277,15 @@ app.post(`${url}/users`, async (req, res) => {
 app.put(`${url}/users/:id`, async (req, res) => {
     try {
         await updateUser(req.params.id, req.body.name, req.body.pid, req.body.team_id);
+        res.status(200).send('User updated successfully');
+    } catch (error) {
+        res.status(500).send('Error updating user');
+    }
+});
+
+app.put(`${url}/users/:pid`, async (req, res) => {
+    try {
+        await updateUserByPid(req.body.name, req.params.pid, req.body.team_id);
         res.status(200).send('User updated successfully');
     } catch (error) {
         res.status(500).send('Error updating user');
@@ -446,13 +457,11 @@ app.delete(`${url}/notes/:noteId`, async (req, res) => {
 });
 
 app.get(`${url}/name/:pid`, async (req,res) => {
-    console.log("Getting name for", req.params.pid)
     try{
         let name = await getName(req.params.pid)
         if(!name){
             name=''
         }
-        console.log("Found name", name)
         res.json(name)
     }
     catch(error){

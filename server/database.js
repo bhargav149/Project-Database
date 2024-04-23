@@ -554,6 +554,13 @@ export async function updateUser(id, name, pid, team_id) {
     `, [name, pid, team_id, id]);
 }
 
+export async function updateUserByPid(name, pid, team_id) {
+    await pool.query(`
+        UPDATE user SET name = ?, pid = ?, team_id = ?
+        WHERE pid = ?
+    `, [name, pid, team_id]);
+}
+
 export async function deleteUser(id) {
     await pool.query(`DELETE FROM user WHERE id = ?`, [id]);
 }
@@ -699,3 +706,5 @@ export async function getEmails(projectId) {
     console.log("Email results:", result)
     return result
 }
+
+

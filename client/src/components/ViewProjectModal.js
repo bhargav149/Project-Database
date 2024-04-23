@@ -7,7 +7,7 @@ import axios from 'axios';
 
 
 
-function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes, pid, isAdmin }) {
+function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes, pid, isAdmin, afterJoin }) {
   const [selectedProject, setSelectedProject] = useState(project);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -230,6 +230,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
           // event.stopPropagation();
           switchUserProject(selectedProject.id)
           if(name!=='' && name!=='None'){
+            afterJoin()
             onClose()
           }
         }}>Join Team</button>) : <></>}
@@ -261,7 +262,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
       ))}
     </div>
       </div>
-      <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={true}/>
+      <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={false}/>
     </div>
   );
 }

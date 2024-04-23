@@ -10,7 +10,7 @@ import { Tooltip } from '@mui/material';
 import {Download, Trash2 } from 'lucide-react';
 import axios from 'axios';
 
-function SettingsPage({ themeMode, data, isAdmin, isRootProject }) {
+function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
     const [userName, setUserName] = useState('');
     const [projectID, setProjectID] = useState('');
     const [projectInfo, setProjectInfo] = useState({});
@@ -25,11 +25,6 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject }) {
     const [uploadedFiles, setUploadedFiles] = useState([]);
 
 
-
-    // Hardcoded PID for the current user
-    const pid = "k3h0j8";
-
-    const id = "1";
     //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
     const url = "http://localhost:8080/";
     // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
@@ -47,13 +42,20 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject }) {
         fetchFiles();
       }, [fetchFiles, uploadedFiles]);
 
+      useEffect(() => {
+        fetch(url+"name/"+pid)
+            .then(response=>response.json())
+            .then(data => {
+                setUserName(data.name)
+            })
+      })
     useEffect(() => {
         console.log("Fetching user data...");
-        fetch(url + "users/1") // Assuming '1' is the user ID for the sake of example
+
+        fetch(url + "user/"+pid) // Assuming '1' is the user ID for the sake of example
             .then(response => response.json())
             .then(data => {
                 console.log("User data:", data);
-                setUserName(data.name);
                 setProjectID(data.project_id);
                 console.log("Fetching project data for project ID:", data.project_id);
                 // Assuming you have an endpoint that matches this pattern to fetch project details
@@ -182,18 +184,18 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject }) {
         console.log("Updated project info:", projectInfo);
     }, [projectInfo]);
 
-    const handleSaveProfile = () => {
-        // Example PUT request to update user data
-        const updatedData = { name: userName, team_id: projectID };
-        fetch(url + "users/" + id, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData),
-        })
-        .then(response => response.json())
-        .then(data => console.log('Success:', data))
-        .catch(error => console.error('Error updating profile:', error));
-    };
+    // const handleSaveProfile = () => {
+    //     // Example PUT request to update user data
+    //     const updatedData = { name: userName, team_id: projectID };
+    //     fetch(url + "users/" + id, {
+    //         method: 'PUT',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify(updatedData),
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => console.log('Success:', data))
+    //     .catch(error => console.error('Error updating profile:', error));
+    // };
     const handleDelete = async (filename) => {
         try {
           const encodedFilename = encodeURIComponent(filename);

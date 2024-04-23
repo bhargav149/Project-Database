@@ -54,7 +54,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('k3h0j8');
+  const [user, setUser] = React.useState('pid1');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -358,6 +358,12 @@ const deleteRootProject = (id, deletedChildProjects) => {
       showErrorToastWithFadeOut("An error occurred while updating the project.", true);
     }
   };
+
+  const afterJoin = async () => {
+    showToastWithFadeOut("Project joined successfully");
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);  };
 
   const cancelEdit = () => {
     const isConfirmed = window.confirm("Are you sure you want to discard all changes made?");
@@ -727,7 +733,7 @@ fetchAdminData(user)
         </button>
 
         { settingsView ? (
-        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin} isRootProject={userProject.id===userRootProject.id}/>
+        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin} isRootProject={userProject.id===userRootProject.id} pid={user}/>
       ) :
       tableView ? (
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'} data={data} />) : (
@@ -813,6 +819,7 @@ fetchAdminData(user)
           notes={notes}
           pid={user}
           isAdmin={isAdmin}
+          afterJoin={afterJoin}
         />
       )}
   
