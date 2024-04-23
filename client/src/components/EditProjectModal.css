@@ -53,7 +53,7 @@
 }
 
 .modal-card-light {
-    background-color: #ffffff;
+    background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     padding: 20px;
@@ -65,9 +65,17 @@
 }
 
 .modal-card-light p, .modal-card-light label, .modal-card-light input, .modal-card-light textarea {
-    color: #312F2F;
+    color: black;
     margin: 10px 0;
     line-height: 1.5;
+}
+
+.modal-card-light h2, .modal-card-light .modal-close-btn{
+    color: black;
+}
+
+.modal-card-light .file-list{
+    color:black;
 }
 
 .modal-card-light input, .modal-card-light textarea {
@@ -170,6 +178,13 @@
     display: flex;
     justify-content: space-between; /* Aligns children (title and button) on opposite ends */
     align-items: center; /* Vertically centers the items in the container */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between; /* Aligns children (title and button) on opposite ends */
+    align-items: center; /* Vertically centers the items in the container */
+    color:black;
 }
 
 .modal-title {
@@ -351,6 +366,13 @@
     overflow: hidden; /* Hide overflowed text */
     white-space: nowrap; /* Prevent wrapping */
     text-overflow: ellipsis; /* Display ellipsis for truncated text */
+}
+.file-name-light {
+    flex: 1; /* Allow file name to take remaining space */
+    overflow: hidden; /* Hide overflowed text */
+    white-space: nowrap; /* Prevent wrapping */
+    text-overflow: ellipsis; /* Display ellipsis for truncated text */
+    color:black;
 }
 
 .download-btn,

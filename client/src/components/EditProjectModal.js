@@ -406,7 +406,7 @@ return (
         value={selectedProject.team_members}
         onChange={handleChange}
       />
-      {sortedRelatedProjects.length>1 ? (<>   
+      {sortedRelatedProjects.length>1 && selectedProject.id!==project.id? (<>   
       <label htmlFor="summary" className="modal-label">Semester Summary</label>
       <textarea
         id="summary"
@@ -588,7 +588,7 @@ return (
         disabled={true}
 
       />
-            {sortedRelatedProjects.length>1 ? (<>   
+            {sortedRelatedProjects.length>1 && selectedProject.id!==project.id?(<>   
       <label htmlFor="summary" className="modal-label">Semester Summary</label>
       <textarea
         id="summary"

@@ -7,8 +7,10 @@ import { FormControl, InputLabel, NativeSelect } from '@mui/material';
 import EditProjectModal from './EditProjectModal';
 import { FilePenLine, Info } from 'lucide-react';
 import { Tooltip } from '@mui/material';
+import {Download, Trash2 } from 'lucide-react';
+import axios from 'axios';
 
-function SettingsPage({ themeMode, data, isAdmin }) {
+function SettingsPage({ themeMode, data, isAdmin, isRootProject }) {
     const [userName, setUserName] = useState('');
     const [projectID, setProjectID] = useState('');
     const [projectInfo, setProjectInfo] = useState({});
@@ -20,6 +22,9 @@ function SettingsPage({ themeMode, data, isAdmin }) {
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+
+
 
     // Hardcoded PID for the current user
     const pid = "k3h0j8";
@@ -29,6 +34,18 @@ function SettingsPage({ themeMode, data, isAdmin }) {
     const url = "http://localhost:8080/";
     // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
     const [semester, setSemester] = useState(null);
+
+    const fetchFiles = () => {
+        fetch(url+"files/"+projectID)
+          .then(res => res.json())
+          .then(data => setUploadedFiles(data.map(project => ({ ...project}))))
+          .catch(err => console.error(err));
+        console.log()
+      };
+
+      useEffect(() => {
+        fetchFiles();
+      }, [fetchFiles, uploadedFiles]);
 
     useEffect(() => {
         console.log("Fetching user data...");
@@ -177,7 +194,21 @@ function SettingsPage({ themeMode, data, isAdmin }) {
         .then(data => console.log('Success:', data))
         .catch(error => console.error('Error updating profile:', error));
     };
-
+    const handleDelete = async (filename) => {
+        try {
+          const encodedFilename = encodeURIComponent(filename);
+          console.log(`Encoded filename for deletion: ${encodedFilename}`); // Log the encoded filename
+          console.log(`${url}files/${encodedFilename}`);
+          const response = await axios.delete(`${url}files/${encodedFilename}`);
+          console.log(`Response status after file deletion: ${response.status}`); // Log response status
+          if (response.status === 204) {
+            console.log(`File ${filename} deleted successfully.`);
+            fetchFiles();
+          }
+        } catch (error) {
+          console.error(`Error deleting file ${filename}:`, error);
+        }
+      };
     const saveEdit = async (updatedProject) => {
         // console.log(`Saving project with updated status: `, updatedProject);
         try {
@@ -253,7 +284,7 @@ function SettingsPage({ themeMode, data, isAdmin }) {
                                     </FormControl>
                                     <Tooltip title="Can't find what you are looking for? Try refreshing the page.">
                                         <span>
-                                            <Info size={24} style={{color:'lightblue', marginTop: '4px', marginLeft: '4px'}}/>
+                                            <Info size={24} style={{color:themeMode==='dark' ? 'lightblue' : '#3371FF', marginTop: '4px', marginLeft: '4px'}}/>
                                         </span>
                                     </Tooltip>
                                     <button 
@@ -277,14 +308,36 @@ function SettingsPage({ themeMode, data, isAdmin }) {
                             <p><strong>Description:</strong> {projectInfo.contents}</p>
                             <p><strong>Stack:</strong> {projectInfo.stack}</p>
                             <p><strong>Semester:</strong></p>
-                            <p><strong>Summary:</strong> {projectInfo.summary}</p>
+                            {!isRootProject ? <p><strong>Summary:</strong> {projectInfo.summary}</p> : <></>}
                             <p><strong>Team:</strong> {projectInfo.team_name}</p>
                             <p><strong>Members:</strong> {projectInfo.team_members}</p>
                             <p><strong>Status:</strong> {projectInfo.status}</p>
                             <p><strong>Repository Link:</strong> <a href={`${projectInfo.repository}`} target="_blank" rel="noopener noreferrer" style={{ color: '#64b5f6' }}>{projectInfo.repository}</a></p>
                             <p><strong>Production URL:</strong> <a href={`${projectInfo.production_url}`} target="_blank" rel="noopener noreferrer" style={{ color: '#64b5f6' }}>{projectInfo.production_url}</a></p>
                             <p><strong>Files:</strong></p>
-
+                            <div className="file-list">
+                            {uploadedFiles.map((file, index) => (
+                                <div key={index} className="file-item">
+                                <div className='file-name'>{file.filename}</div>
+                                <div>
+                                    <a
+                                    href={`${url}uploads/${file.filename}`}
+                                    download
+                                    className="download-btn"
+                                    >
+                                    <Download />
+                                    </a>
+                                    <button
+                                    onClick={() => handleDelete(file.filename)}
+                                    className="file-delete"
+                                    style={{ color: '#64b5f6', border: 'none', background: 'none' }}
+                                    >
+                                    <Trash2 />
+                                    </button>
+                                </div>
+                                </div>
+                            ))}
+                            </div>
                             {projectID !== -1 && (
                                     <div style={{marginTop: '20px'}}>
                                     <span 

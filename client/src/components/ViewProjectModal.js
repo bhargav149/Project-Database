@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './ViewProjectModal.css';
 import { X, Mail } from 'lucide-react';
 import Toast from './Toast';
+import {Download, Trash2 } from 'lucide-react';
+import axios from 'axios';
+
+
 
 function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, notes, pid, isAdmin }) {
   const [selectedProject, setSelectedProject] = useState(project);
@@ -13,9 +17,21 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
   const [name, setName] = useState('')
   const [error,setError] = useState(false)
   const [emails,setEmails] = useState(null)
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  useEffect(() => {
+    fetchFiles();
+  }, [uploadedFiles]);
 
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+
+  const fetchFiles = () => {
+    fetch(url+"files/"+selectedProject.id)
+      .then(res => res.json())
+      .then(data => setUploadedFiles(data.map(project => ({ ...project}))))
+      .catch(err => console.error(err));
+  };
 
   
   const getEmails = (projectId) => {
@@ -152,11 +168,26 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
     }, 10000); // Time the toast is visible before starting to fade out
   };
 
+  const handleDelete = async (filename) => {
+    try {
+      const encodedFilename = encodeURIComponent(filename);
+      console.log(`Encoded filename for deletion: ${encodedFilename}`); // Log the encoded filename
+      console.log(`${url}files/${encodedFilename}`);
+      const response = await axios.delete(`${url}files/${encodedFilename}`);
+      console.log(`Response status after file deletion: ${response.status}`); // Log response status
+      if (response.status === 204) {
+        console.log(`File ${filename} deleted successfully.`);
+        fetchFiles();
+      }
+    } catch (error) {
+      console.error(`Error deleting file ${filename}:`, error);
+    }
+  };
 
   return (
     <div className={`modal-overlay ${themeClass}`}>
-      <div className="modal-card">
-        <div className="modal-header">
+  <div className='modal-card'>
+        <div className={`${themeClass==='dark-theme' ? 'modal-header' : 'modal-header-light'}`}>
           <h2 className="modal-title">{project.title}</h2>
           <X className="modal-close-btn" onClick={onClose}></X>
         </div>
@@ -190,11 +221,11 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
         <p><strong>Stack:</strong> {selectedProject.stack}</p>
         <p><strong>Team:</strong> {selectedProject.team_name}</p>
         <p><strong>Members:</strong> {selectedProject.team_members}</p>
-        {relatedProjects.length>1 ? (<p><strong>Semester Summary:</strong> {selectedProject.summary}</p>) : (<></>)}
+        {relatedProjects.length>1 && selectedProject.id!==project.id ? (<p><strong>Semester Summary:</strong> {selectedProject.summary}</p>) : (<></>)}
         <p><strong>Repository Link:</strong> <a href={`${selectedProject.repository}`} target="_blank" rel="noopener noreferrer" style={{ color: '#64b5f6' }}>{selectedProject.repository}</a></p>
         <p><strong>Production URL:</strong> <a href={`${selectedProject.production_url}`} target="_blank" rel="noopener noreferrer" style={{ color: '#64b5f6' }}>{selectedProject.production_url}</a></p>
         <p><strong>Status:</strong> {selectedProject.status}</p>
-        <div className="modal-actions">
+        <div className={`${theme==='dark' ? 'modal-actions' : 'modal-actions-light'}`}>
         {selectedProject.status==="Unassigned" && selectedProject.id !== userProject ? (<button onClick={(event) => {
           // event.stopPropagation();
           switchUserProject(selectedProject.id)
@@ -205,9 +236,30 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
         {isAdmin ? (<> <a href={`mailto:${emails}?subject=Project%20${encodeURIComponent(project.title)}%20Discussion`} className="email-icon-container">
           <Mail size={24} style={{ cursor: 'pointer' }} />
         </a></>) : (<></>)}
-
         </div>
-
+        <div className="file-list">
+      {uploadedFiles.map((file, index) => (
+        <div key={index} className="file-item">
+          <div className={`${theme==='dark' ? 'file-name' : 'file-name-light'}`}>{file.filename}</div>
+          <div>
+            <a
+              href={`${url}uploads/${file.filename}`}
+              download
+              className="download-btn"
+            >
+              <Download />
+            </a>
+            <button
+              onClick={() => handleDelete(file.filename)}
+              className="file-delete"
+              style={{ color: '#64b5f6', border: 'none', background: 'none' }}
+            >
+              <Trash2 />
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
       </div>
       <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={true}/>
     </div>

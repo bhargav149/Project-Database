@@ -45,6 +45,46 @@
     display: block;
 }
 
+.modal-card-light {
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 20px;
+    width: 30%;
+    max-width: 500px;
+    max-height: 80vh;
+    z-index: 1000;
+    overflow: auto;
+}
+
+.modal-card-light p, .modal-card-light label, .modal-card-light input, .modal-card-light textarea {
+    color: black;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.modal-card-light h2, .modal-card-light .modal-close-btn{
+    color: black;
+}
+
+.modal-card-light .file-list {
+    color:black;
+}
+
+.modal-card-light input, .modal-card-light textarea {
+    background: #F6E8EA;
+    border: 1px solid #312F2F;
+    border-radius: 4px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    margin-top: 0;
+}
+
+.modal-card-light label {
+    color: #312F2F;
+    display: block;
+}
+
 .modal-actions {
     margin-top: 20px;
     text-align: right;
@@ -102,6 +142,16 @@
     display: flex;
     justify-content: space-between; /* Aligns children (title and button) on opposite ends */
     align-items: center; /* Vertically centers the items in the container */
+}
+.modal-header-light {
+    display: flex;
+    justify-content: space-between; /* Aligns children (title and button) on opposite ends */
+    align-items: center; /* Vertically centers the items in the container */
+    color:black;
+}
+
+.modal-header-light h2, .modal-header-light .modal-close-btn{
+    color:black;
 }
 
 .modal-title {
@@ -167,15 +217,15 @@
 
 .light-theme .proj
 
-.modal-actions {
+.modal-actions-light {
     margin-top: 20px;
     text-align: right;
 }
 
-.modal-actions button {
-    background-color: transparent;
-    color: #F6E8EA;
-    border: 2px solid #F6E8EA;
+.modal-actions-light button {
+    background-color: #F6E8EA;
+    color: black;
+    border: 2px solid #333;
     border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
@@ -183,8 +233,8 @@
     margin-left: 10px;
 }
 
-.modal-actions button:hover {
-    background-color: #F6E8EA;
+.modal-actions-light button:hover {
+    background-color: #d3c2c5;
     color: #000;
 }
 

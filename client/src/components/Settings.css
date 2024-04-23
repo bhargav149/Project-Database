@@ -168,8 +168,11 @@
 .top-section strong, .bottom-section strong {
     font-weight: 400;
 }
+.bottom-section-light strong {
+    font-weight: 400;
+}
 .profile-settings, .search-projects, .bottom-section {
-    border: 1px solid #373938;
+    border: 1px solid #373739;
     border-radius: 15px; /* Feel free to adjust the styling */
     background-color: #444444; /* Adjust background colors as needed */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional shadow for depth */

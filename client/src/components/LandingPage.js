@@ -727,7 +727,7 @@ fetchAdminData(user)
         </button>
 
         { settingsView ? (
-        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin}/>
+        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin} isRootProject={userProject.id===userRootProject.id}/>
       ) :
       tableView ? (
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'} data={data} />) : (
