@@ -54,7 +54,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('k3h0j8');
+  const [user, setUser] = React.useState('pid1');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -733,7 +733,7 @@ fetchAdminData(user)
         </button>
 
         { settingsView ? (
-        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin} isRootProject={userProject.id===userRootProject.id} pid={user}/>
+        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin} isRootProject={userProject.continuation_of_project_id === -1} pid={user}/>
       ) :
       tableView ? (
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'} data={data} />) : (
