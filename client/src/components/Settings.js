@@ -386,7 +386,7 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
             case 'Users':
                 return (
                     <>
-                        <UsersTable themeMode="light" />
+                        <UsersTable themeMode={themeMode} />
                     </>
                 );
             default:

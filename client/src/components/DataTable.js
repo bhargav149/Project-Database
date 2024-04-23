@@ -153,7 +153,7 @@ const compareSemesters = (semesterA, semesterB) => {
                 backgroundColor: 'inherit',
               },
               '& .MuiDataGrid-columnHeaders': {
-                borderColor: 'white',
+                borderColor: 'black',
                 backgroundColor: 'inherit',
               },
             },

@@ -44,7 +44,7 @@ function Profile(user) {
           {submittedName === '' ? (
             <div>
               <header>
-                <h1>VIRGINIA TECH SOFTWARE CAPSTONE DATABASE PROFILE</h1>
+                <h1>Create Profile</h1>
               </header>
               <div className="container">
                 <form className="name-form" onSubmit={handleSubmit}>

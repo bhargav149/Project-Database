@@ -3,49 +3,50 @@ import { DataGrid } from '@mui/x-data-grid';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
-// Define columns based on user data structure
-const columns = [
-  { field: 'name', headerName: 'Name', width: 150 },
-  { 
-    field: 'pid', 
-    headerName: 'Email', 
-    width: 150,
-    renderCell: (params) => (
-      <a 
-        href={`mailto:${params.value}@vt.edu`}
-        style={{ 
-          textDecoration: 'none', 
-          color: 'lightblue', // Use secondary text color from theme
-        }}
-      >
-        {`${params.value}@vt.edu`}
-      </a>
-    ),
-  },
-  { 
-    field: 'isAdmin', 
-    headerName: 'Role', 
-    width: 80,
-    renderCell: (params) => (params.value ? 'Admin' : 'User'),
-  },
-  {
-    field: 'teamName',
-    headerName: 'Team',
-    width: 160,
-    renderCell: (params) => params.value || 'No Team', // Render the team name
-  },
-  { 
-    field: 'project_id', 
-    headerName: 'Project', 
-    width: 200,
-    renderCell: (params) => params.row.projectName || 'No Project', // Custom rendering to show project name
-  },
-];
-
 // Assuming the URL is defined outside the component or passed in as a prop
 const url = "http://localhost:8080/";
 
 export default function UsersTable({ themeMode }) {
+
+  // Define columns based on user data structure
+  const columns = [
+    { field: 'name', headerName: 'Name', width: 150 },
+    { 
+      field: 'pid', 
+      headerName: 'Email', 
+      width: 150,
+      renderCell: (params) => (
+        <a 
+          href={`mailto:${params.value}@vt.edu`}
+          style={{ 
+            textDecoration: 'none', 
+            color: themeMode === 'dark' ? 'lightblue' : 'blue',
+          }}
+        >
+          {`${params.value}@vt.edu`}
+        </a>
+      ),
+    },
+    { 
+      field: 'isAdmin', 
+      headerName: 'Role', 
+      width: 80,
+      renderCell: (params) => (params.value ? 'Admin' : 'User'),
+    },
+    {
+      field: 'teamName',
+      headerName: 'Team',
+      width: 160,
+      renderCell: (params) => params.value || 'No Team', // Render the team name
+    },
+    { 
+      field: 'project_id', 
+      headerName: 'Project', 
+      width: 200,
+      renderCell: (params) => params.row.projectName || 'No Project', // Custom rendering to show project name
+    },
+  ];
+
   const [users, setUsers] = useState([]);
   const [selected, setSelected] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
@@ -212,22 +213,22 @@ export default function UsersTable({ themeMode }) {
             styleOverrides: {
               // Customizes the border color
               root: {
-                borderColor: 'black', // Apply black border for the whole DataGrid
-                backgroundColor: themeMode === 'dark' ? '#312F2F' : '#2b2b2b',
-                color: '#F6E8EA',
+                borderColor: 'black',
+                backgroundColor: themeMode === 'dark' ? '#312F2F' : 'inherit',
+                color: themeMode === 'dark' ? 'white' : 'black',
                 '.MuiDataGrid-cell': {
                   borderColor: 'black', // Apply black border for cells
                 },
                 '.MuiDataGrid-columnHeaders': {
-                  borderColor: 'white', // Apply black border for column headers
+                  borderColor: 'black', // Apply black border for column headers
                 },
                 '& .MuiDataGrid-row': {
                   // Alternating background colors for odd and even rows
                   '&:nth-of-type(odd)': {
-                    backgroundColor: themeMode === 'dark' ? '#f7f7f7' : '#2b2b2b', // f7f7f7 color for odd rows in dark mode, lighter in light mode2b2b2b
+                    backgroundColor: themeMode === 'dark' ? '#2b2b2b' : '#f7f7f7', // f7f7f7 color for odd rows in dark mode, lighter in light mode2b2b2b
                   },
                   '&:nth-of-type(even)': {
-                    backgroundColor: themeMode === 'dark' ? '#ffffff' : '#202020', // ffffff color for even rows in dark mode, white in light mode
+                    backgroundColor: themeMode === 'dark' ? '#202020' : '#ffffff', // ffffff color for even rows in dark mode, white in light mode
                   },
                 },
               },
