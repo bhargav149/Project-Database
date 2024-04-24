@@ -5,12 +5,12 @@ function Home() {
   const [user, setUser] = React.useState(null);
 
   useEffect(() => {
-    async function getCurrentUser() {
-      await fetch("/api/currentUser")
-        .then((res) => res.json())
-        .then((data) => setUser(data.user));
-    }
-    getCurrentUser();
+    // async function getCurrentUser() {
+    //   await fetch("/api/currentUser")
+    //     .then((res) => res.json())
+    //     .then((data) => setUser(data.user));
+    // }
+    // getCurrentUser();
   }, []);
 
   return (

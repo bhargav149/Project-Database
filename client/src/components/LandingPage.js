@@ -9,7 +9,7 @@ import SearchCategory from './SearchCategory';
 import DataTable from './DataTable';
 import SettingsPage from './Settings';
 
-import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw, Settings, Undo2 } from 'lucide-react';
+import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw, Settings, Undo2, Lock } from 'lucide-react';
 import './LandingPage.css';
 
 
@@ -54,7 +54,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('pid1');
+  const [user, setUser] = React.useState(null);
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -497,6 +497,11 @@ const deleteRootProject = (id, deletedChildProjects) => {
   };
 
   const viewProjectDetails = async (project) => {
+    if (!user) {
+      showErrorToastWithFadeOut("Please sign in to view the project.");
+      return;
+    }
+
     setIsViewModalOpen(true);
     setEditingProject(project); // Assuming you're reusing this for viewing
   
@@ -666,11 +671,19 @@ fetchAdminData(user)
           <div className="color-theme" onClick={toggleDarkMode}>
             {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
           </div>
+          {user ? (
           <div className="logout">
             <a href="/api/logout">
               <button className="login-button">Logout</button>
             </a>
           </div>
+        ) : (
+          <div className="login">
+            <a href="/api/login">
+              <button className="login-button">Login</button>
+            </a>
+          </div>
+        )}
         </div>
       </header>
   
@@ -728,9 +741,11 @@ fetchAdminData(user)
             </button></>) : (<></>)}
 
 
-        <button onClick={toggleSettingsView} className="settings-toggle-button">
-          {settingsView ? <Undo2 size={24}/> : <Settings size={24}/>}
-        </button>
+            {user && (
+              <button onClick={toggleSettingsView} className="settings-toggle-button">
+                {settingsView ? <Undo2 size={24}/> : <Settings size={24}/>}
+              </button>
+            )}
 
         { settingsView ? (
         <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin} isRootProject={userProject.continuation_of_project_id === -1} pid={user}/>
@@ -740,23 +755,22 @@ fetchAdminData(user)
           <div className="cards-container">
             {filteredData.map((project, i) => (
               <div key={i} className="card" onClick={() => viewProjectDetails(project)}>
-                <p><strong>Title:</strong> {project.title}</p>
-                <p><strong>Description:</strong> {project.contents}</p>
-                <p><strong>Stack:</strong> {project.stack}</p>
-                <p><strong>Team:</strong> {getAllTeamsForProjectSortedBySemester(project.id).join(', ')}</p>
-                {/* <p><strong>Team Members:</strong> {project.team_members}</p> */}
-                <p><strong>Semester:</strong> {getAllSemestersForProject(project.id).join(', ')}</p>
-                {/* <p><strong>Repository Link:</strong> {project.repository}</p> */}
-                {/* <p><strong>Production URL:</strong> {project.production_url}</p> */}
-                <button className="status-button suspended">Completed</button>
-                
-                <div className="indicator-container">
-                  {data.some(p => p.continuation_of_project_id === project.id) && (
+                <div className={!user ? 'blurred-content' : ''}>
+                  <p><strong>Title:</strong> {project.title}</p>
+                  <p><strong>Description:</strong> {project.contents}</p>
+                  <p><strong>Stack:</strong> {project.stack}</p>
+                  <p><strong>Team:</strong> {getAllTeamsForProjectSortedBySemester(project.id).join(', ')}</p>
+                  <p><strong>Semester:</strong> {getAllSemestersForProject(project.id).join(', ')}</p>
+                  <button className={getStatusStyle(getMostRecentStatus(project.id))}>{getMostRecentStatus(project.id)}</button>
+                  <div className="indicator-container">
+                    {data.some(p => p.continuation_of_project_id === project.id) && (
                       <button className="continued-indicator" onClick={(e) => e.stopPropagation()}>
                           Continued
                       </button>
-                  )}
+                    )}
+                  </div>
                 </div>
+                {user ? null : <Lock size={48} className="lock-icon" />}
                 {
                   isAdmin ? (
                     <button className="button-delete" onClick={(event) => {
@@ -777,10 +791,6 @@ fetchAdminData(user)
                   </span></>) :
                   <></>
                 }
-              {/* <button className={getStatusStyle(project.status)}>{project.status}</button> */}
-              <button className={getStatusStyle(getMostRecentStatus(project.id))}>
-        {getMostRecentStatus(project.id)}
-      </button>
               </div>
             ))}
           </div>
