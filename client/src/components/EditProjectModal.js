@@ -226,6 +226,10 @@ useEffect(() => {
 
 
     const handleDelete = async (filename) => {
+      const isConfirmed = window.confirm("Are you sure you want delete this file? This cannot be undone.");
+      if (!isConfirmed) {
+        return;
+      }
       try {
         const encodedFilename = encodeURIComponent(filename);
         console.log(`Encoded filename for deletion: ${encodedFilename}`); // Log the encoded filename
