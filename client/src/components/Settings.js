@@ -269,6 +269,7 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
                                         id: 'project-select',
                                         }}
                                         sx={{ 
+                                            marginBottom: '10px',
                                             color: themeMode==='dark' ?'#F6E8EA' : "black", // Text color
                                             '& .MuiNativeSelect-icon': { // Dropdown icon color
                                                 color: themeMode==='dark' ?'#F6E8EA' : "black",
@@ -289,10 +290,10 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
                                     </NativeSelect>
                                     </FormControl>
                                     <Tooltip title="Can't find what you are looking for? Try refreshing the page.">
-                                        <span>
-                                            <Info size={24} style={{color:themeMode==='dark' ? 'lightblue' : '#3371FF', marginTop: '4px', marginLeft: '4px'}}/>
+                                        <span className="info-icon">
+                                            <Info size={24} style={{color: themeMode==='dark' ? 'lightblue' : '#3371FF', marginTop: '4px', marginLeft: '4px'}}/>
                                         </span>
-                                    </Tooltip>
+                                    </Tooltip>  
                                     <button 
                                         onClick={handleJoinTeam} 
                                         className="join-team-button"

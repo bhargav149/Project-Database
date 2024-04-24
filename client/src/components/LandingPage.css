@@ -537,3 +537,32 @@
 .light-theme .card strong {
     color: #000;
 }
+
+/* Smaller screen size */
+@media (max-width: 1150px) {
+    .view-toggle-button, .add-project-button, .settings-toggle-button {
+        right: 30px;
+    }
+
+    .add-project-button {
+        top: 285px;
+    }
+
+    .view-toggle-button {
+        top: 350px;
+    }
+
+    .settings-toggle-button {
+        top: 415px;
+    }
+
+    .side-navigation {
+        display:none;
+    }
+}
+
+@media (min-width: 1150px) {
+    .mobile-button-container {
+        display: none;
+    }
+}

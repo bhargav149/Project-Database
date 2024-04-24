@@ -4,6 +4,7 @@
     height: 80vh;
     width: 60vw;
     margin-top: 50px;
+    border-radius: 15px;
 }
 
 .settings-container.light {
@@ -11,14 +12,9 @@
     color: #000; /* Dark text for light background */
 }
 
-.settings-container.dark {
-    background-color: #333; /* Dark background */
-    color: #fff; /* Light text for dark background */
-}
-
 /* Sidebar styling */
 .sidebar {
-    flex: 0 0 170px; /* Fixed width for sidebar */
+    width: 100px;
     padding: 20px;
     background-color: #F6E8EA; /* Light grey background */
     border-right: 1px solid #F6E8EA; /* Separator line */
@@ -316,4 +312,49 @@
     flex-direction: column;
     overflow-y: auto; /* If you want the entire section scrollable */
     height: calc(100% - 40px); /* Adjust based on other content */
+}
+
+/* Global Styles for Responsive Layout */
+@media (max-width: 900px) {
+    .settings-container {
+        flex-direction: column;
+        width: 60vw;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 10px;
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        border: none;
+        border-radius: 15px;
+        margin-bottom: 15px;
+    }
+
+    .navLink {
+        flex-basis: 100%; /* Make each link full width */
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .mainContent {
+        width: 100%;
+        padding: 10px;
+        border-radius: 15px;
+    }
+
+    .top-section, .bottom-section {
+        flex-direction: column; /* Stack elements vertically */
+    }
+
+    .leftSection, .rightSection {
+        width: 100%; /* Full width for each section */
+    }
+
+    .info-icon {
+        display: block;
+        margin-top: 10px; /* Add some space between the icon and the button */
+    }
 }

@@ -249,7 +249,7 @@ const compareSemesters = (semesterA, semesterB) => {
   
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '80vh', marginTop: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '80vh', marginTop: '20px', width: '60vw',overflowX: 'auto' }}>
         <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {/* Status buttons on the left */}
@@ -257,28 +257,28 @@ const compareSemesters = (semesterA, semesterB) => {
             <Button 
               onClick={() => updateStatus('Unassigned')}
               variant="contained" 
-              sx={{ marginRight: '10px', backgroundColor: '#ffb74d', color: 'black', '&:hover': { backgroundColor: '#ffb74d', color: 'white' } }}
+              sx={{ marginTop: '10px', marginRight: '10px', backgroundColor: '#ffb74d', color: 'black', '&:hover': { backgroundColor: '#ffb74d', color: 'white' } }}
             >
               Set Unassigned
             </Button>
             <Button 
               onClick={() => updateStatus('In-Progress')}
               variant="contained" 
-              sx={{ marginRight: '10px', backgroundColor: '#64b5f6', color: 'black', '&:hover': { backgroundColor: '#64b5f6', color: 'white' } }}
+              sx={{ marginTop: '10px', marginRight: '10px', backgroundColor: '#64b5f6', color: 'black', '&:hover': { backgroundColor: '#64b5f6', color: 'white' } }}
             >
               Set In-Progress
             </Button>
             <Button 
               onClick={() => updateStatus('Completed')}
               variant="contained" 
-              sx={{ marginRight: '10px', backgroundColor: '#8bc34a', color: 'black', '&:hover': { backgroundColor: '#8bc34a', color: 'white' } }}
+              sx={{ marginTop: '10px', marginRight: '10px', backgroundColor: '#8bc34a', color: 'black', '&:hover': { backgroundColor: '#8bc34a', color: 'white' } }}
             >
               Set Completed
             </Button>
             <Button 
               onClick={() => updateStatus('Suspended')}
               variant="contained" 
-              sx={{ marginRight: '10px', backgroundColor: '#e57373', color: 'black', '&:hover': { backgroundColor: '#e57373', color: 'white' } }}
+              sx={{ marginTop: '10px', marginRight: '10px', backgroundColor: '#e57373', color: 'black', '&:hover': { backgroundColor: '#e57373', color: 'white' } }}
             >
               Set Suspended
             </Button>
@@ -287,13 +287,13 @@ const compareSemesters = (semesterA, semesterB) => {
           {themeMode === 'dark' ? (<Button
             onClick={deleteSelectedProject}
             variant="contained" 
-            sx={{ backgroundColor: '#312F2F', color: 'red', border: '1px solid red', '&:hover': { backgroundColor: '#312F2F', color: 'white' } }}
+            sx={{ marginTop: '10px', backgroundColor: '#312F2F', color: 'red', border: '1px solid red', '&:hover': { backgroundColor: '#312F2F', color: 'white' } }}
           >
             Delete Project
           </Button>) : (<Button
             onClick={deleteSelectedProject}
             variant="contained" 
-            sx={{ backgroundColor: 'red', color: '#312F2F', border: '1px solid red', '&:hover': { backgroundColor: 'red', color: 'white' } }}
+            sx={{ marginTop: '10px', backgroundColor: 'red', color: '#312F2F', border: '1px solid red', '&:hover': { backgroundColor: 'red', color: 'white' } }}
           >
             Delete Project
           </Button>)}

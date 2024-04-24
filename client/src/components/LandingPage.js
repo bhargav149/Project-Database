@@ -10,7 +10,7 @@ import DataTable from './DataTable';
 import SettingsPage from './Settings';
 import EnterName from './EnterName';
 
-import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw, Settings, Undo2, Lock } from 'lucide-react';
+import { List, FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw, Settings, Undo2, Lock } from 'lucide-react';
 import './LandingPage.css';
 
 
@@ -64,6 +64,7 @@ function App() {
   const [userRootProject, setUserRootProject] = useState(-1);
   const [toastError, setToastError] = React.useState(false)
 
+  const [showSideNav, setShowSideNav] = useState(false);
 
   // useEffect(() => {
   //   getCurrentUser();
@@ -676,6 +677,11 @@ fetchAdminData(user)
     setIsEnterNameModalOpen(false); // Close the modal after updating the name
   };
 
+  const toggleSideNav = () => {
+    console.log('Toggle sidebar');
+    setShowSideNav(prev => !prev);  // This will toggle the state
+  };
+
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
       <header className="site-header">
@@ -745,6 +751,18 @@ fetchAdminData(user)
               <button onClick={resetFilters} className="reset-button">
                 <RotateCcw color={isDarkMode ? "white" : "black"} size={24} />
               </button>
+          </div>
+
+          <div className="mobile-button-container">
+            <button onClick={toggleView} className="view-toggle-button">
+                {tableView ? <LayoutGrid size={24}/> : <Table2 size={24}/>}
+            </button>
+            <button onClick={toggleAddProjectForm} className="add-project-button">
+                {showAddProjectForm ? <X color="white" size={24} /> : <Plus color="white" size={24} />}
+            </button>
+            <button onClick={toggleSettingsView} className={`settings-toggle-button ${isAdmin ? '' : 'settings-toggle-button-top'}`}>
+                {settingsView ? <Undo2 size={24}/> : <Settings size={24}/>}
+            </button>
           </div>
         </>
       )}
