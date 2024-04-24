@@ -54,7 +54,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('pid1');
+  const [user, setUser] = React.useState(null);
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -678,7 +678,7 @@ fetchAdminData(user)
             </a>
           </div>
         ) : (
-          <div className="login">
+          <div className="logout">
             <a href="/api/login">
               <button className="login-button">Login</button>
             </a>

@@ -30,8 +30,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #ccc;
     z-index: 1;
+}
+
+.lock-icon-dark {
+    color: #ccc; /* Light gray for dark mode */
+}
+
+.lock-icon-light {
+    color: black; /* Black for light mode */
 }
 
 .card:hover {
