@@ -54,7 +54,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState('pid1');
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -742,7 +742,7 @@ fetchAdminData(user)
 
 
             {user && (
-              <button onClick={toggleSettingsView} className="settings-toggle-button">
+              <button onClick={toggleSettingsView}   className={`settings-toggle-button ${isAdmin ? '' : 'settings-toggle-button-top'}`}>
                 {settingsView ? <Undo2 size={24}/> : <Settings size={24}/>}
               </button>
             )}

@@ -18,6 +18,7 @@
     transition: transform 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     border: 1px solid #F6E8EA;
+    overflow: hidden;
 }
 
 .blurred-content {
@@ -300,6 +301,30 @@
 .settings-toggle-button {
     top: 265px;
 }
+
+.settings-toggle-button-top {
+    position: absolute;
+    right: 50px;
+    top: 135px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.settings-toggle-button-top:hover {
+    transform: scale(1.1);
+}
+
 
 .login-button {
     display: flex;
