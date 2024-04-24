@@ -136,6 +136,10 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
   }
 
   const switchUserProject = (project_id) => {
+    const isConfirmed = window.confirm("Are you sure you want to join this project? If you are already part of a team, this will remove you from it.");
+    if (!isConfirmed) {
+      return;
+    }
     if(name==='' || name==='None') {
       console.log("Name not set")
       showToastWithFadeOut("Error: please set name to join project")
