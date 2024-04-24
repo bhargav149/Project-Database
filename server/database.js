@@ -489,10 +489,11 @@ export async function getNotesForProject(pid, project_id) {
         console.log(`Fetching notes for project ID ${project_id} for PID ${pid}`);
         
         // Include `project_id` in your SELECT clause
-        const temp = await pool.query(`
+        const [temp] = await pool.query(`
             SELECT * FROM admin WHERE pid = ?
         `, [pid])
         const admin_id = temp[0].id;
+        console.log("Found admin id", admin_id, temp, temp[0])
         const [rows] = await pool.query(`
             SELECT note, project_id
             FROM admin_project_notes
@@ -513,12 +514,17 @@ export async function getNotesForProject(pid, project_id) {
 }
 
 
-export async function updateNoteForProject(note_id, admin_id, newNote) {
+export async function updateNoteForProject(project_id, pid, newNote) {
+    const [temp] = await pool.query(`
+        SELECT * FROM admin WHERE pid = ?
+    `, [pid])
+    const admin_id = temp[0].id;
+    console.log("Found admin id", admin_id, temp, temp[0])
     await pool.query(`
         UPDATE admin_project_notes
         SET note = ?
-        WHERE id = ? AND admin_id = ?
-    `, [newNote, note_id, admin_id]);
+        WHERE project_id = ? AND admin_id = ?
+    `, [newNote, project_id, admin_id]);
 }
 
 export async function deleteNoteForProject(note_id, admin_id) {

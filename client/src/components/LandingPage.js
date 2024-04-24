@@ -55,7 +55,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('k3h0j8');
+  const [user, setUser] = React.useState('atink');
   const [userName, setUserName] = useState('');
   const [isEnterNameModalOpen, setIsEnterNameModalOpen] = useState(false);
   const [isAdmin,setIsAdmin]=useState(false);
@@ -336,24 +336,26 @@ const deleteRootProject = (id, deletedChildProjects) => {
     setEditingProject(project); // Keep the selected project as the editing project
     setRelatedProjects(projectAndContinuations); // Update related projects to include continuations
 
-    const fetchNotesForProjects = async () => {
-      try {
-        const notesPromises = projectAndContinuations.map(proj =>
-          fetch(`${url}projects/${proj.id}/notes/${user}`).then(res => res.json())
-        );
-        const notesArrays = await Promise.all(notesPromises);
-        // Flatten the array of arrays and set the notes
-        const allNotes = [].concat(...notesArrays);
-        setNotes(allNotes);
-      } catch (err) {
-        console.error("Failed to fetch notes for related projects:", err);
-      }
-    };
-  
-    fetchNotesForProjects();
+    if(isAdmin) {
+      const fetchNotesForProjects = async () => {
+        try {
+          const notesPromises = projectAndContinuations.map(proj =>
+            fetch(`${url}projects/${proj.id}/notes/${user}`).then(res => res.json())
+          );
+          const notesArrays = await Promise.all(notesPromises);
+          // Flatten the array of arrays and set the notes
+          const allNotes = [].concat(...notesArrays);
+          setNotes(allNotes);
+        } catch (err) {
+          console.error("Failed to fetch notes for related projects:", err);
+        }
+      };
+    
+      fetchNotesForProjects();
+    }
   };
   
-  const saveEdit = async (updatedProject) => {
+  const saveEdit = async (updatedProject, newNote) => {
     // console.log(`Saving project with updated status: `, updatedProject);
     try {
       const response = await fetch(url + `projects/${updatedProject.id}`, {
@@ -364,6 +366,18 @@ const deleteRootProject = (id, deletedChildProjects) => {
         body: JSON.stringify(updatedProject),
       });
       if (!response.ok) {
+        throw new Error("Failed to update project");
+      }
+      console.log(url + `notes/${updatedProject.id}`)
+      const noteResponse = await fetch(url + `notes/${updatedProject.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ pid: user, newNote: newNote }),
+      });
+      if (!noteResponse.ok) {
+        console.log("response:",noteResponse)
         throw new Error("Failed to update project");
       }
       setIsModalOpen(false);
@@ -529,18 +543,20 @@ const deleteRootProject = (id, deletedChildProjects) => {
     setRelatedProjects(projectAndContinuations);
 
     // Fetch notes for all related projects
-  const notesPromises = projectAndContinuations.map(proj =>
-    fetch(`${url}projects/${proj.id}/notes/${user}`).then(res => res.json())
-  );
+      if(isAdmin){
+        const notesPromises = projectAndContinuations.map(proj =>
+          fetch(`${url}projects/${proj.id}/notes/${user}`).then(res => res.json())
+        );
 
-  try {
-    const notesArrays = await Promise.all(notesPromises);
-    // Flatten the array of arrays and set the notes
-    const allNotes = [].concat(...notesArrays);
-    setNotes(allNotes);
-  } catch (err) {
-    console.error("Failed to fetch notes for related projects:", err);
-  }
+      try {
+        const notesArrays = await Promise.all(notesPromises);
+        // Flatten the array of arrays and set the notes
+        const allNotes = [].concat(...notesArrays);
+        setNotes(allNotes);
+      } catch (err) {
+        console.error("Failed to fetch notes for related projects:", err);
+      }
+    }
   };
   
   const toggleDarkMode = () => {

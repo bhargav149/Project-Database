@@ -213,6 +213,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
             </button>
           ))}
         </div>
+        {isAdmin ?
         <div>
           <strong>Note: </strong>
           {filteredNotes.length > 0 ? (
@@ -224,7 +225,8 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
           ) : (
             <span>No notes for this project.</span>
           )}
-        </div>
+        </div> : <></>
+        }
         <p><strong>Description:</strong> {selectedProject.contents}</p>
         <p><strong>Stack:</strong> {selectedProject.stack}</p>
         <p><strong>Team:</strong> {selectedProject.team_name}</p>

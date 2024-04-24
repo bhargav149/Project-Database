@@ -405,10 +405,8 @@ app.delete(`${url}/teams/:id`, async (req, res) => {
 
 // Get notes for a project
 app.get(`${url}/projects/:projectId/notes/:pid`, async (req, res) => {
-    // const { projectId } = req.params;
-    // const admin_id = 1;
-    // const admin_id = req.body.admin_id;
     const projectId = req.params.projectId
+    // const pid = 'pid1'
     const pid = req.params.pid
 
     try {
@@ -428,6 +426,7 @@ app.get(`${url}/projects/:projectId/notes/:pid`, async (req, res) => {
 
 // Add a note to a project
 app.post(`${url}/projects/:projectId/notes`, async (req, res) => {
+    console.log("creating note")
     const { admin_id, note } = req.body;
     try {
         await addNoteToProject(admin_id, req.params.projectId, note);
@@ -438,10 +437,16 @@ app.post(`${url}/projects/:projectId/notes`, async (req, res) => {
 });
 
 // Update a note for a project
-app.put(`${url}/notes/:noteId`, async (req, res) => {
-    const { admin_id, newNote } = req.body;
+app.put(`${url}/notes/:projectId`, async (req, res) => {
+    console.log("Starting note edit", req.body)
+    // const { pid, newNote } = req.body;
+    const pid = req.body.pid
+    const newNote = req.body.newNote
+    console.log("Starting note edit", pid,newNote)
+    console.log("Editing project: ", req.params.projectId)
+    console.log(pid,"New note", newNote)
     try {
-        await updateNoteForProject(req.params.noteId, admin_id, newNote);
+        await updateNoteForProject(req.params.projectId, pid, newNote);
         res.status(200).send('Note updated successfully');
     } catch (error) {
         res.status(500).send('Error updating project note');

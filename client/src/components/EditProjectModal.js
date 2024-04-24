@@ -296,7 +296,7 @@ useEffect(() => {
           await handleUpload(file); // Wait for the file to be uploaded
       }
       // After file upload, proceed with saving project data...
-      onSave({ ...selectedProject });
+      onSave({ ...selectedProject },editedNote);
 
       
     // Continue with any additional save logic, such as closing the modal or updating local state
@@ -343,14 +343,13 @@ return (
           onChange={handleChange} 
           disabled={true}/></>)
         }
-
-<label htmlFor="note" className="modal-label">Note:</label>
+        {isAdmin ? (<><label htmlFor="note" className="modal-label">Note:</label>
             <textarea
                 id="note"
                 className="modal-textarea"
                 value={editedNote}
                 onChange={handleNoteChange}
-            />
+            /></>) : <></>}
       {sortedRelatedProjects.length===1 ? (<>
       <label htmlFor="contents" className="modal-label">Description</label>
       <textarea
@@ -537,16 +536,6 @@ return (
         value={selectedProject.title}
         onChange={handleChange}
       />
-
-<label htmlFor="note" className="modal-label">Note:</label>
-            <textarea
-                id="note"
-                className="modal-textarea"
-                value={editedNote}
-                onChange={handleNoteChange}
-                disabled={true}
-
-            />
       <label htmlFor="contents" className="modal-label">Description</label>
       <textarea
         id="contents"
