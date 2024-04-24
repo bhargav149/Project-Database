@@ -339,7 +339,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
     const fetchNotesForProjects = async () => {
       try {
         const notesPromises = projectAndContinuations.map(proj =>
-          fetch(`${url}projects/${proj.id}/notes`).then(res => res.json())
+          fetch(`${url}projects/${proj.id}/notes/${user}`).then(res => res.json())
         );
         const notesArrays = await Promise.all(notesPromises);
         // Flatten the array of arrays and set the notes
@@ -530,7 +530,7 @@ const deleteRootProject = (id, deletedChildProjects) => {
 
     // Fetch notes for all related projects
   const notesPromises = projectAndContinuations.map(proj =>
-    fetch(`${url}projects/${proj.id}/notes`).then(res => res.json())
+    fetch(`${url}projects/${proj.id}/notes/${user}`).then(res => res.json())
   );
 
   try {
@@ -786,7 +786,7 @@ fetchAdminData(user)
             )}
 
         { settingsView ? (
-        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin} isRootProject={userProject.continuation_of_project_id === -1} pid={user}/>
+        <SettingsPage themeMode={isDarkMode ? 'dark' : 'light'} data={data} isAdmin={isAdmin} isRootProject={userProject===userRootProject} pid={user}/>
       ) :
       tableView ? (
           <DataTable themeMode={isDarkMode ? 'dark' : 'light'} data={data} />) : (

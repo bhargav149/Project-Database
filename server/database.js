@@ -484,11 +484,15 @@ export async function addNoteToProject(admin_id, project_id, note) {
     `, [admin_id, project_id, note]);
 }
 
-export async function getNotesForProject(admin_id, project_id) {
+export async function getNotesForProject(pid, project_id) {
     try {
-        console.log(`Fetching notes for project ID ${project_id} by admin ID ${admin_id}`);
+        console.log(`Fetching notes for project ID ${project_id} for PID ${pid}`);
         
         // Include `project_id` in your SELECT clause
+        const temp = await pool.query(`
+            SELECT * FROM admin WHERE pid = ?
+        `, [pid])
+        const admin_id = temp[0].id;
         const [rows] = await pool.query(`
             SELECT note, project_id
             FROM admin_project_notes

@@ -9,6 +9,8 @@ import { FilePenLine, Info } from 'lucide-react';
 import { Tooltip } from '@mui/material';
 import {Download, Trash2 } from 'lucide-react';
 import axios from 'axios';
+import Toast from './Toast';
+
 
 function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
     const [userName, setUserName] = useState('');
@@ -23,6 +25,10 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
     const [uploadedFiles, setUploadedFiles] = useState([]);
+    
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastFadeOut, setToastFadeOut] = useState(false);
 
 
     //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
@@ -37,6 +43,21 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
           .catch(err => console.error(err));
         console.log()
       };
+
+      const showToastWithFadeOut = (message) => {
+        setToastMessage(message);
+        setShowToast(true);
+        setToastFadeOut(false); // Reset fade-out animation
+      
+        setTimeout(() => {
+          setToastFadeOut(true); // Start fade-out animation
+          setTimeout(() => {
+            setShowToast(false);
+            setToastFadeOut(false); // Ensure the fade-out state is reset for the next toast
+          }, 700); // This duration should match the CSS animation duration for fading out
+        }, 10000); // Time the toast is visible before starting to fade out
+      };
+    
 
       useEffect(() => {
         fetchFiles();
@@ -234,6 +255,7 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
           }
           setIsEditModalOpen(false)
           setProjectInfo(updatedProject)
+          showToastWithFadeOut('Project updated successfully')
         } catch (error) {
           console.error(error);
         }
@@ -407,6 +429,7 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
             <div className="mainContent">
                 {renderContent()} {/* Render content based on the active tab */}
             </div>
+            <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={false} />
         </div>
     );
 }

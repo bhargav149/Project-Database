@@ -404,14 +404,17 @@ app.delete(`${url}/teams/:id`, async (req, res) => {
 });
 
 // Get notes for a project
-app.get(`${url}/projects/:projectId/notes`, async (req, res) => {
-    const { projectId } = req.params;
-    const admin_id = 1;
+app.get(`${url}/projects/:projectId/notes/:pid`, async (req, res) => {
+    // const { projectId } = req.params;
+    // const admin_id = 1;
+    // const admin_id = req.body.admin_id;
+    const projectId = req.params.projectId
+    const pid = req.params.pid
 
     try {
         console.log(`Received request to fetch notes for project ID ${projectId}`);
         
-        const notes = await getNotesForProject(admin_id, projectId);
+        const notes = await getNotesForProject(pid, projectId);
 
         console.log(`Notes fetched: ${JSON.stringify(notes)}`);
         
