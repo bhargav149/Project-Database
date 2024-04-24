@@ -8,6 +8,7 @@ import SemesterDropdown from './SemesterDropdown';
 import SearchCategory from './SearchCategory';
 import DataTable from './DataTable';
 import SettingsPage from './Settings';
+import EnterName from './EnterName';
 
 import { FilePenLine, Plus, X, Sun, Moon, LayoutGrid, Table2, RotateCcw, Settings, Undo2, Lock } from 'lucide-react';
 import './LandingPage.css';
@@ -54,7 +55,9 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState('emptyNameUser');
+  const [userName, setUserName] = useState('');
+  const [isEnterNameModalOpen, setIsEnterNameModalOpen] = useState(false);
   const [isAdmin,setIsAdmin]=useState(false);
 
   const [userProject, setUserProject] = React.useState(null);
@@ -84,7 +87,19 @@ function App() {
     fetchProjects();
   }, []);
 
+  useEffect(() => {
+    fetch(url + "name/" + user)
+      .then(response => response.json())
+      .then(data => {
+        console.log("Fetched name: ", data.name);
+        setUserName(data.name);
+        setIsEnterNameModalOpen(data.name === '');
+      })
+  }, [user]);
 
+  const closeEnterNameModal = () => {
+    setIsEnterNameModalOpen(false);
+  };
 
   useEffect(() => {
     if (data && data.length > 0) {
@@ -656,6 +671,11 @@ fetchAdminData(user)
     return sortedProjects.length > 0 ? sortedProjects[sortedProjects.length - 1].status : '';
   };
   
+  const updateUserName = (newName) => {
+    setUserName(newName);
+    setIsEnterNameModalOpen(false); // Close the modal after updating the name
+  };
+
   return (
     <div className={`container ${isDarkMode ? '' : 'light-theme'}`}>
       <header className="site-header">
@@ -832,8 +852,15 @@ fetchAdminData(user)
           afterJoin={afterJoin}
         />
       )}
-  
+
       <Toast show={showToast} message={toastMessage} fadeOut={toastFadeOut} error={toastError} />
+      {isEnterNameModalOpen && (
+        <EnterName
+          user={user}
+          onClose={closeEnterNameModal}
+          updateUserName={updateUserName}
+        />
+      )}
     </div>
     
   );  
