@@ -305,3 +305,15 @@
 .search-projects-light {
     height: 100%;
 }
+
+.project-overview {
+    margin-bottom: 45px;
+    overflow-y: auto; /* Enables vertical scrolling */
+}
+
+.bottom-section {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* If you want the entire section scrollable */
+    height: calc(100% - 40px); /* Adjust based on other content */
+}
