@@ -260,13 +260,16 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
             >
               <Download />
             </a>
-            <button
-              onClick={() => handleDelete(file.filename)}
-              className="file-delete"
-              style={{ color: '#64b5f6', border: 'none', background: 'none' }}
-            >
-              <Trash2 />
-            </button>
+            
+            {isAdmin && ( // Conditionally render this button only if isAdmin is true
+              <button
+                onClick={() => handleDelete(file.filename)}
+                className="file-delete"
+                style={{ color: '#64b5f6', border: 'none', background: 'none' }}
+              >
+                <Trash2 />
+              </button>
+            )}
           </div>
         </div>
       ))}
