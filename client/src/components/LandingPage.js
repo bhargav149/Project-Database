@@ -55,7 +55,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('pid1');
+  const [user, setUser] = React.useState(null);
   const [userName, setUserName] = useState('');
   const [isEnterNameModalOpen, setIsEnterNameModalOpen] = useState(false);
   const [isAdmin,setIsAdmin]=useState(false);
@@ -94,7 +94,9 @@ function App() {
       .then(data => {
         console.log("Fetched name: ", data.name);
         setUserName(data.name);
-        setIsEnterNameModalOpen(data.name === '');
+        if (user != null) {
+          setIsEnterNameModalOpen(data.name === '');
+        }
       })
   }, [user]);
 
