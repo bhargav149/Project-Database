@@ -236,7 +236,7 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
         <p><strong>Production URL:</strong> <a href={`${selectedProject.production_url}`} target="_blank" rel="noopener noreferrer" style={{ color: '#64b5f6' }}>{selectedProject.production_url}</a></p>
         <p><strong>Status:</strong> {selectedProject.status}</p>
         <div className={`${theme==='dark' ? 'modal-actions' : 'modal-actions-light'}`}>
-        {selectedProject.status==="Unassigned" && selectedProject.id !== userProject ? (<button onClick={(event) => {
+        {!isAdmin && selectedProject.status==="Unassigned" && selectedProject.id !== userProject ? (<button onClick={(event) => {
           // event.stopPropagation();
           switchUserProject(selectedProject.id)
           if(name!=='' && name!=='None'){

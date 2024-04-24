@@ -55,7 +55,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('atink');
+  const [user, setUser] = React.useState('pid1');
   const [userName, setUserName] = useState('');
   const [isEnterNameModalOpen, setIsEnterNameModalOpen] = useState(false);
   const [isAdmin,setIsAdmin]=useState(false);
@@ -368,17 +368,18 @@ const deleteRootProject = (id, deletedChildProjects) => {
       if (!response.ok) {
         throw new Error("Failed to update project");
       }
-      console.log(url + `notes/${updatedProject.id}`)
-      const noteResponse = await fetch(url + `notes/${updatedProject.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ pid: user, newNote: newNote }),
-      });
-      if (!noteResponse.ok) {
-        console.log("response:",noteResponse)
-        throw new Error("Failed to update project");
+      if(isAdmin){
+        const noteResponse = await fetch(url + `notes/${updatedProject.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ pid: user, newNote: newNote }),
+        });
+        if (!noteResponse.ok) {
+          console.log("response:",noteResponse)
+          throw new Error("Failed to update project");
+        }
       }
       setIsModalOpen(false);
       fetchProjects(); // Update project data after save

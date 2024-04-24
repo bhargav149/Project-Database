@@ -319,13 +319,14 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
                                     <button 
                                         onClick={handleJoinTeam} 
                                         className="join-team-button"
+                                        disabled={isAdmin}
                                     >
                                         Join Team
                                     </button>
                             </div>
                         </div>
                     </div>
-                    <div className={`${themeMode==='dark' ? 'bottom-section' : 'bottom-section-light'}`}>
+                    {!isAdmin ? (<div className={`${themeMode==='dark' ? 'bottom-section' : 'bottom-section-light'}`}>
                         {/* Project Overview */}
                         {projectID !== -1 ? (
                         <div className="project-overview">
@@ -392,7 +393,7 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
                                 <p>Join a team to see project information</p>
                             </div>
                         )}
-                    </div>
+                    </div>) : <></>}
                     {isEditModalOpen && (
                         <EditProjectModal
                             project={projectInfo} // Assuming projectInfo holds the current project's data

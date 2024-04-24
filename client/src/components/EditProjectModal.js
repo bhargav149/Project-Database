@@ -408,6 +408,7 @@ return (
         className="modal-textarea"
         value={selectedProject.team_members}
         onChange={handleChange}
+        disabled={true}
       />
       {sortedRelatedProjects.length>1 && selectedProject.id!==project.id? (<>   
       <label htmlFor="summary" className="modal-label">Semester Summary</label>
