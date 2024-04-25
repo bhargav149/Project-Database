@@ -19,6 +19,12 @@ function EnterName({ user, onClose, updateUserName }) {
       setError(true);
       return;
     }
+
+    const confirmed = window.confirm(`Are you sure you want to set your name to ${name}? You will not be able to change your name.`);
+    if (!confirmed) {
+      return;
+    }
+
     setLoading(true);
   
     fetch(url + "user/" + user)

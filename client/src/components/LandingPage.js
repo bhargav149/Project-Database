@@ -55,7 +55,7 @@ function App() {
   const url = "http://localhost:8080/";
   // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('k3h0j8');
+  const [user, setUser] = React.useState('emptyNameUser');
   const [userName, setUserName] = useState('');
   const [isEnterNameModalOpen, setIsEnterNameModalOpen] = useState(false);
   const [isAdmin,setIsAdmin]=useState(false);
