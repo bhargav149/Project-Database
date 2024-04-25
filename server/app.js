@@ -294,6 +294,32 @@ app.put(`${url}/users/:pid`, async (req, res) => {
 
 app.delete(`${url}/users/:id`, async (req, res) => {
     try {
+        const user = await getUser(req.params.id)
+        const projectId = user.project_id;
+        const projects = await getProject(projectId)
+        if(projects.length>0){
+            const project = projects[0]
+            console.log("old project: ", project)
+            const oldMembers = project.team_members
+            console.log("old members: ", oldMembers)
+            const index = oldMembers.indexOf(user.name);
+            let prefix = '';
+            let suffix=0
+            if (index > 0) {
+                prefix = ', ';
+            }
+            else{
+                suffix=2
+            }
+            console.log("string stuff", index, prefix.length)
+
+            let removedMembers = oldMembers.slice(0, index - prefix.length) + oldMembers.slice(index + suffix + user.name.length);
+            if(removedMembers==='' || removedMembers==null){
+                removedMembers='None'
+            }
+            await updateProjectMembers(projectId,removedMembers); 
+            console.log("Updated old members ", removedMembers)
+        }
         await deleteUser(req.params.id);
         res.status(200).send('User deleted successfully');
     } catch (error) {
