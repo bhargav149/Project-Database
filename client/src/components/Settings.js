@@ -32,8 +32,8 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
 
 
     //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
-    const url = "http://localhost:8080/";
-    // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+    // const url = "http://localhost:8080/";
+    const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
     const [semester, setSemester] = useState(null);
 
     const fetchFiles = () => {

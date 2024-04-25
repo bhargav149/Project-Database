@@ -4,7 +4,9 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
 // Assuming the URL is defined outside the component or passed in as a prop
-const url = "http://localhost:8080/";
+// const url = "http://localhost:8080/";
+const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+
 
 export default function UsersTable({ themeMode, pid}) {
 

@@ -76,18 +76,16 @@ docker compose down -v
 - The Docker image for the node project is not included in Dockerfile
 -FILES TO MODIFY BEFORE DEPLOYMENT: 
     - server/database.js(look at lines 10-40)
-    - server/app.js(lines 28/29)
+    - server/app.js(lines 58/59)
     - client/src/components/LandingPage.js(lines 49/50, 64-75)
-    - client/src/AppRoutes.js(line 14)
-    - client/src/components/EditProjectModal.js(lines 20/21)
+    - client/src/components/EditProjectModal.js(lines 28/29)
     - client/src/components/DataTable.js(lines 37/38)
-    - client/src/components/Settings.js(lines 14-18)
+    - client/src/components/Settings.js(lines 35-36)
     - client/src/components/UserTable.js(lines 40-41)
     - client/src/components/AddProjectForm.js(lines 33-34)
-    - client/src/components/ViewProjectModal.js(lines 17-18)
+    - client/src/components/ViewProjectModal.js(lines 26-27)
     - client/src/MainPage.js(lines 11-12, 36/37)
-    - client/src/components/EnterName.js(7-8)
-    - client/src/components/Settings.js(29-30)
+    - client/src/components/EnterName.js(13-14)
     - all of these files will have comments telling you what to change
 
 

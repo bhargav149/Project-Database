@@ -23,8 +23,8 @@ function ViewProjectModal({ project, isOpen, onClose, theme, relatedProjects, no
     fetchFiles();
   }, [uploadedFiles]);
 
-  const url = "http://localhost:8080/";
-  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  // const url = "http://localhost:8080/";
+  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
   const fetchFiles = () => {
     fetch(url+"files/"+selectedProject.id)

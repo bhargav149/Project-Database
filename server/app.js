@@ -55,8 +55,8 @@ app.use(express.json())
 app.use(cors())
 
 //use placeholder for local development, add "/server" for deployed
-const url=""
-// const url="/server"
+// const url=""
+const url="/server"
 
 
 const storage = multer.diskStorage({
@@ -465,17 +465,25 @@ app.post(`${url}/projects/:projectId/notes`, async (req, res) => {
 // Update a note for a project
 app.put(`${url}/notes/:projectId`, async (req, res) => {
     console.log("Starting note edit", req.body)
-    // const { pid, newNote } = req.body;
     const pid = req.body.pid
     const newNote = req.body.newNote
-    console.log("Starting note edit", pid,newNote)
-    console.log("Editing project: ", req.params.projectId)
-    console.log(pid,"New note", newNote)
-    try {
-        await updateNoteForProject(req.params.projectId, pid, newNote);
-        res.status(200).send('Note updated successfully');
-    } catch (error) {
-        res.status(500).send('Error updating project note');
+    const projectId=req.params.projectId
+    const currentNotes = await getNotesForProject(pid, projectId);
+    if (currentNotes.length === 0) {
+        console.log("No note found. Creating new note.")
+        await addNoteToProject(pid,projectId,newNote)
+    }
+    else{
+        // const { pid, newNote } = req.body;
+        console.log("Starting note edit", pid,newNote)
+        console.log("Editing project: ", req.params.projectId)
+        console.log(pid,"New note", newNote)
+        try {
+            await updateNoteForProject(req.params.projectId, pid, newNote);
+            res.status(200).send('Note updated successfully');
+        } catch (error) {
+            res.status(500).send('Error updating project note');
+        }
     }
 });
 

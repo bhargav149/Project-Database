@@ -52,10 +52,10 @@ function App() {
   const [settingsView, setSettingsView] = useState(false);
 
   //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
-  const url = "http://localhost:8080/";
-  // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+  // const url = "http://localhost:8080/";
+  const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
-  const [user, setUser] = React.useState('emptyNameUser');
+  const [user, setUser] = React.useState(null);
   const [userName, setUserName] = useState('');
   const [isEnterNameModalOpen, setIsEnterNameModalOpen] = useState(false);
   const [isAdmin,setIsAdmin]=useState(false);
@@ -66,18 +66,18 @@ function App() {
 
   const [showSideNav, setShowSideNav] = useState(false);
 
-  // useEffect(() => {
-  //   getCurrentUser();
-  // }, []);
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
-  // async function getCurrentUser() {
-  //   await fetch("/api/currentUser")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log("CAS data", data)
-  //       setUser(data.user)
-  //     });
-  // }
+  async function getCurrentUser() {
+    await fetch("/api/currentUser")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("CAS data", data)
+        setUser(data.user)
+      });
+  }
 
 
   useEffect(() => {

@@ -30,8 +30,8 @@ function AddProjectForm({ onAdd, projects, theme }) {
     const [status, setStatus] = useState('Unassigned');
     const currentYear = new Date().getFullYear();
     const years = Array.from(new Array(121), (val, index) => currentYear - 20 + index);
-    const url = "http://localhost:8080/";
-    // const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+    // const url = "http://localhost:8080/";
+    const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
     const stackOptions = [
         { title: 'React.js' },

@@ -11,13 +11,13 @@ async function initializeDatabase() {
     console.log("Initializing database...");
     const connection = await mysql.createConnection({
         // use for local development
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
+        // host: process.env.MYSQL_HOST,
+        // user: process.env.MYSQL_USER,
+        // password: process.env.MYSQL_PASSWORD,
         //use for deployment
-        // host:	'bravesouls-projectdb-mysql',
-        // user: 'user',
-        // password: 'bravesouls',
+        host:	'bravesouls-projectdb-mysql',
+        user: 'user',
+        password: 'bravesouls',
 
     });
 
@@ -32,16 +32,16 @@ async function initializeDatabase() {
     console.log("Creating projects and project_semesters tables...");
     pool = mysql.createPool({
         //use for local development
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: 'projects_app',
+        // host: process.env.MYSQL_HOST,
+        // user: process.env.MYSQL_USER,
+        // password: process.env.MYSQL_PASSWORD,
+        // database: 'projects_app',
 
         // use for cloud deployment
-        // host:	'bravesouls-projectdb-mysql',
-        // user: 'user',
-        // password: 'bravesouls',
-        // database: 'projects_app',
+        host:	'bravesouls-projectdb-mysql',
+        user: 'user',
+        password: 'bravesouls',
+        database: 'projects_app',
     });
 
     // Create projects table
@@ -477,7 +477,11 @@ async function updateProjectSemesters(projectId, semesters) {
     }
 }
 
-export async function addNoteToProject(admin_id, project_id, note) {
+export async function addNoteToProject(pid, project_id, note) {
+    const [temp] = await pool.query(`
+        SELECT * FROM admin WHERE pid = ?
+    `, [pid])
+    const admin_id = temp[0].id;
     await pool.query(`
         INSERT INTO admin_project_notes (admin_id, project_id, note)
         VALUES (?, ?, ?)

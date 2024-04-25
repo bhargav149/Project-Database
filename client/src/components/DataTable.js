@@ -36,8 +36,8 @@ const columns = [
 ];
 
 //USE FIRST URL FOR LOCAL DEVELOPMENT AND SECOND FOR DEPLOYMENT
-const url = "http://localhost:8080/";
-// const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
+// const url = "http://localhost:8080/";
+const url = "https://bravesouls-projectdb.discovery.cs.vt.edu/server/"
 
 export default function DataTable({ themeMode, deleteProject, saveEdit, data }) {
   const [projects, setProjects] = useState([]);
