@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 // Assuming the URL is defined outside the component or passed in as a prop
 const url = "http://localhost:8080/";
 
-export default function UsersTable({ themeMode }) {
+export default function UsersTable({ themeMode, pid}) {
 
   // Define columns based on user data structure
   const columns = [
@@ -89,6 +89,32 @@ export default function UsersTable({ themeMode }) {
     // Any other code that needs to run after `users` is updated can go here
   }, [users]);
   
+  const leaveTeamForUser = async (userId) => {
+    try {
+      const userResponse = await fetch(`${url}user/${userId}`);
+      const userData = await userResponse.json();
+      if (userData.project_id && userData.project_id !== '-1') {
+        const updatedData = { project_id: '-1' };  // Resetting project ID to indicate no project
+        await fetch(`${url}user/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedData)
+        });
+        // Optionally handle updates to the project to remove the user from team members list
+        const projectResponse = await fetch(`${url}projects/${userData.project_id}`);
+        const projectData = await projectResponse.json();
+        const updatedTeamMembers = projectData.team_members.replace(`${userData.name}, `, '').replace(`, ${userData.name}`, '').replace(userData.name, '');
+        await fetch(`${url}projects/${userData.project_id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...projectData, team_members: updatedTeamMembers })
+        });
+      }
+    } catch (error) {
+      console.error('Error in leaveTeamForUser:', error);
+    }
+  };
+
   const handleDeleteUser = async () => {
     const affectedUsers = selected.map(id => users.find(user => user.id === id));
   
@@ -104,12 +130,26 @@ export default function UsersTable({ themeMode }) {
       }
     }
   
+    // Check if current user (assumed to be an admin) is trying to delete themselves
+    // It currently prints out as undefined although right before passing it in the Settings.js appears correctly as pid
+    if (adminsBeingDeleted.find(user => user.pid === pid)) {
+      alert("Operation not allowed. You cannot delete yourself. Contact another admin to remove your account.");
+      return;
+    }
+
     // Show confirmation dialog with affected users details
-    const confirmMakeAdmin = window.confirm(
+    const confirmDelete = window.confirm(
       `Are you sure you want to delete the selected user(s)? You cannot undo this action.\n\nAffected Users:\n${affectedUsers.map(user => `- ${user.name}`).join('\n')}`
     );
 
-    if (confirmMakeAdmin) {
+    
+    if (confirmDelete) {
+
+      // First, ensure all users leave their teams
+      for (const user of affectedUsers) {
+        await leaveTeamForUser(user.id);
+      }
+
       // Perform the deletion of users
       for (const id of selected) {
         try {

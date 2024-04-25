@@ -413,7 +413,7 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
             case 'Users':
                 return (
                     <>
-                        <UsersTable themeMode={themeMode} />
+                        <UsersTable themeMode={themeMode} user={pid}/>
                     </>
                 );
             default:
