@@ -316,13 +316,14 @@ function SettingsPage({ themeMode, data, isAdmin, isRootProject, pid }) {
                                             <Info size={24} style={{color: themeMode==='dark' ? 'lightblue' : '#3371FF', marginTop: '4px', marginLeft: '4px'}}/>
                                         </span>
                                     </Tooltip>  
-                                    <button 
-                                        onClick={handleJoinTeam} 
-                                        className="join-team-button"
-                                        disabled={isAdmin}
-                                    >
-                                        Join Team
-                                    </button>
+                                    {!isAdmin && (
+                                        <button 
+                                            onClick={handleJoinTeam} 
+                                            className="join-team-button"
+                                        >
+                                            Join Team
+                                        </button>
+                                    )}
                             </div>
                         </div>
                     </div>
